@@ -3,13 +3,24 @@
 <nav>
 
 	<ul>
-		<li class ="menu"> <a href="accueil.php"> ECE EBAY </a></li>
+		<li class ="menu"> <a href="index.php"> ECE EBAY </a></li>
+
+
+		<li class ="menu"><a href="categorie.php">   Catégorie </a> 
+				<ul class ="sous-menu">
+					<li><a href="#">   Meilleure offre </a> </li>
+					<li><a href="#">   Enchère </a> </li>
+					<li><a href="#">   Catégorie </a> </li>
+					
+				</ul>
+		</li>
+
 
 		<li class ="menu"><a href="achat.php">   Achat </a> 
 				<ul class ="sous-menu">
-					<li><a href="#">   Ferrailles et trésor </a> </li>
-					<li><a href="#">   Bon pour le musée </a> </li>
-					<li><a href="#">   Accessoire VIP </a> </li>
+					<li><a href="#">   Meilleure offre </a> </li>
+					<li><a href="#">   Enchère </a> </li>
+					<li><a href="#">   Catégorie </a> </li>
 					
 				</ul>
 		</li>

@@ -4,12 +4,12 @@
 	font-family: var(--Ecriture-site);
 	margin: 0px;
 	padding: 0px;
-	background-color: blue;
+	background-color: orange;
 }
 
 #fond_accueil
 {
-width : 90%; 
+width : 95%; 
 margin : 0 auto; 
 background-color: grey;
 text-align : center ;
@@ -65,7 +65,6 @@ nav > ul > li
 }
 
 nav a {
-	width: 100%;
 	display: inline-block;
 	text-decoration: none;
 }
@@ -119,10 +118,9 @@ nav li:hover .sous-menu
 
 /* FOOTER */
 
-footer 
+.contact_us_footer 
 {
 	background-color: #424558;	
-	color: #FFF;
 	font-size :10px;
 	font-color:blue;
 }
@@ -133,11 +131,42 @@ footer
 
 
 
+/* Carroussel */
 
 
 
 
 
+/* Achat */
+.right_col_achat
+{	
 
+	width: 200px;
+	border: 3px black solid;
+	margin: 10px;
+	padding:5px;
+}
 
+.check_les_catégories
+{
+	border: 2px black solid;
+	background: orange;
+	margin: 6px;
+	
+}
+.check_les_types
+{
+	border: 2px black solid;
+	background: orange;
+	margin: 6px;
+}
+
+.rechercheVendeur
+{
+	border: 2px black solid;
+	background: orange;
+	margin: 6px;
+	padding-top: 6px;		
+	padding-bottom: 6px;
+}
 
