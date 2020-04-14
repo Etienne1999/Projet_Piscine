@@ -1,62 +1,69 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">	
-		<title> Accueil_ECE_Ebay</title>
+<head>
+	<meta charset="utf-8">	
+	<title> Accueil ECE Ebay</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+
+<body>
+
+	<!-- Navbar -->
+	<?php include("nav.php") ?>
+
+
+	<!-- Header -->
+	<header>
 		
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
-		<link rel="stylesheet" type="text/css" href="style.css">
-
-	</head>
-		
-	<body>
-
-
-		<?php include("nav.php") ?>
-
-		<div class="container-fluid">
+	</header>
+	<!-- Conteneur -->
+	<div class="container-fluid">
 		<div id="fond_accueil">
 			<br>
 			
 			<!-- Tableau deroulant --> 
 			
-				<h1> ECE EBAY </h1>
+			<h1> ECE EBAY </h1>
 
 			<div id="myCarousel" class="carousel_slide" data-ride="carousel">
-  				<!-- Indicators -->
-			  	<ol class="carousel-indicators">
-				    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-				    <li data-target="#myCarousel" data-slide-to="1"></li>
-				    <li data-target="#myCarousel" data-slide-to="2"></li>
-			  	</ol>
+				<!-- Indicators -->
+				<ol class="carousel-indicators">
+					<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+					<li data-target="#myCarousel" data-slide-to="1"></li>
+					<li data-target="#myCarousel" data-slide-to="2"></li>
+				</ol>
 
-			  <!-- Wrapper for slides -->
-			  <div class="carousel-inner">
-				    <div class="item active">
-				      <img src="img/france7.jpg" alt="Los Angeles">
-				    </div>
+				<!-- Wrapper for slides -->
+				<div class="carousel-inner">
+					<div class="item active">
+						<img src="img/france7.jpg" alt="Los Angeles">
+					</div>
 
-				    <div class="item">
-				      <img src="img/france2.jpg" alt="Chicago">
-				    </div>
+					<div class="item">
+						<img src="img/france2.jpg" alt="Chicago">
+					</div>
 
-				    <div class="item">
-				      <img src="img/france1.jpg" alt="New York">
-				    </div>
-				  </div>	
+					<div class="item">
+						<img src="img/france1.jpg" alt="New York">
+					</div>
+				</div>	
 			</div>
 			<!-- Premier affichage -->				
 			<br><br><br><br>
-			<!-- Footer : contact -->	
-			<?php include("footer.php") ?>
 		</div>
 	</div>
-	</body>
+
+	<!-- Footer -->	
+	<?php include("footer.php") ?>
+</body>
 </html>

@@ -1,5 +1,3 @@
-<!-- Tableau deroulant --> 
-
 <nav class="navbar sticky-top navbar-light navbar-expand-md navigation-clean-button">
     <div class="container">
     	<a class="navbar-brand" href="index.php">Ebay ECE<br /></a>
