@@ -17,7 +17,10 @@ align-content : center;
 
 }
 
-
+#carousel-1 img{
+	max-width: auto;
+	max-height: 500px;
+}
 
 
 
