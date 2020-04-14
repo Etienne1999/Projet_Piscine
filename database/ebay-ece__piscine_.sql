@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mar. 14 avr. 2020 à 11:46
+-- Généré le :  mar. 14 avr. 2020 à 12:11
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -210,16 +210,25 @@ CREATE TABLE IF NOT EXISTS `produit` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Nom` varchar(255) NOT NULL,
   `Description` varchar(255) NOT NULL,
-  `Video` varchar(255) NOT NULL,
-  `Prix_Achat` double NOT NULL,
-  `Prix_Enchere` double NOT NULL,
-  `Date_fin_enchere` datetime NOT NULL,
+  `Video` varchar(255) DEFAULT NULL,
+  `Prix_Achat` double DEFAULT NULL,
+  `Prix_Enchere` double DEFAULT NULL,
+  `Date_fin_enchere` datetime DEFAULT NULL,
   `Vendeur` int(11) NOT NULL,
   `Categorie` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Categorie` (`Categorie`),
   KEY `Vendeur` (`Vendeur`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `produit`
+--
+
+INSERT INTO `produit` (`ID`, `Nom`, `Description`, `Video`, `Prix_Achat`, `Prix_Enchere`, `Date_fin_enchere`, `Vendeur`, `Categorie`) VALUES
+(10, 'Le précieux', 'test bijou', NULL, 500, NULL, NULL, 1, 3),
+(11, 'Pieces d\'or romain', 'Lot de 200 pieces', NULL, 2000, 1500, '2020-04-16 13:37:00', 2, 1),
+(12, 'Mona Lisa', 'tqt bro ', NULL, NULL, 1000000, '2020-04-19 23:55:00', 3, 2);
 
 -- --------------------------------------------------------
 
@@ -290,7 +299,16 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   PRIMARY KEY (`ID`),
   KEY `Adresse` (`Adresse`),
   KEY `Role` (`Role`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`ID`, `Nom`, `Prenom`, `Pseudo`, `Password`, `Email`, `Adresse`, `Role`) VALUES
+(1, 'DIAS DA SILVA', 'Daniel', 'Magic-System', 'azerty', 'daniel.dias-da-silva@edu.ece.fr', NULL, 1),
+(2, 'GESLIN', 'Etienne', 'Xoxonoxir', 'qwerty', 'etienne.geslin@edu.ece.fr', NULL, 1),
+(3, 'KOZLOW', 'Constantin', 'saladetomate', 'azertyuiop', 'constantin.kozlow@edu.ece.fr', NULL, 1);
 
 --
 -- Contraintes pour les tables déchargées
