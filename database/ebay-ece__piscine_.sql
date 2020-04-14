@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mar. 14 avr. 2020 à 05:23
+-- Généré le :  mar. 14 avr. 2020 à 11:46
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Base de données :  `ebay-ece (piscine)`
 --
+CREATE DATABASE IF NOT EXISTS `ebay-ece (piscine)` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `ebay-ece (piscine)`;
 
 -- --------------------------------------------------------
 
