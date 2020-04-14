@@ -7,19 +7,19 @@
         <div class="collapse navbar-collapse show" id="navcol-1">
             <ul class="nav navbar-nav mr-auto">
                 <li class="nav-item dropdown">
-                	<a data-toggle="dropdown" class="dropdown-toggle nav-link" href="categorie.php">Catégories </a>
+                	<a data-toggle="dropdown" class="dropdown-toggle nav-link" href="achat.php">Catégories </a>
                     <div role="menu" class="dropdown-menu">
-                    	<a class="dropdown-item" href="#">Feraille ou Trésor</a>
-                    	<a class="dropdown-item" href="#">Bon pour le Musée</a>
-                    	<a class="dropdown-item" href="#">Accessoire VIP</a>
+                    	<a class="dropdown-item" href="achat.php">Feraille ou Trésor</a>
+                    	<a class="dropdown-item" href="achat.php">Bon pour le Musée</a>
+                    	<a class="dropdown-item" href="achat.php">Accessoire VIP</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                	<a data-toggle="dropdown" class="dropdown-toggle nav-link" href="#achat.php">Achat</a>
+                	<a data-toggle="dropdown" class="dropdown-toggle nav-link" href="achat.php">Achat</a>
                     <div role="menu" class="dropdown-menu">
-                    	<a class="dropdown-item" href="#">Enchères</a>
-                    	<a class="dropdown-item" href="#">Achat immédiat</a>
-                    	<a class="dropdown-item" href="#">Meilleure offre</a>
+                    	<a class="dropdown-item" href="achat.php">Enchères</a>
+                    	<a class="dropdown-item" href="achat.php">Achat immédiat</a>
+                    	<a class="dropdown-item" href="achat.php">Meilleure offre</a>
                     </div>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="vente.php">Vente</a></li>
