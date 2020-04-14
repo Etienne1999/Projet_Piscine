@@ -7,50 +7,10 @@
 	background-color: orange;
 }
 
-#fond_accueil
-{
-width : 95%; 
-margin : 0 auto; 
-background-color: grey;
-text-align : center ;
-align-content : center; 
 
-}
 
 #carousel-1 img{
 	max-width: auto;
 	max-height: 500px;
 }
 
-/* Achat */
-.right_col_achat
-{	
-
-	width: 200px;
-	border: 3px black solid;
-	margin: 10px;
-	padding:5px;
-}
-
-.check_les_catégories
-{
-	border: 2px black solid;
-	background: orange;
-	margin: 6px;
-	
-}
-.check_les_types
-{
-	border: 2px black solid;
-	background: orange;
-	margin: 6px;
-}
-
-.rechercheVendeur
-{
-	border: 2px black solid;
-	background: orange;
-	margin: 6px;
-	padding-top: 6px;		
-	padding-bottom: 6px;
-}

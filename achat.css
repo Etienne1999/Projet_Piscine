@@ -1,0 +1,26 @@
+/* Achat */
+.left_col_achat
+{	
+
+	border: 3px black solid;
+	margin: 10px;
+	padding:5px;
+}
+
+.check_checkbox
+{
+	border: 2px black solid;
+	background: orange;
+	margin: 6px;
+	
+}
+
+
+.rechercheVendeur
+{
+	border: 2px black solid;
+	background: orange;
+	margin: 6px;
+	padding-top: 6px;		
+	padding-bottom: 6px;
+}
