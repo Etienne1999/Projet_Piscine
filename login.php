@@ -27,7 +27,6 @@
 					$_SESSION['err_user_found'] = true;
 				else {
 					$data = mysqli_fetch_assoc($result);
-					$_SESSION['user_logged'] = true;
 					$_SESSION['user_ID'] = $data['ID'];
 					$_SESSION['user_Nom'] = $data['Nom'];
 					$_SESSION['user_Prenom'] = $data['Prenom'];
@@ -36,6 +35,11 @@
 					$_SESSION['user_Role'] = $data['Role'];
 
 					mysqli_close($db_handle);
+
+					unset($_SESSION['err_log']);
+					unset($_SESSION['err_pwd']);
+					unset($_SESSION['err_user_found']);
+
 					header('Location: index.php');
 				}
 			}

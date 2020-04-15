@@ -15,7 +15,7 @@
 
 	if ($db_found){
 
-		//On vide les tableaux d'erreur correspondant a chaque champs
+		//On suppr les tableaux d'erreur correspondant a chaque champs
 		unset($_SESSION['err_nom']);
 		unset($_SESSION['err_prenom']);
 		unset($_SESSION['err_username']);
@@ -65,15 +65,32 @@
 				else {
 					//Si il n'y a pas d'erreur de mdp (pas correspondant)
 					if (empty($_SESSION['err_pwd'])){
-						//$sql = "INSERT INTO 'utilisateur' ('ID', 'Nom', 'Prenom', 'Pseudo', 'Password', 'Email', 'Adresse', 'Role') VALUES (NULL, '$nom', '$prenom', '$username', '$password', '$email', NULL, 2)";
 
+						//Ajoute l'utilisateur a la bdd
 						$sql = "INSERT INTO `utilisateur` (`ID`, `Nom`, `Prenom`, `Pseudo`, `Password`, `Email`, `Adresse`, `Role`) VALUES (NULL, '$nom', '$prenom', '$username', '$password', '$email', NULL, 2)";
-
 						mysqli_query($db_handle, $sql);
 
-						mysqli_close($db_handle);
+						//On récupere l'ID et le role de l'utilisateur qui vient d'etre crée
+						$sql_ID_Role = "SELECT ID, ROLE FROM utilisateur WHERE Email = '$email'";
+						$result = mysqli_query($db_handle, $sql_ID_Role);
+						//On ajoute les données utilisateur a la session puis on redigire l'utilisateur vers index.php
+						while ($data = mysqli_fetch_assoc($result)) {
+							$_SESSION['user_ID'] = $data['ID'];
+							$_SESSION['user_Role'] = $data['Role'];
+						}
+						$_SESSION['user_Nom'] = $nom;
+						$_SESSION['user_Prenom'] = $prenom;
+						$_SESSION['user_Pseudo'] = $username;
+						$_SESSION['user_Email'] = $email;
 
-						header('Location: login.php');
+						//On suppr les tableaux d'erreur correspondant a chaque champs
+						unset($_SESSION['err_nom']);
+						unset($_SESSION['err_prenom']);
+						unset($_SESSION['err_username']);
+						unset($_SESSION['err_email']);
+						unset($_SESSION['err_pwd']);
+
+						header('Location: index.php');
 					}
 				}
 
