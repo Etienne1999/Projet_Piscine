@@ -1,6 +1,8 @@
 <?php  
 
-	session_start();
+	if (session_status() == PHP_SESSION_NONE) {
+		session_start();
+	}
 	include("database/db_connect.php");
 
 	$login = isset($_POST["login"])? $_POST["login"] : "";
@@ -16,18 +18,23 @@
 				$sql = "SELECT * FROM `utilisateur` WHERE (`Email` = '$login' OR `Pseudo` = '$login') AND `Password` = '$password'";
 
 				$result = mysqli_query($db_handle, $sql);
-
-				/*
+				
 				if (mysqli_num_rows($result) != 1)
-					$erreur = true;
+					echo "Erreur, utilisateur introuvable.";
+					//$erreur = true;
 				else {
 					$data = mysqli_fetch_assoc($result);
-					$_SESSION['Role'] = $data['Role'];
-				}
-				*/
+					$_SESSION['user_logged'] = true;
+					$_SESSION['user_ID'] = $data['ID'];
+					$_SESSION['user_Nom'] = $data['Nom'];
+					$_SESSION['user_Prenom'] = $data['Prenom'];
+					$_SESSION['user_Pseudo'] = $data['Pseudo'];
+					$_SESSION['user_Email'] = $data['Email'];
+					$_SESSION['user_Role'] = $data['Role'];
 
-				//mysqli_close($db_handle);
-				//header('Location: login.php');
+					mysqli_close($db_handle);
+					header('Location: index.php');
+				}
 			}
 
 		}

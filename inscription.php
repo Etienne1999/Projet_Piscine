@@ -1,6 +1,8 @@
 <?php 
 	
-	session_start();
+	if (session_status() == PHP_SESSION_NONE) {
+		session_start();
+	}
 
 	$nom = isset($_POST["nom"])? $_POST["nom"] : "";
 	$prenom = isset($_POST["prenom"])? $_POST["prenom"] : "";
