@@ -1,3 +1,14 @@
+<?php 
+	session_start();
+	
+	if (isset($_POST['btn']))
+	{
+		echo "test";
+		session_destroy();
+		header("Location: index.php");
+	}
+ ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,7 +39,9 @@
 	</header>
 	<!-- Conteneur -->
 	<div class="container-fluid">
-		
+		<form method="post">
+			<button class="btn btn-primary btn-block" type="submit" name="btn">Se déconnecter</button>
+		</form>
 	</div>
 
 	<!-- Footer -->	
