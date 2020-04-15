@@ -1,5 +1,7 @@
 <?php 
-	session_start();
+	if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
 
 	include ("database/db_connect.php");
 ?>
@@ -21,6 +23,7 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="admin.css">
 
 </head>
 
@@ -69,27 +72,30 @@
 								echo "Erreur database not found !!!";
 						 ?>
 
-						<table class="table table-bordered table-hover table-dark">
-							<thead>
-								<tr>
-									<th class="text-center" scope="col">Pseudo</th>
-									<th class="text-center" scope="col">Role</th>
-									<th class="text-center" scope="col">Nombre d'articles en vente</th>
-								</tr>
-							</thead>
-							<tbody>
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover table-dark">
+								<thead>
+									<tr>
+										<th>Pseudo</th>
+										<th>Role</th>
+										<th>Nombre d'articles en vente</th>
+									</tr>
+								</thead>
+								<tbody>
 
-								<?php 
-									while ($data = mysqli_fetch_assoc($result)) {
-										echo '<tr>';
-										echo '	<td class="text-center">' . $data['Pseudo'] . '</td>';
-										echo '	<td class="text-center">' . $data['Role'] . '</td>';
-										echo '	<td class="text-center">' . $data['Nb_produit'] . '</td>';
-										echo '</tr>';
-									}
-								 ?>
-							</tbody>
-						</table>
+									<?php 
+										while ($data = mysqli_fetch_assoc($result)) {
+											echo '<tr>';
+											echo '	<td>' . $data['Pseudo'] . '</td>';
+											echo '	<td>' . $data['Role'] . '</td>';
+											echo '	<td>' . $data['Nb_produit'] . '</td>';
+
+											echo '</tr>';
+										}
+									 ?>
+								</tbody>
+							</table>							
+						</div>
 					</div>
 					<div class="tab-pane fade" id="list-profile" role="tabpanel">
 						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
