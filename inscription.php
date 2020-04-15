@@ -1,3 +1,47 @@
+<?php 
+	
+	session_start();
+
+	$nom = isset($_POST["nom"])? $_POST["nom"] : "";
+	$prenom = isset($_POST["prenom"])? $_POST["prenom"] : "";
+	$email = isset($_POST["email"])? $_POST["email"] : "";
+	$password = isset($_POST["password"])? $_POST["password"] : "";
+	$password_repeat = isset($_POST["password_repeat"])? $_POST["password_repeat"] : "";
+
+	include("database/db_connect.php");
+
+	if ($db_found){
+
+		unset($_SESSION['err_nom']);
+		unset($_SESSION['err_prenom']);
+		unset($_SESSION['err_email']);
+		unset($_SESSION['err_pwd']);
+
+		if (isset($_POST['btn_signup'])){
+
+			if (empty($nom))
+				$_SESSION['err_nom'][] = 'Veuillez entrer un Nom.';
+			if (empty($prenom))
+				$_SESSION['err_prenom'][] = 'Veuillez entrer un Prénom.';
+			if (empty($email))
+				$_SESSION['err_email'][] = 'Veuillez entrer une adresse Email.';
+			if (empty($password) || empty($password_repeat))
+				$_SESSION['err_pwd'][] = 'Veuillez entrer un Mot de passe.';
+			if ($password != $password_repeat)
+				$_SESSION['err_pwd'][] = 'Les mots de passe ne correspondent pas !';	
+
+			if (empty($cases_vide)){
+
+			}
+			else {
+				
+			}
+
+		}
+	}
+
+ ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,7 +65,6 @@
 	<!-- Navbar -->
 	<?php include("nav.php") ?>
 
-
 	<!-- Conteneur -->
 	<div class="container">
 		<div class="row" id="monSignUp">
@@ -32,10 +75,24 @@
 			        	<label for="formInfoPerso"><strong>Vos informations personelles</strong></label>
 			        	<div class="row">
 				        	<div class="col-12 col-sm form-group">
-				        		<input class="form-control" type="prenom" name="prenom" placeholder="Prénom" />	
+				        		<input class="form-control <?php if(!empty($_SESSION['err_prenom'])) {echo 'is-invalid'; }?>" type="prenom" name="prenom" maxlength="255" <?php if(!empty($prenom)) {echo 'value="'. $prenom .'"';} else { echo 'placeholder="Prénom"';}?>>
+				        		<div class="invalid-feedback">
+				        			<?php 
+				        				foreach ($_SESSION['err_prenom'] as $err) {
+				        					echo $err . '<br>';
+				        				}
+				        			 ?>
+				        		</div>	
 				        	</div>
 				        	<div class="col-12 col-sm form-group">
-				        		<input class="form-control" type="nom" name="nom" placeholder="Nom" />	
+				        		<input class="form-control <?php if(!empty($_SESSION['err_nom'])) {echo 'is-invalid'; }?>" type="nom" name="nom" <?php if(!empty($nom)) {echo 'value="'. $nom .'"';} else { echo 'placeholder="Nom"';}?> maxlength="255">	
+				        		<div class="invalid-feedback">
+				        			<?php 
+				        				foreach ($_SESSION['err_nom'] as $err) {
+				        					echo $err . '<br>';
+				        				}
+				        			 ?>
+				        		</div>
 				        	</div>
 				        </div>	
 			        </div>
@@ -43,19 +100,33 @@
 			        <div class="form-group" id="formInfoConnect">
 			        	<label for="formInfoConnect"><strong>Vos informations de connexion</strong></label>
 			        	<div class="form-group">
-				        	<input class="form-control" type="email" name="email" placeholder="Email" />
+				        	<input class="form-control <?php if(!empty($_SESSION['err_email'])) {echo 'is-invalid'; }?>" type="email" name="email" <?php if(!empty($email)) {echo 'value="'. $email .'"';} else { echo 'placeholder="Email"';}?> maxlength="255">
+			        		<div class="invalid-feedback">
+			        			<?php 
+			        				foreach ($_SESSION['err_email'] as $err) {
+			        					echo $err . '<br>';
+			        				}
+			        			 ?>
+			        		</div>	
 				        </div>
 				        <div class="form-group">
-				        	<input type="password" class="form-control" name="password" placeholder="Mot de passe" />
+				        	<input type="password" class="form-control <?php if(!empty($_SESSION['err_pwd'])) {echo 'is-invalid'; }?>" name="password" placeholder="Mot de passe" maxlength="255">
 				        </div>
 				        <div class="form-group">
-				        	<input type="password" class="form-control" name="password-repeat" placeholder="Mot de passe (Confirmer)" />
+				        	<input type="password" class="form-control <?php if(!empty($_SESSION['err_pwd'])) {echo 'is-invalid'; }?>" name="password-repeat" placeholder="Mot de passe (Confirmer)" maxlength="255">	
+			        		<div class="invalid-feedback">
+			        			<?php 
+			        				foreach ($_SESSION['err_pwd'] as $err) {
+			        					echo $err . '<br>';
+			        				}
+			        			 ?>
+			        		</div>
 				        </div>
 			        </div>
 			        
 			        <div class="form-group"></div>
 			        <div class="form-group">
-			        	<button class="btn btn-primary btn-block" type="submit">S&#39;inscrire</button>
+			        	<button class="btn btn-primary btn-block" type="submit" name="btn_signup">S&#39;inscrire</button>
 			        </div>
 			        <p class="text-center font-weight-lighter text-muted">J'ai déjà un compte. <a class="text-reset" href="login.php">Se connecter</a></p>
 			    </form>
