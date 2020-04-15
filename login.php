@@ -1,3 +1,44 @@
+<?php  
+
+	session_start();
+	include("database/db_connect.php");
+
+	$login = isset($_POST["login"])? $_POST["login"] : "";
+	$password = isset($_POST["password"])? $_POST["password"] : "";
+
+	if ($db_found){
+
+		if (isset($_POST['btn_login'])){
+
+			//Si tout les champs sont correctement rempli on cherche l'utilisateur dans la bdd
+			if (!(empty($login) || empty($password))){
+
+				$sql = "SELECT * FROM `utilisateur` WHERE (`Email` = '$login' OR `Pseudo` = '$login') AND `Password` = '$password'";
+
+				$result = mysqli_query($db_handle, $sql);
+
+				/*
+				if (mysqli_num_rows($result) != 1)
+					$erreur = true;
+				else {
+					$data = mysqli_fetch_assoc($result);
+					$_SESSION['Role'] = $data['Role'];
+				}
+				*/
+
+				//mysqli_close($db_handle);
+				//header('Location: login.php');
+			}
+
+		}
+	}
+	else 
+		echo "Erreur database not found !!!";
+
+
+?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,13 +70,19 @@
 				<form method="post">
 					<h2 class="text-center"><strong>Connexion</strong></h2>
 				    <div class="form-group">
-				    	<input class="form-control" type="email" name="email" placeholder="Email" />
+				    	<input class="form-control <?php if(empty($login)) {echo 'is-invalid'; }?>" type="text" name="login" <?php if(!empty($login)) {echo 'value="'. $login .'"';} else { echo 'placeholder="Nom d\'utilisateur ou Email"';}?> maxlength="255">
+				    	<div class="invalid-feedback">
+				    		<p>Veuillez saisir votre nom d'utilisateur ou votre email</p>				    		
+				    	</div>
 				    </div>
 				    <div class="form-group">
-				    	<input class="form-control" type="password" name="password" placeholder="Password" />
+				    	<input class="form-control <?php if(empty($password)) {echo 'is-invalid'; }?>" type="password" name="password" <?php if(!empty($password)) {echo 'value="'. $password .'"';} else { echo 'placeholder="Mot de passe"';}?> maxlength="255">
+				    	<div class="invalid-feedback">
+				    		<p>Veuillez saisir votre mot de passe</p>
+				    	</div>
 				    </div>
 				    <div class="form-group">
-				    	<button class="btn btn-primary btn-block" type="submit">Se connecter</button>
+				    	<button class="btn btn-primary btn-block is-invalid" type="submit" name="btn_login">Se connecter</button>
 				    </div>
 				    <p class="text-center font-weight-lighter text-muted">Pas de compte ? <a class="text-reset" href="inscription.php">Cliquez ici pour en creer un</a></p>
 			</form>
