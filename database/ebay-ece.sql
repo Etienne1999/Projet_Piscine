@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mer. 15 avr. 2020 à 01:06
+-- Généré le :  mer. 15 avr. 2020 à 23:58
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `carte_bancaire` (
   `Date_exp` date NOT NULL,
   `ID_User` int(11) NOT NULL,
   `Type` int(11) NOT NULL,
-  `Adresse_Facturation` int(11) NOT NULL,
+  `Adresse_Facturation` int(11) DEFAULT NULL,
   PRIMARY KEY (`Numero_Carte`),
   KEY `Adresse_Facturation` (`Adresse_Facturation`),
   KEY `carte_bancaire_ibfk_2` (`Type`),
@@ -173,10 +173,9 @@ CREATE TABLE IF NOT EXISTS `enchere` (
 
 DROP TABLE IF EXISTS `img_produit`;
 CREATE TABLE IF NOT EXISTS `img_produit` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Produit` int(11) NOT NULL,
   `URL` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`),
+  PRIMARY KEY (`Produit`),
   KEY `img_produit_ibfk_1` (`Produit`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -212,6 +211,7 @@ CREATE TABLE IF NOT EXISTS `produit` (
   `Nom` varchar(255) NOT NULL,
   `Description` varchar(255) NOT NULL,
   `Video` varchar(255) DEFAULT NULL,
+  `Prix_min` double DEFAULT NULL COMMENT 'prix mini offre d''achat',
   `Prix_Achat` double DEFAULT NULL,
   `Prix_Enchere` double DEFAULT NULL,
   `Date_fin_enchere` datetime DEFAULT NULL,
@@ -226,10 +226,10 @@ CREATE TABLE IF NOT EXISTS `produit` (
 -- Déchargement des données de la table `produit`
 --
 
-INSERT INTO `produit` (`ID`, `Nom`, `Description`, `Video`, `Prix_Achat`, `Prix_Enchere`, `Date_fin_enchere`, `Vendeur`, `Categorie`) VALUES
-(1, 'Le précieux', 'test bijou', NULL, 500, NULL, NULL, 1, 3),
-(2, 'Pieces d\'or romain', 'Lot de 200 pieces', NULL, 2000, 1500, '2020-04-16 13:37:00', 2, 1),
-(3, 'Mona Lisa', 'tqt bro ', NULL, NULL, 1000000, '2020-04-19 23:55:00', 3, 2);
+INSERT INTO `produit` (`ID`, `Nom`, `Description`, `Video`, `Prix_min`, `Prix_Achat`, `Prix_Enchere`, `Date_fin_enchere`, `Vendeur`, `Categorie`) VALUES
+(1, 'Le précieux', 'test bijou', NULL, NULL, 500, NULL, NULL, 1, 3),
+(2, 'Pieces d\'or romain', 'Lot de 200 pieces', NULL, NULL, 2000, 1500, '2020-04-16 13:37:00', 2, 1),
+(3, 'Mona Lisa', 'tqt bro ', NULL, NULL, NULL, 1000000, '2020-04-19 23:55:00', 3, 2);
 
 -- --------------------------------------------------------
 
@@ -309,7 +309,9 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
 INSERT INTO `utilisateur` (`ID`, `Nom`, `Prenom`, `Pseudo`, `Password`, `Email`, `Adresse`, `Role`) VALUES
 (1, 'DIAS DA SILVA', 'Daniel', 'Magic-System', 'azerty', 'daniel.dias-da-silva@edu.ece.fr', NULL, 1),
 (2, 'GESLIN', 'Etienne', 'Xoxonoxir', 'qwerty', 'etienne.geslin@edu.ece.fr', NULL, 1),
-(3, 'KOZLOW', 'Constantin', 'saladetomate', 'azertyuiop', 'constantin.kozlow@edu.ece.fr', NULL, 1);
+(3, 'KOZLOW', 'Constantin', 'saladetomate', 'azertyuiop', 'constantin.kozlow@edu.ece.fr', NULL, 1),
+(4, 'aze', 'aze', 'zeat', 'aea', 'eae', NULL, 2),
+(5, 'Dias', 'Daniel', 'test', 'aze', 'azeae@gmail.com', NULL, 2);
 
 --
 -- Contraintes pour les tables déchargées
@@ -319,7 +321,7 @@ INSERT INTO `utilisateur` (`ID`, `Nom`, `Prenom`, `Pseudo`, `Password`, `Email`,
 -- Contraintes pour la table `carte_bancaire`
 --
 ALTER TABLE `carte_bancaire`
-  ADD CONSTRAINT `carte_bancaire_ibfk_1` FOREIGN KEY (`Adresse_Facturation`) REFERENCES `adresse` (`ID`),
+  ADD CONSTRAINT `carte_bancaire_ibfk_1` FOREIGN KEY (`Adresse_Facturation`) REFERENCES `adresse` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `carte_bancaire_ibfk_2` FOREIGN KEY (`Type`) REFERENCES `type_carte` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `carte_bancaire_ibfk_3` FOREIGN KEY (`ID_User`) REFERENCES `utilisateur` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
