@@ -8,10 +8,10 @@
 <nav class="navbar sticky-top navbar-light navbar-expand-md navigation-clean-button">
     <div class="container">
     	<a class="navbar-brand" href="index.php">Ebay ECE<br /></a>
-    	<button data-toggle="collapse" data-target="#navcol-1" class="navbar-toggler">
+    	<button data-toggle="collapse" data-target="#navcol-1" class="navbar-toggler collapsed">
     		<span class="navbar-toggler-icon"></span>
     	</button>
-        <div class="collapse navbar-collapse show" id="navcol-1">
+        <div class="navbar-collapse collapse" id="navcol-1">
             <ul class="nav navbar-nav mr-auto">
                 <li class="nav-item dropdown">
                 	<a data-toggle="dropdown" class="dropdown-toggle nav-link" href="achat.php">Catégories </a>
