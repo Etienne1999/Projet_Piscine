@@ -30,6 +30,8 @@
                     </div>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="vente.php">Vente</a></li>
+            </ul>
+            <ul class="nav navbar-nav ml-md-auto">
                 <li class="nav-item"><a class="nav-link" href="mon_panier.php">Panier</a></li>
                 <?php if (!empty($_SESSION['user_ID'])){ echo '<li class="nav-item"><a class="nav-link" href="mon_compte.php">' . $_SESSION["user_Pseudo"] . '</a></li>'; }else{ echo '<li class="nav-item"><a class="nav-link" href="login.php">Se connecter</a></li>';} ?>
 
