@@ -6,7 +6,7 @@
 	$prenom = isset($_POST["prenom"])? $_POST["prenom"] : "";
 	$email = isset($_POST["email"])? $_POST["email"] : "";
 	$password = isset($_POST["password"])? $_POST["password"] : "";
-	$password_repeat = isset($_POST["password_repeat"])? $_POST["password_repeat"] : "";
+	$password_repeat = isset($_POST["password-repeat"])? $_POST["password-repeat"] : "";
 
 	include("database/db_connect.php");
 
@@ -25,10 +25,14 @@
 				$_SESSION['err_prenom'][] = 'Veuillez entrer un Prénom.';
 			if (empty($email))
 				$_SESSION['err_email'][] = 'Veuillez entrer une adresse Email.';
-			if (empty($password) || empty($password_repeat))
+			if (empty($password))
 				$_SESSION['err_pwd'][] = 'Veuillez entrer un Mot de passe.';
-			if ($password != $password_repeat)
-				$_SESSION['err_pwd'][] = 'Les mots de passe ne correspondent pas !';	
+			if (!empty($password)) {
+				if (empty($password_repeat))
+					$_SESSION['err_pwd'][] = 'Veuillez confirmer votre Mot de passe.';
+				else if ($password != $password_repeat)
+					$_SESSION['err_pwd'][] = 'Les mots de passe ne correspondent pas !';	
+			}		
 
 			if (empty($cases_vide)){
 
@@ -110,10 +114,10 @@
 			        		</div>	
 				        </div>
 				        <div class="form-group">
-				        	<input type="password" class="form-control <?php if(!empty($_SESSION['err_pwd'])) {echo 'is-invalid'; }?>" name="password" placeholder="Mot de passe" maxlength="255">
+				        	<input type="password" class="form-control <?php if(!empty($_SESSION['err_pwd'])) {echo 'is-invalid'; }?>" name="password" <?php if(!empty($password)) {echo 'value="'. $password .'"';} else { echo 'placeholder="Mot de passe"';}?> maxlength="255">
 				        </div>
 				        <div class="form-group">
-				        	<input type="password" class="form-control <?php if(!empty($_SESSION['err_pwd'])) {echo 'is-invalid'; }?>" name="password-repeat" placeholder="Mot de passe (Confirmer)" maxlength="255">	
+				        	<input type="password" class="form-control <?php if(!empty($_SESSION['err_pwd'])) {echo 'is-invalid'; }?>" name="password-repeat" <?php if(!empty($password_repeat)) {echo 'value="'. $password_repeat .'"';} else { echo 'placeholder="Mot de passe (Confirmer)"';}?> maxlength="255">	
 			        		<div class="invalid-feedback">
 			        			<?php 
 			        				foreach ($_SESSION['err_pwd'] as $err) {
