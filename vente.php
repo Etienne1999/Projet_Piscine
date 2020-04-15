@@ -1,3 +1,11 @@
+<?php 
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    include ("database/db_connect.php");
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,7 +36,18 @@
 	</header>
 	<!-- Conteneur -->
 	<div class="container-fluid">
-		
+		<div class="row">
+			<!-- Bouton nouvelle vente -->
+			<div class="col-md-4">
+				
+			</div>
+
+			<!-- Affichage ventes en cours -->
+			<div class="col-md-8">
+				
+			</div>
+			
+		</div>
 	</div>
 
 	<!-- Footer -->	
