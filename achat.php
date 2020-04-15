@@ -75,10 +75,12 @@
 					{	
 						// TESTER La recherche
 						if ($check_vendeur != '') {
-							$sql ="SELECT * FROM produit WHERE Vendeur =$check_vendeur";
+							$sql ="SELECT DISTINCT p.* FROM produit AS p, utilisateur WHERE utilisateur.ID = p.Vendeur AND utilisateur.Pseudo LIKE '%$check_vendeur%'";
 							$result = mysqli_query($db_handle, $sql);
-							if ($result != NULL) {				
+
+							if ($result != NULL) {					
 								while ($data = mysqli_fetch_assoc($result)) {
+									
 									echo "ID: " . $data['ID'] . '<br>';
 									echo "Nom:" . $data['Nom'] .'<br>';
 									echo "prix: " . $data['Prix_Achat'] . '<br>';	
