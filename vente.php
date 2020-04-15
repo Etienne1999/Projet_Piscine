@@ -23,6 +23,8 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="stylesheet" type="text/css" href="vente.css">
 
+	<script src="vente.js" type="text/javascript"></script>
+
 </head>
 
 <body>
@@ -37,19 +39,38 @@
 	</header>
 	<!-- Conteneur -->
 	<div class="container-fluid">
-		<div class="row">
 
-			<!-- Bouton nouvelle vente -->
-			<div class="col-lg-4 col-md-4 col-sm-12">
-				<h2 class="text-uppercase font-weight-bold">Nouvelle vente</h2>
+		<!-- Page d'accueil vente -->
+		<div id="affichageAccueil">
+			<div class="row">
 
-				<button type="button" class="btn bnt-secondary m-1">+</button>
+				<!-- Bouton nouvelle vente -->
+				<div class="col-lg-4 col-md-4 col-sm-12 border-right">
+					<h3 class="text-uppercase font-weight-bold text-center">Nouvelle vente</h3>
+
+					<!-- Boutons nouvelle vente -->
+					<div class="text-center pt-4 pb-4">
+						<button type="button" class="btn btn-outline-light rounded-circle" onclick="changerAffichage()">
+							<strong>+</strong>
+						</button>
+						<button type="button" class="btn btn-light rounded ml-2" onclick="changerAffichage()">
+							<h4>Vendre</h4>
+							<h6>un nouvel objet</h6>
+						</button>
+					</div>
+				</div>
+
+				<!-- Affichage ventes en cours -->
+				<div class="col-lg-8 col-md-8 col-sm-12">
+					<h3 class="text-uppercase font-weight-bold text-center">Mes ventes en cours</h3>
+
+				</div>
+				
 			</div>
+		</div>
 
-			<!-- Affichage ventes en cours -->
-			<div class="col-lg-8 col-md-8 col-sm-12">
-				<h2 class="text-uppercase font-weight-bold">Mes ventes en cours</h2>
-			</div>
+		<!-- Formulaire nouvel objet en vente -->
+		<div id="affichageFormulaire">
 			
 		</div>
 	</div>
