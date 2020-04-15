@@ -1,3 +1,11 @@
+<?php 
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    include ("database/db_connect.php");
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -64,13 +72,9 @@
 			<!-- Affichage selon le filtre -->
 			<div class="achat_objet_listening">
 				<?php
-				$database = "ebay-ece (piscine)";
-				$db_handle = mysqli_connect('localhost', 'root', '' );
-				$db_found = mysqli_select_db($db_handle, $database);
-				
 				
 				$check_vendeur = isset($_POST["rechercheVendeur"])? $_POST["rechercheVendeur"] : "";
-				
+	
 				if ($db_found) 
 					{	
 						// TESTER La recherche
