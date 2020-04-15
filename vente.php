@@ -21,6 +21,7 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="vente.css">
 
 </head>
 
@@ -37,14 +38,17 @@
 	<!-- Conteneur -->
 	<div class="container-fluid">
 		<div class="row">
+
 			<!-- Bouton nouvelle vente -->
-			<div class="col-md-4">
-				
+			<div class="col-lg-4 col-md-4 col-sm-12">
+				<h2 class="text-uppercase font-weight-bold">Nouvelle vente</h2>
+
+				<button type="button" class="btn bnt-secondary m-1">+</button>
 			</div>
 
 			<!-- Affichage ventes en cours -->
-			<div class="col-md-8">
-				
+			<div class="col-lg-8 col-md-8 col-sm-12">
+				<h2 class="text-uppercase font-weight-bold">Mes ventes en cours</h2>
 			</div>
 			
 		</div>
