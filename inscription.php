@@ -4,6 +4,7 @@
 
 	$nom = isset($_POST["nom"])? $_POST["nom"] : "";
 	$prenom = isset($_POST["prenom"])? $_POST["prenom"] : "";
+	$username = isset($_POST["username"])? $_POST["username"] : "";
 	$email = isset($_POST["email"])? $_POST["email"] : "";
 	$password = isset($_POST["password"])? $_POST["password"] : "";
 	$password_repeat = isset($_POST["password-repeat"])? $_POST["password-repeat"] : "";
@@ -12,37 +13,75 @@
 
 	if ($db_found){
 
+		//On vide les tableaux d'erreur correspondant a chaque champs
 		unset($_SESSION['err_nom']);
 		unset($_SESSION['err_prenom']);
+		unset($_SESSION['err_username']);
 		unset($_SESSION['err_email']);
 		unset($_SESSION['err_pwd']);
 
 		if (isset($_POST['btn_signup'])){
 
+			// Test si les champs sont vides, si oui on ajoute un msg d'erreur correspondant dans le tableau d'erreur du champ
 			if (empty($nom))
 				$_SESSION['err_nom'][] = 'Veuillez entrer un Nom.';
 			if (empty($prenom))
 				$_SESSION['err_prenom'][] = 'Veuillez entrer un Prénom.';
+			if (empty($username))
+				$_SESSION['err_username'][] = "Veuillez entrer un nom d'utilisateur.";
 			if (empty($email))
 				$_SESSION['err_email'][] = 'Veuillez entrer une adresse Email.';
 			if (empty($password))
 				$_SESSION['err_pwd'][] = 'Veuillez entrer un Mot de passe.';
+
 			if (!empty($password)) {
+				//Si mdp n'est pas vide mais que la confirmation de mdp est vide, msg d'erreur detaillé
 				if (empty($password_repeat))
 					$_SESSION['err_pwd'][] = 'Veuillez confirmer votre Mot de passe.';
+				//Si les deux sont pas vide et qu'ils sont differents, msg d'erreur de correspondance
 				else if ($password != $password_repeat)
 					$_SESSION['err_pwd'][] = 'Les mots de passe ne correspondent pas !';	
 			}		
 
-			if (empty($cases_vide)){
+			//Si tout les champs sont correctement rempli on ajoute le nouvel utilisateur
+			if (!(empty($nom) || empty($prenom) || empty($username)  || empty($email) || empty($password) || empty($password_repeat))){
 
-			}
-			else {
-				
+				//On cherche si l'adresse existe deja parmis les utilisateurs				
+				$sql_doublon_mail = "SELECT * FROM utilisateur WHERE Email = '$email'";
+				$result_doublon_mail = mysqli_query($db_handle, $sql_doublon_mail);
+
+				//On cherche si l'adresse existe deja parmis les utilisateurs				
+				$sql_doublon_username = "SELECT * FROM utilisateur WHERE Pseudo = '$username'";
+				$result_doublon_username = mysqli_query($db_handle, $sql_doublon_username);
+
+				//Si l'adresse mail saisie existe deja, on ajoute le msg d'erreur
+				if (mysqli_num_rows($result_doublon_mail) != 0)
+					$_SESSION['err_email'][] = 'Cette adresse mail est déjà utilisée.';
+				else if (mysqli_num_rows($result_doublon_username) != 0)
+					$_SESSION['err_username'][] = "Ce nom d'utilisateur est déjà utilisée.";
+				//Sinon on ajoute les informations entrée dans la bdd
+				else {
+					//Si il n'y a pas d'erreur de mdp (pas correspondant)
+					if (empty($_SESSION['err_pwd'])){
+						//$sql = "INSERT INTO 'utilisateur' ('ID', 'Nom', 'Prenom', 'Pseudo', 'Password', 'Email', 'Adresse', 'Role') VALUES (NULL, '$nom', '$prenom', '$username', '$password', '$email', NULL, 2)";
+
+						$sql = "INSERT INTO `utilisateur` (`ID`, `Nom`, `Prenom`, `Pseudo`, `Password`, `Email`, `Adresse`, `Role`) VALUES (NULL, '$nom', '$prenom', '$username', '$password', '$email', NULL, 2)";
+
+						mysqli_query($db_handle, $sql);
+
+						mysqli_close($db_handle);
+
+						header('Location: login.php');
+					}
+				}
+
+
 			}
 
 		}
 	}
+	else 
+		echo "Erreur database not found !!!";
 
  ?>
 
@@ -103,6 +142,16 @@
 
 			        <div class="form-group" id="formInfoConnect">
 			        	<label for="formInfoConnect"><strong>Vos informations de connexion</strong></label>
+			        	<div class="form-group">
+				        	<input class="form-control <?php if(!empty($_SESSION['err_username'])) {echo 'is-invalid'; }?>" type="username" name="username" <?php if(!empty($username)) {echo 'value="'. $username .'"';} else { echo 'placeholder="Pseudo"';}?> maxlength="255">
+			        		<div class="invalid-feedback">
+			        			<?php 
+			        				foreach ($_SESSION['err_username'] as $err) {
+			        					echo $err . '<br>';
+			        				}
+			        			 ?>
+			        		</div>	
+				        </div>
 			        	<div class="form-group">
 				        	<input class="form-control <?php if(!empty($_SESSION['err_email'])) {echo 'is-invalid'; }?>" type="email" name="email" <?php if(!empty($email)) {echo 'value="'. $email .'"';} else { echo 'placeholder="Email"';}?> maxlength="255">
 			        		<div class="invalid-feedback">

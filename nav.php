@@ -24,7 +24,7 @@
                 </li>
                 <li class="nav-item"><a class="nav-link" href="vente.php">Vente</a></li>
                 <li class="nav-item"><a class="nav-link" href="mon_panier.php">Panier</a></li>
-                <li class="nav-item"><a class="nav-link" href="mon_compte.php">Votre Compte</a></li>
+                <li class="nav-item"><a class="nav-link" href="login.php">Votre Compte</a></li>
             </ul>
         </div>
     </div>
