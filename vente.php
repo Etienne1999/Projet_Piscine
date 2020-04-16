@@ -7,8 +7,8 @@ if (session_status() == PHP_SESSION_NONE) {
     include ("database/db_connect.php");
 
 
-
-//Formulaire 1 : PHOTOS + VIDEOS OBJET
+//-----------------------------------------------------------------------------------------------------
+//Formulaire 1 : UPLOAD DES PHOTOS + VIDEOS
 if(isset($_POST['submitFichiers']))
 {	
 	if ($db_found) 
@@ -18,6 +18,7 @@ if(isset($_POST['submitFichiers']))
 		$valuefldr = './img';
 		
 	//PHOTOS
+		//Pour chaque photo
 		foreach($_FILES['files']['tmp_name'] as $key => $tmp_name )
 		{
 			$file_name = $key.$_FILES['files']['name'][$key];
@@ -26,32 +27,39 @@ if(isset($_POST['submitFichiers']))
 			$file_type = $_FILES['files']['type'][$key]; 
 			$desired_dir = $valuefldr;
 			
-			//check extension
-			$infos_file = pathinfo($_FILES['files']['name']);
-			$extension_upload = $infos_file['extension'];
+			//On vérifie l'extension du fichier uploadé
+			$infos_file = pathinfo($file_name);
+			$extension_fichier = $infos_file['extension'];
 			$extensions_autorisees = array('jpg', 'jpeg', 'gif', 'png');
 
-			if (in_array($extension_upload, $extensions_autorisees))
+			if (in_array($extension_fichier, $extensions_autorisees))
 			{
-				//upload file in right folder et check en même temps
+				//On upload la photo dans le bon directory et on check si c'est bien fait
 				if(move_uploaded_file($file_tmp,"$desired_dir/".$file_name))
 				{
 					?>
 					<script>
 						alert('Photos téléchargés avec succès');
-						window.location.href='#';
 					</script>
 					<?php
 
 					//envois des données vers BDD
 					$sql = "INSERT INTO img_produit (URL) VALUES('$file_name')";
+					$result = mysqli_query($db_handle, $sql);
+
+					//Test requete
+					if ($result) {
+						echo "Requete photo ok!";
+					}
+					else{
+						echo "Requete photo pas ok..";
+					}
 				}
 				else
 				{
 					?>
 					<script>
 						alert('Erreur de téléchargement des photos');
-						window.location.href='#';
 					</script>
 					<?php
 				}
@@ -61,7 +69,6 @@ if(isset($_POST['submitFichiers']))
 				?>
 				<script>
 					alert('Format de photo non pris en charge');
-					window.location.href='#';
 				</script>
 				<?php
 			}
@@ -76,14 +83,14 @@ if(isset($_POST['submitFichiers']))
 			$video_size = $_FILES['video']['size'];
 			$desired_dir = $valuefldr;
 
-            //Check extension
-            $infosvideo = pathinfo($_FILES['video']['name']);
-            $extension_upload = $infosvideo['extension'];
+            //On vérifie l'extension du fichier uploadé
+            $infosvideo = pathinfo($video_name);
+            $extension_fichier = $infosvideo['extension'];
             $extensions_autorisees = array('mp3', 'mp4');
 
-            if (in_array($extension_upload, $extensions_autorisees))
+            if (in_array($extension_fichier, $extensions_autorisees))
             {
-            	//upload file in right folder et check en même temps
+            	//On upload la vidéo dans le bon directory et on check si c'est bien fait
 				if(move_uploaded_file($video_tmp,"$desired_dir/".$video_name))
 				{
 					?>
@@ -95,6 +102,15 @@ if(isset($_POST['submitFichiers']))
 
 					//envois des données vers BDD
 					$sql = "INSERT INTO produit (Video) VALUES('$video_name')";
+					$result = mysqli_query($db_handle, $sql);
+
+					//Test requete
+					if ($result) {
+						echo "Requete video ok!";
+					}
+					else{
+						echo "Requete video pas ok..";
+					}
 				}
 				else
 				{
@@ -119,10 +135,18 @@ if(isset($_POST['submitFichiers']))
 	}
 } 
 
-
+//-----------------------------------------------------------------------------------------------------
 //Formulaire 2 : INFOS OBJET
 if (isset($_POST['submitInfos'])) 
 {
+	$nomObj = $_POST['nomObj'];
+	$categorie = $_POST['categorie'];
+	$prix = $_POST['prix'];
+	//$typeVente = $_POST['typeVente'];
+	$description = $_POST['description'];
+
+	//Si typeVente == enchère, alors il faut un prix min et une date en +
+
 	if ($db_found) {
 		$sql = "INSERT INTO produit";
 
@@ -154,18 +178,84 @@ if (isset($_POST['submitInfos']))
 	<script type="text/javascript">
 		$(document).ready(function()
 		{
+		
+		//Affichage accueil vente / formulaire vente
+			//on cache le formulaire d'ajout d'un objet à la vente
 			$("#affichageFormulaire").hide();
 
+			//quand on clique sur le bouton 'nouvelle vente'
 			$("#btnAccueil").click(function()
 			{
+				//on switch l'affichage 
+			    $("#affichageAccueil").toggle();
+			    $("#affichageFormulaire").toggle();
+			});
+			//quand on clique sur le bouton submit du formulaire 
+			$("#btnForm").click(function()
+			{	
+				//on switch a nouveau pour retourner sur affichageAccueil
 			    $("#affichageAccueil").toggle();
 			    $("#affichageFormulaire").toggle();
 			});
 
-			$("#btnForm").click(function()
+
+		//Affichage formulaire ACHAT IMMEDIAT
+			//on cache le formulaire de prix Achat Immediat
+			$("#achatIm").hide();
+			//Si on coche la case, on l'affiche
+			$("#case1").click(function()
 			{
-			    $("#affichageAccueil").toggle();
-			    $("#affichageFormulaire").toggle();
+				$("#achatIm").toggle();
+			});
+
+
+		//Affichage formulaire MEILLEURE OFFRE
+			//on cache le formulaire de prix Achat Immediat
+			$("#meilleureOffre").hide();
+			//Si on coche la case, on l'affiche
+			$("#case2").click(function()
+			{
+				var isChecked = $("#case2").prop('checked');
+				if (isChecked) 
+				{
+					$("#meilleureOffre").show();
+					$("#enchere").hide();
+				}
+				else
+				{
+					$("#meilleureOffre").hide();
+				}
+			});
+
+		//Affichage formulaire ENCHERE
+			//on cache le formulaire de prix Achat Immediat
+			$("#enchere").hide();
+			//Si on coche la case, on l'affiche
+			$("#case3").click(function()
+			{
+				var isChecked = $("#case3").prop('checked');
+				if (isChecked) 
+				{
+					$("#enchere").show();
+					$("#meilleureOffre").hide();
+				}
+				else
+				{
+					$("#enchere").hide();
+				}
+			});
+
+		//RESET CHOIX
+			$("#resetChoix").click(function()
+			{
+				//on décoche tout
+				$("#case1").prop( "checked", false );
+				$("#case2").prop( "checked", false );
+				$("#case3").prop( "checked", false );
+
+				//on cache les formulaires de prix
+				$("#meilleureOffre").hide();
+				$("#enchere").hide();
 			});
 		})
 	</script>
@@ -264,7 +354,8 @@ if (isset($_POST['submitInfos']))
 					<!-- Infos sur l'objet -->
 					<div class="col-lg-9 col-md-9 col-sm-12">
 						<form class="form" action="vente.php" method="POST">
-						  	<!-- Nom de l'objet -->
+					  	
+					  	<!-- Nom de l'objet -->
 						  	<div class="form-group">
 						  		<div class="row">
 						    		<div class="col-sm-4 col-md-4 col-lg-4 col-xs-4">
@@ -277,7 +368,7 @@ if (isset($_POST['submitInfos']))
 						    	</div>
 						  	</div>
 
-						    <!-- Catégorie -->	
+					    <!-- Catégorie -->	
 						    <div class="form-group">
 						    	<div class="row">
 						    		<div class="col-sm-4 col-md-4 col-lg-4 col-xs-4">
@@ -285,32 +376,19 @@ if (isset($_POST['submitInfos']))
 							  			<hr>
 							  		</div>
 							  		<div class="col-sm-8 col-md-8 col-lg-8 col-xs-8">
-							  			<input type="radio" name="categorie" value="Ferraille ou trésor" id="cat1">
+							  			<input type="radio" name="categorie" value="1" id="cat1">
 							  			<label class="control-label" for="cat1" >Ferraille ou trésor</label><br>
 
-							  			<input type="radio" name="categorie" value="Bon pour le musée" id="cat2">
+							  			<input type="radio" name="categorie" value="2" id="cat2">
 							  			<label class="control-label" for="cat2" >Bon pour le musée</label><br>
 
-							  			<input type="radio" name="categorie" value="Accessoire VIP" id="cat3">
+							  			<input type="radio" name="categorie" value="3" id="cat3">
 							  			<label class="control-label" for="cat3">Accessoire VIP</label>
 							  		</div>
 						    	</div>
 						  	</div>
 
-						    <!-- Prix -->
-						    <div class="form-group">
-						    	<div class="row">
-						    		<div class="col-sm-4 col-md-4 col-lg-4 col-xs-4">
-						    			<label class="control-label">Prix</label>
-						    			<hr>
-						    		</div>
-						    		<div class="col-sm-2 col-md-2 col-lg-2 col-xs-2">
-						    			<input type="number" class="form-control" name="prix" placeholder="€">
-						    		</div>
-						    	</div>
-						  	</div>
-
-						  	<!-- Type de vente -->
+						<!-- Type de vente -->
 						  	<div class="form-group">
 						  		<div class="row">
 						  			<div class="col-sm-4 col-md-4 col-lg-4 col-xs-4">
@@ -319,11 +397,42 @@ if (isset($_POST['submitInfos']))
 						  			</div>
 						  			<div class="col-md-8 col-lg-8 col-sm-8">
 						  				
+					  				<!-- Achat Immediat -->
+				  						<input type="checkbox" name="typeVente" id="case1" /> <label for="case2">Achat immédiat</label>
+						  				<!-- Affiché si la case est cochée -->
+						  				<div id="achatIm">
+						  					<input type="number" class="form-control" name="prixAchat" placeholder="€">
+						  				</div>	
+
+						  				<br>
+
+					  				<!-- Meilleure offre -->
+				  						<input type="radio" name="typeVente" id="case2" /> <label for="case3">Meilleure offre</label>
+					  					<!-- Affiché si la case est cochée -->
+					  					<div id="meilleureOffre">
+					  						<input type="number" class="form-control" name="prixMin" placeholder="€">
+					  					</div>
+
+					  					<br>
+
+				  					<!-- Enchère -->
+				  						<input type="radio" name="typeVente" id="case3" /> <label for="case1">Enchère</label>
+					  					<!-- Affiché si la case est cochée -->
+					  					<div id="enchere">
+					  						<input type="number" class="form-control" name="prixEnchere" placeholder="€">
+					  						<input type="datetime-local" class="form-control" name="dateEnchere">
+					  					</div>
+
+					  					<br>
+
+					  				<!-- Bouton pour tout décocher -->
+					  					<button type="button" class="btn btn-primary btn-sm" id="resetChoix">Réinitialiser les choix</button>
+
 						  			</div>
 						  		</div>
 						  	</div>
 
-						  	<!-- Description complète -->
+						<!-- Description complète -->
 						  	<div class="form-group">
 						  		<div class="row">
 						  			<div class="col-md-4 col-lg-4 col-sm-4 ">
@@ -338,7 +447,7 @@ if (isset($_POST['submitInfos']))
 
 						  	<!-- Submit formulaire infos-->
 							<div class="text-center p-4">
-								<input type="submit" name="submitInfos" value="Mettre en vente" class="btn-success rounded mr-2">
+								<input type="submit" name="submitInfos" value="Mettre en vente" class="btn-success rounded mr-2" id="btnForm">
 						  	</div>
 
 					 	</form>
