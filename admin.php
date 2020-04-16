@@ -4,6 +4,11 @@
     }
 
 	include ("database/db_connect.php");
+
+	//Blindage acces de la page admin si on est pas connecté en tant qu'admin
+	if (empty($_SESSION['user_Role']) || $_SESSION['user_Role'] != '1') {
+		header('Location: index.php');
+	}
 ?>
 
 <!DOCTYPE html>
