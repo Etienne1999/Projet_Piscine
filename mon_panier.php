@@ -1,3 +1,10 @@
+<?php 
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    include ("database/db_connect.php");
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,7 +20,9 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 	<link rel="stylesheet" type="text/css" href="style.css">
-
+	<script type="text/javascript">
+		
+	</script>
 </head>
 
 <body>
@@ -27,8 +36,42 @@
 		
 	</header>
 	<!-- Conteneur -->
-	<div class="container-fluid">
+	<div class="container" style="margin-bottom: 50px">
+		<?php
 		
+		if(isset($_SESSION['user_ID'])){
+		foreach ($_SESSION['panier']as $pine) {
+
+		 	if ($pine != 0)
+		 	{
+		 		$sql = "SELECT DISTINCT produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE produit.ID like '%$pine%'  ";
+		 		$result = mysqli_query($db_handle, $sql);
+				if ($result != NULL) {	
+					while ($data = mysqli_fetch_assoc($result))
+					 {     	?> 
+					 	<div class="card" style="margin-top: 20px; border: 2px solid;">
+						    <div class="card-header"><?php echo  $data['ID'] . ". ". $data['Nom']; $produit = $data['ID'];?></div>
+						    <div class="card-body"><?php echo $data['Description'] . " au prix de ". $data['Prix_Achat'] . " euros.<br> Cet article est proposé par : ". $data['Pseudo'] ; ?></div>
+						    
+						    <div class="card-footer"> <div class="col-md-4"><a class="btn btn-danger btn-block is-invalid" href="mon_panier.php?suppri=<?php echo $produit ?>" onclick="" > Supprimer : Double Clic</a></div></div>
+						</div>
+					 	
+					 	
+					 <?php 
+					 }
+					 if 	(isset($_GET['suppri']) AND $_GET['suppri']== $produit AND $produit=$pine)
+							{
+							
+							unset($_SESSION['panier']); 
+					 	 	$_SESSION['panier'][]=0;}
+							
+			
+		}}}  
+							
+
+		 	 }
+		 	
+		?>
 	</div>
 
 	<!-- Footer -->	

@@ -5,6 +5,7 @@
 	border: 3px black solid;
 	margin: 10px;
 	padding:5px;
+	background-color: white;
 }
 
 .check_checkbox
@@ -23,4 +24,16 @@
 	margin: 6px;
 	padding-top: 6px;		
 	padding-bottom: 6px;
+}
+
+#image
+{
+	float:left;
+}
+
+#affichage
+{
+	margin-top: 10px;
+	text-align : center ;
+	align-content : center;
 }
