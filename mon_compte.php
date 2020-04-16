@@ -39,10 +39,66 @@
 	</header>
 	<!-- Conteneur -->
 	<div class="container-fluid">
-		<form method="post">
-			<button class="btn btn-primary btn-block" type="submit" name="btn">Se déconnecter</button>
-		</form>
+
+		<div class="row">
+			<div class="col-md-4" style="background-color: red">
+				<span>d</span>
+			</div>
+			<div class="col-md-8" style="background-color: blue">
+				<span>d</span>
+			</div>
+		</div>
 	</div>
+	<div class="container">
+		<h3>Mes informations</h3>
+		<div class="row d-flex justify-content-center">
+			<div class="col-md-5 border shadow m-2">
+				<h4>Adresses</h4>
+				<span>d</span>
+			</div>
+			<div class="col-md-5 border shadow m-2">
+				<h4>Moyen de paiement</h4>
+				<span>d</span>
+			</div>
+		</div>
+
+		<div class="row d-flex justify-content-center">
+			<div class="col-md-5 border shadow m-2">
+				<h4>Info perso</h4>
+				<span>d</span>
+			</div>
+			<div class="col-md-5 border shadow m-2">
+				<h4>Offrir cheque cadeau</h4>
+				<span>d</span>
+			</div>
+		</div>
+
+		<div class="row d-flex justify-content-center">
+			<div class="col-md-5 border shadow m-2">
+				<h4>Mes Enchères</h4>
+				<span>d</span>
+			</div>
+			<div class="col-md-5 border shadow m-2">
+				<h4>Mes Offres d'achat</h4>
+				<span>d</span>
+			</div>
+		</div>
+
+		<div class="row d-flex justify-content-center">
+			<div class="col-md-5 border shadow m-2">
+				<h4>Mes commandes</h4>
+				<span>d</span>
+			</div>
+			<div class="col-md-5 border shadow m-2">
+				<h4> ??? </h4>
+				<span>d</span>
+			</div>
+		</div>
+	</div>
+
+	<form method="post">
+		<button class="btn btn-primary btn-block" type="submit" name="btn">Se déconnecter</button>
+	</form>
 
 	<!-- Footer -->	
 	<?php include("footer.php") ?>
