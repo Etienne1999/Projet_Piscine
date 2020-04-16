@@ -63,6 +63,45 @@
 		}
 	}
 
+	//Recupere et affiche les code de reduction
+	function tab_reduction($db_handle) {
+
+		$sql = "SELECT *
+				FROM coupon_reduc";
+
+		$result = mysqli_query($db_handle, $sql);	
+
+		while ($data = mysqli_fetch_assoc($result)) {
+			echo '<tr>';
+			echo '	<td>' . $data['Code'] . '</td>';
+			echo '	<td>' . $data['Montant'] . '</td>';
+			echo '	<td>';
+			if ($data['Type'] == 1)
+				echo '%';
+			else
+				echo '€';
+			echo '</td>';
+			echo '	<td>' . $data['Date_exp'] . '</td>';
+			echo '	<td>' . $data['Utilisations'] . '</td>';
+			//Bouton edition + info du cheque cadeau de cette ligne
+			echo ' 	<td colspan="2"><button type="button" class="btn btn-success" data-toggle="modal" data-target="#Modal_edit_reduction"';
+			echo ' data-id="' . $data['ID'] . '"';
+			echo ' data-code="' . $data['Code'] . '"';
+			echo ' data-montant="' . $data['Montant'] . '"';
+			echo ' data-type="' . $data['Type'] . '"';
+			echo ' data-date_exp="' . $data['Date_exp'] . '"';
+			echo ' data-nb_util="' . $data['Utilisations'] . '"';
+			echo '">Editer</button>';
+
+			//Button suppression + info du cheque cadeau de cette ligne
+			echo ' 	<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#Modal_suppr_reduction"';
+			echo ' data-id="' . $data['ID'] . '"';
+			echo ' data-code="' . $data['Code'] . '"';
+			echo '>Supprimer</button></td>';
+			echo '</tr>';
+		}
+	}
+
 	//Recupere et affiche les cheque cadeau
 	function tab_cheque_cadeau($db_handle) {
 
@@ -125,6 +164,85 @@
 			
 			$sql_delete_user = "DELETE FROM utilisateur WHERE ID = '$id'";
 			$res = mysqli_query($db_handle, $sql_delete_user);
+			//var_dump($res);
+		}
+	}
+
+	//Ajout de code de reduction
+	if (isset($_POST['btn_add_reduction'])) {
+		$code = isset($_POST["code"])? $_POST["code"] : "";
+		$montant = isset($_POST["montant"])? $_POST["montant"] : "";
+		$type = isset($_POST["type"])? $_POST["type"] : "";
+		$date_exp = isset($_POST["date_exp"])? $_POST["date_exp"] : "";
+		$nb_util = isset($_POST["nb_util"])? $_POST["nb_util"] : "";
+
+		if (!(empty($code) || empty($montant))) {
+
+			//Check doublon nom de code
+			$sql_check_doublon = "SELECT Code FROM coupon_reduc WHERE Code = '$code'";
+			$result = mysqli_query($db_handle, $sql_check_doublon);
+
+			if (mysqli_num_rows($result) == 0) {
+
+				$sql_add_reduc = "INSERT INTO coupon_reduc (ID, Montant, Type, Code, Date_exp, Utilisations) VALUES (NULL, '$montant', '$type', '$code', ";
+
+				//Si pas de date d'expiration on envoi NULL
+				if (empty($date_exp))
+					$sql_add_reduc .= 'NULL, ';
+				else
+					$sql_add_reduc .= '$date_exp';
+				
+				//Si pas de limite d'utilisation on envoi NULL
+				if (empty($nb_util))
+					$sql_add_reduc .= 'NULL)';
+				else
+					$sql_add_reduc .= '$nb_util)';
+
+				$res = mysqli_query($db_handle, $sql_add_reduc);
+				//var_dump($res);
+			}
+		}
+	}
+
+	//Edition de code de reduction
+	if (isset($_POST['btn_edit_reduction'])) {
+		$id = isset($_POST["id"])? $_POST["id"] : "";
+		$code = isset($_POST["code"])? $_POST["code"] : "";
+		$montant = isset($_POST["montant"])? $_POST["montant"] : "";
+		$type = isset($_POST["type"])? $_POST["type"] : "";
+		$date_exp = isset($_POST["date_exp"])? $_POST["date_exp"] : "";
+		$nb_util = isset($_POST["nb_util"])? $_POST["nb_util"] : "";
+		
+		if (!(empty($code) || empty($montant))) {
+
+			$sql_update_reduc = "UPDATE coupon_reduc SET ID = '$id', Montant = '$montant', Type = '$type', Code = '$code'";
+
+			//Si pas de date d'expiration on envoi NULL
+			if (empty($date_exp))
+				$sql_update_reduc .= ", Date_exp = NULL";
+			else
+				$sql_update_reduc .= ", Date_exp = '$date_exp'";
+			
+			//Si pas de limite d'utilisation on envoi NULL
+			if (empty($nb_util))
+				$sql_update_reduc .= ", Utilisations = NULL";
+			else
+				$sql_update_reduc .= ", Utilisations = '$nb_util'";
+
+			$sql_update_reduc .= " WHERE ID = '$id'";
+			$res = mysqli_query($db_handle, $sql_update_reduc);
+			//var_dump($res);
+		}
+	}
+
+	//Suppression de code de reduction
+	if (isset($_POST['btn_suppr_reduction'])) {
+		$id = isset($_POST["id"])? $_POST["id"] : "";
+		$code = isset($_POST["code"])? $_POST["code"] : "";
+
+		if (!empty($code)) {
+			$sql_add_cadeau = "DELETE FROM coupon_reduc WHERE ID = '$id'";
+			$res = mysqli_query($db_handle, $sql_add_cadeau);
 			//var_dump($res);
 		}
 	}
@@ -242,7 +360,40 @@
 				$('#num_carte_rand').val(getRandomArbitrary(1000000000000000, 10000000000000000));
 			});
 
-			//Ouvre le modal d'edition de carte cadeau'
+			//Ouvre le modal d'edition de code de reduction
+			$('#Modal_edit_reduction').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget)
+				//Recupere les données du code de reduction a editer
+				var id = button.data('id')
+				var code = button.data('code')
+				var montant = button.data('montant')
+				var type = button.data('type')
+				var date_exp = button.data('date_exp')
+				var nb_util = button.data('nb_util')
+
+				var modal = $(this)
+				//Rempli le modal avec les données approprié
+				modal.find('.modal-body #id').val(id)
+				modal.find('.modal-body #code').val(code)
+				modal.find('.modal-body #montant').val(montant)
+				modal.find('.modal-body #type').val(type)
+				modal.find('.modal-body #date_exp').val(date_exp)
+				modal.find('.modal-body #nb_util').val(nb_util)
+			});
+
+			//Ouvre le modal de confirmation de suppression de code de reduction
+			$('#Modal_suppr_reduction').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget)
+				//recupere l'id du code de reduction a suppr
+				var id = button.data('id')
+				var code = button.data('code')
+				var modal = $(this)
+				//Rempli le modal avec les données approprié
+				modal.find('.modal-body #id').val(id)
+				modal.find('.modal-body #code').val(code)
+			});
+
+			//Ouvre le modal d'edition de carte cadeau
 			$('#Modal_edit_cadeau').on('show.bs.modal', function (event) {
 				var button = $(event.relatedTarget)
 				//Recupere les données de la carte cadeau a editer
@@ -290,15 +441,15 @@
 		<div class="row">
 			<div class="col-md-3">
 				<div class="list-group" id="list-tab" role="tablist">
-					<a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab">Utilisateurs</a>
-					<a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab">Bons de réductions</a>
-					<a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab">Chèques cadeau</a>
+					<a class="list-group-item list-group-item-action active" id="list-users-list" data-toggle="list" href="#list-users" role="tab">Utilisateurs</a>
+					<a class="list-group-item list-group-item-action" id="list-reduction-list" data-toggle="list" href="#list-reduction" role="tab">Bons de réductions</a>
+					<a class="list-group-item list-group-item-action" id="list-cadeau-list" data-toggle="list" href="#list-cadeau" role="tab">Chèques cadeau</a>
 				</div>
 			</div>
 			<div class="col-md-9">
 				<div class="tab-content" id="nav-tabContent">
 					<!-- Contenu onglet utilisateurs -->
-					<div class="tab-pane fade show active" id="list-home" role="tabpanel">
+					<div class="tab-pane fade show active" id="list-users" role="tabpanel">
 						<div class="table-responsive">
 							<table class="table table-bordered table-hover table-dark">
 								<thead>
@@ -317,16 +468,29 @@
 						</div>
 					</div>
 					<!-- Contenu onglet bon de reductions -->
-					<div class="tab-pane fade" id="list-profile" role="tabpanel">
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+					<div class="tab-pane fade" id="list-reduction" role="tabpanel">
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover table-dark">
+								<thead>
+									<tr>
+										<th>Code</th>
+										<th>Montant</th>
+										<th>Type</th>
+										<th>Date d'expiration</th>
+										<th>Utilisations restantes</th>
+										<th><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Modal_add_reduction">Ajouter</button></td></th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php 
+										tab_reduction($db_handle);
+									?>
+								</tbody>
+							</table>							
+						</div>
 					</div>
 					<!-- Contenu onglet cheques cadeau -->
-					<div class="tab-pane fade" id="list-messages" role="tabpanel">
+					<div class="tab-pane fade" id="list-cadeau" role="tabpanel">
 						<div class="table-responsive">
 							<table class="table table-bordered table-hover table-dark">
 								<thead>
@@ -430,6 +594,112 @@
 	</div>
 <!-- Fin Modal suppression utilisateur -->	
 
+<!-- Modal ajout reduction -->	
+	<div class="modal fade" id="Modal_add_reduction" data-backdrop="static" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Creer Code Reduction</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+				</div>
+				<form method="post">
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="code" class="col-form-label">Code :</label>
+							<input type="text" class="form-control" id="code" name="code">
+							<label for="montant" class="col-form-label">Montant :</label>
+							<input type="text" class="form-control" id="montant" name="montant">
+							<label for="type" class="col-form-label">Type :</label>
+							<select class="form-control" id="type" name="type">
+								<option value="0" selected>€</option>
+								<option value="1">%</option>
+							</select>
+							<label for="date_exp" class="col-form-label">Date d'expiration :</label>
+							<input type="datetime-local" class="form-control" id="date_exp" name="date_exp">
+							<label for="nb_util" class="col-form-label">Nombre d'utilisation :</label>
+							<input type="text" class="form-control" id="nb_util" name="nb_util">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+						<button type="submit" class="btn btn-primary" name="btn_add_reduction">Créer</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+<!-- Fin Modal ajout reduction -->	
+
+<!-- Modal edition reduction -->	
+	<div class="modal fade" id="Modal_edit_reduction" data-backdrop="static" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Modifier Code Reduction</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+				</div>
+				<form method="post">
+					<div class="modal-body">
+						<div class="form-group">
+							<input type="text" class="form-control" id="id" name="id" hidden="true" readonly>
+							<label for="code" class="col-form-label">Code :</label>
+							<input type="text" class="form-control" id="code" name="code">
+							<label for="montant" class="col-form-label">Montant :</label>
+							<input type="text" class="form-control" id="montant" name="montant">
+							<label for="type" class="col-form-label">Type :</label>
+							<select class="form-control" id="type" name="type">
+								<option value="0" selected>€</option>
+								<option value="1">%</option>
+							</select>
+							<label for="date_exp" class="col-form-label">Date d'expiration :</label>
+							<input type="text" class="form-control" id="date_exp" name="date_exp">
+							<label for="nb_util" class="col-form-label">Nombre d'utilisation :</label>
+							<input type="text" class="form-control" id="nb_util" name="nb_util">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+						<button type="submit" class="btn btn-success" name="btn_edit_reduction">Modifier</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+<!-- Fin Modal edition reduction -->	
+
+<!-- Modal suppression reduction -->	
+	<div class="modal fade" id="Modal_suppr_reduction" data-backdrop="static" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Supprimer Code Reduction</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+				</div>
+				<form method="post">
+					<div class="modal-body">
+						<div class="form-group">
+							<input type="text" class="form-control" id="id" name="id" hidden="true" readonly>
+							<label for="code" class="col-form-label">Code :</label>
+							<input type="text" class="form-control" id="code" name="code" readonly>
+							<p>Voulez vous vraiment supprimer ce Code de Reduction ?</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Non</button>
+						<button type="submit" class="btn btn-danger" name="btn_suppr_reduction">Oui</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+<!-- Fin Modal suppression reduction -->	
+
 <!-- Modal ajout Chaque_cadeau -->	
 	<div class="modal fade" id="Modal_add_cadeau" data-backdrop="static" tabindex="-1" role="dialog">
 		<div class="modal-dialog" role="document">
@@ -493,7 +763,7 @@
 	</div>
 <!-- Fin Modal edition Cheque_cadeau -->	
 
-<!-- Modal suppression utilisateur -->	
+<!-- Modal suppression Cheque_Cadeau -->	
 	<div class="modal fade" id="Modal_suppr_cadeau" data-backdrop="static" tabindex="-1" role="dialog">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
@@ -519,7 +789,7 @@
 			</div>
 		</div>
 	</div>
-<!-- Fin Modal suppression utilisateur -->	
+<!-- Fin Modal suppression Cheque_Cadeau -->	
 
 	<!-- Footer -->	
 	<?php include("footer.php") ?>
