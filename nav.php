@@ -5,7 +5,7 @@
 
  ?>
 
-<nav class="navbar sticky-top navbar-light navbar-expand-md navigation-clean-button">
+<nav class="navbar sticky-top navbar-dark bg-dark navbar-expand-md navigation-clean-button">
     <div class="container">
     	<a class="navbar-brand" href="index.php">Ebay ECE<br /></a>
     	<button data-toggle="collapse" data-target="#navcol-1" class="navbar-toggler collapsed">
