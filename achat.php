@@ -28,7 +28,7 @@
 	<?php include("nav.php") ?>
 
 	<!-- Conteneur -->
-	<div class="container-fluid">		
+	<div class="container">		
 		<!-- Premier affichage -->
 		<h1> ECE EBAY </h1>
 		<div class="row">
@@ -289,7 +289,7 @@
 						 {
 						 ?>								
 							<div class="container" id="affichage">
-							  	<div class="card" style="width:50%">
+							  	<div class="card" style="margin-top: 20px; max-width: 600px;">
 								  	<img class="card-img-top" src="<?php echo $data['img']; ?>" alt="Card image"   height="450">
 								  	<div class="card-body">
 								    	<h4 class="card-title"><?php echo $data['ID'] . ". ". $data['Nom'];?></h4>
@@ -298,7 +298,7 @@
 														if ($data['Prix_Enchere'] > 0){ echo " -  à l'enchere  <br>";}
 														if ($data['Prix_min'] > 0){ echo " -  à l'achat par meilleur offre  ";}	 ?> </h6>
 								    	<p class="card-text"> <?php echo $data['Description'] . " au prix de ". $data['Prix_Achat'] . ". Cet article est proposé par : ". $data['Pseudo'] ; ?> </p>
-								    	<a href="#" class="btn btn-primary"> Achetez-le </a>
+								    	<a href="affichage_achat.php?id=<?php echo $data['ID'] ?>" class="btn btn-primary"> Achetez-le </a>
 								  </div>
 								</div>
 							</div>
