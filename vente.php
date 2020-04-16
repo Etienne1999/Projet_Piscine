@@ -17,6 +17,7 @@ if(isset($_POST['submitFichiers']))
 		///Emplacement d'enregistrement des fichier
 		$valuefldr = './img';
 		
+	//PHOTOS
 		foreach($_FILES['files']['tmp_name'] as $key => $tmp_name )
 		{
 			$file_name = $key.$_FILES['files']['name'][$key];
@@ -25,14 +26,14 @@ if(isset($_POST['submitFichiers']))
 			$file_type = $_FILES['files']['type'][$key]; 
 			$desired_dir = $valuefldr;
 			
+			//check extension
 			$infos_file = pathinfo($_FILES['files']['name']);
 			$extension_upload = $infos_file['extension'];
 			$extensions_autorisees = array('jpg', 'jpeg', 'gif', 'png');
 
-			//check extension
 			if (in_array($extension_upload, $extensions_autorisees))
 			{
-				//check upload file in right folder
+				//upload file in right folder et check en même temps
 				if(move_uploaded_file($file_tmp,"$desired_dir/".$file_name))
 				{
 					?>
@@ -43,6 +44,7 @@ if(isset($_POST['submitFichiers']))
 					<?php
 
 					//envois des données vers BDD
+					$sql = "INSERT INTO img_produit (URL) VALUES('$file_name')";
 				}
 				else
 				{
@@ -58,24 +60,78 @@ if(isset($_POST['submitFichiers']))
 			{
 				?>
 				<script>
-					alert('Mauvais type de fichier téléchargé');
+					alert('Format de photo non pris en charge');
 					window.location.href='#';
 				</script>
 				<?php
 			}
 		} 
+
+	//VIDEO
+		//check si une video a été upload
+		if (isset($_FILES['video']))
+		{
+			$video_name = $_FILES['video']['name'];
+			$video_tmp = $_FILES['video']['tmp_name'];
+			$video_size = $_FILES['video']['size'];
+			$desired_dir = $valuefldr;
+
+            //Check extension
+            $infosvideo = pathinfo($_FILES['video']['name']);
+            $extension_upload = $infosvideo['extension'];
+            $extensions_autorisees = array('mp3', 'mp4');
+
+            if (in_array($extension_upload, $extensions_autorisees))
+            {
+            	//upload file in right folder et check en même temps
+				if(move_uploaded_file($video_tmp,"$desired_dir/".$video_name))
+				{
+					?>
+					<script>
+						alert('Vidéo téléchargée avec succès');
+						window.location.href='#';
+					</script>
+					<?php
+
+					//envois des données vers BDD
+					$sql = "INSERT INTO produit (Video) VALUES('$video_name')";
+				}
+				else
+				{
+					?>
+					<script>
+						alert('Erreur de téléchargement de la vidéo');
+						window.location.href='#';
+					</script>
+					<?php
+				}
+            }
+            else
+			{
+				?>
+				<script>
+					alert('Format de vidéo non pris en charge');
+					window.location.href='#';
+				</script>
+				<?php
+			}
+		}
 	}
 } 
+
 
 //Formulaire 2 : INFOS OBJET
 if (isset($_POST['submitInfos'])) 
 {
 	if ($db_found) {
-		# code...
+		$sql = "INSERT INTO produit";
+
+
 	}
 
 }  
 ?>
+
 
 
 <!DOCTYPE html>
@@ -194,7 +250,7 @@ if (isset($_POST['submitInfos']))
 							<br>
 							<div class="p-4 border">
 								<label class="text-center">Ajouter une vidéo</label>
-								<input type="file" name="file" class="col-xs-4 btn btn-default" id="video"/>
+								<input type="file" name="video" class="col-xs-4 btn btn-default" id="video"/>
 							</div>
 							<div class="text-center p-4">
 								<input type="submit" name="submitFichiers" value="Upload fichiers" class="btn-success rounded mr-2">
