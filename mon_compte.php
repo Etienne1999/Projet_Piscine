@@ -65,8 +65,13 @@
 	function get_adresses($db_handle) {
 
 		$id = $_SESSION['user_ID'];
-		$sql = "SELECT * FROM adresse WHERE ID_User = $id";
+		//$sql = "SELECT * FROM adresse WHERE ID_User = $id";
+		$sql = "SELECT a.*, utilisateur.Adresse FROM adresse AS a, utilisateur WHERE a.ID_User = '$id' AND utilisateur.ID = '$id'";
 		$result = mysqli_query($db_handle, $sql);
+
+		//$sql_check_default_adress = "SELECT Adresse FROM utilisateur WHERE ID = '$id'";
+		//$default_adress = mysqli_query($db_handle, $sql_check_default_adress);
+
 
 		while ($data = mysqli_fetch_assoc($result)) {
 			echo '<div class="box-adresse mx-2 px-1 border">';
@@ -83,7 +88,8 @@
 			echo "<span>";
 			echo "<a data-target='#Modal_edit_adresse' data-toggle='modal' href='#''>Modifier</a>";
 			echo " | <a data-target='#Modal_suppr_adresse' data-toggle='modal' href='#''>Effacer</a>";
-			echo " | <a href='?main_adresse=" . $data['ID'] . "'>Définir par défaut</a>";
+			if ($data['Adresse'] != $data['ID'])
+				echo " | <a href='?main_adresse=" . $data['ID'] . "'>Définir par défaut</a>";
 			echo "</span><br>";
 			//echo "</p>";
 			echo '</div>';
