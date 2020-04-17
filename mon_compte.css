@@ -1,0 +1,14 @@
+.container_adresses {
+	background-color: #343a40;
+	height: 150px;
+	width: 100%;
+	overflow-y: hidden;
+	overflow-x: auto;
+	white-space: nowrap;
+}
+
+.box-adresse {
+	display: inline-block;	
+	height: 100%;
+	width: 250px;
+}

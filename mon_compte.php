@@ -1,11 +1,33 @@
 <?php 
-	session_start();
-	
-	if (isset($_POST['btn']))
-	{
+	if (session_status() == PHP_SESSION_NONE) {
+		session_start();
+	}
+
+	include ("database/db_connect.php");	
+
+	//Redirection vers login si pas d'utilisateur connecté
+	if (!isset($_SESSION['user_ID'])) {
+		header("Location: login.php");
+	}
+
+	//Deconnexion
+	if (isset($_POST['btn'])) {
 		echo "test";
 		session_destroy();
 		header("Location: index.php");
+	}
+
+
+
+	function get_adresses($db_handle) {
+
+		$id = $_SESSION['user_ID'];
+		$sql = "SELECT * FROM adresse WHERE ID_User = $id";
+		$result = mysqli_query($db_handle, $sql);
+		
+		while ($data = mysqli_fetch_assoc($result)) {
+			echo "test" . $data['Ligne_1'];
+		}
 	}
  ?>
 
@@ -24,6 +46,7 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="mon_compte.css">
 
 </head>
 
@@ -39,8 +62,7 @@
 	</header>
 	<!-- Conteneur -->
 	<div class="container-fluid">
-
-		<div class="row">
+		<div class="row no-gutters">
 			<div class="col-md-4" style="background-color: red">
 				<span>d</span>
 			</div>
@@ -54,7 +76,12 @@
 		<div class="row d-flex justify-content-center">
 			<div class="col-md-5 border shadow m-2">
 				<h4>Adresses</h4>
-				<span>d</span>
+				<div class="container_adresses my-1 py-1">
+					<div class="box-adresse mx-2 border">
+						
+					</div>
+					<?php get_adresses($db_handle); ?>
+				</div>
 			</div>
 			<div class="col-md-5 border shadow m-2">
 				<h4>Moyen de paiement</h4>
