@@ -17,16 +17,76 @@
 		header("Location: index.php");
 	}
 
+	//Maj adresse principale utilisateur
+	if (isset($_GET['main_adresse'])) {
+		$id_adresse = $_GET['main_adresse'];
 
+		//Verification que l'adresse appartient bien a l'utilisateur actuel
+		$sql_check = "SELECT ID_User FROM adresse WHERE ID = '$id_adresse'";
+		$check = mysqli_query($db_handle, $sql_check);
+
+		if (mysqli_num_rows($check) == 1){
+			//Si oui on met a jour l'adresse de l'utilisateur dans la table utilisateur
+			$id_user = $_SESSION['user_ID'];
+			$sql_update_main_adresse = "UPDATE `utilisateur` SET `Adresse` = '$id_adresse'  WHERE ID = '$id_user'";
+
+			$res = mysqli_query($db_handle, $sql_update_main_adresse);
+			//var_dump($res);
+		}
+	}
+
+	//Ajout d'adresse
+	if (isset($_POST['btn_add_adresse'])) {
+		$id = $_SESSION['user_ID'];
+		$ligne_1 = isset($_POST["ligne_1"])? $_POST["ligne_1"] : "";
+		$ligne_2 = isset($_POST["ligne_2"])? $_POST["ligne_2"] : "";
+		$ville = isset($_POST["ville"])? $_POST["ville"] : "";
+		$code_postal = isset($_POST["code_postal"])? $_POST["code_postal"] : "";
+		$pays = isset($_POST["pays"])? $_POST["pays"] : "";
+		$telephone = isset($_POST["telephone"])? $_POST["telephone"] : "";
+
+		if (!(empty($ligne_1) || empty($ville) || empty($code_postal) || empty($pays) || empty($telephone))) {
+
+			$sql_add_adresse = "INSERT INTO `adresse`(`ID`, `Ligne_1`, `Ligne_2`, `Ville`, `Code_Postal`, `Pays`, `Telephone`, `ID_User`) VALUES (NULL, '$ligne_1', ";
+
+			//Si pas de date d'expiration on envoi NULL
+			if (empty($ligne_2))
+				$sql_add_adresse .= 'NULL, ';
+			else
+				$sql_add_adresse .= '$ligne_2, ';
+
+			$sql_add_adresse .= "'$ville', '$code_postal', '$pays', '$telephone', '$id')";
+
+			$res = mysqli_query($db_handle, $sql_add_adresse);
+			//var_dump($res);
+		}
+	}
 
 	function get_adresses($db_handle) {
 
 		$id = $_SESSION['user_ID'];
 		$sql = "SELECT * FROM adresse WHERE ID_User = $id";
 		$result = mysqli_query($db_handle, $sql);
-		
+
 		while ($data = mysqli_fetch_assoc($result)) {
-			echo "test" . $data['Ligne_1'];
+			echo '<div class="box-adresse mx-2 px-1 border">';
+			//echo "<p>";
+			echo $data['Ligne_1'] . "<br>";
+			if (!empty($data['Ligne_2'])) 
+				echo $data['Ligne_2'] . "<br>";
+			echo $data['Ville'] . "<br>";
+			echo $data['Code_Postal'] . "<br>";
+			echo $data['Pays'] . "<br>";
+			echo $data['Telephone'] . "<br>";
+			if (empty($data['Ligne_2'])) 
+				echo "<br>";
+			echo "<span>";
+			echo "<a data-target='#Modal_edit_adresse' data-toggle='modal' href='#''>Modifier</a>";
+			echo " | <a data-target='#Modal_suppr_adresse' data-toggle='modal' href='#''>Effacer</a>";
+			echo " | <a href='?main_adresse=" . $data['ID'] . "'>Définir par défaut</a>";
+			echo "</span><br>";
+			//echo "</p>";
+			echo '</div>';
 		}
 	}
  ?>
@@ -61,6 +121,9 @@
 		
 	</header>
 	<!-- Conteneur -->
+
+	<?php include("modal/modal_adresse.php") ?>
+
 	<div class="container-fluid">
 		<div class="row no-gutters">
 			<div class="col-md-4" style="background-color: red">
@@ -74,49 +137,56 @@
 	<div class="container">
 		<h3>Mes informations</h3>
 		<div class="row d-flex justify-content-center">
-			<div class="col-md-5 border shadow m-2">
-				<h4>Adresses</h4>
+			<div class="col-md-5 border shadow m-2 cat">
+				<h4>Mes adresses</h4>
 				<div class="container_adresses my-1 py-1">
-					<div class="box-adresse mx-2 border">
-						
+					<div class="box-adresse mx-2 px-1 border">
+						<span hidden>Ligne_1</span><br>
+						<span hidden>Ligne_2</span><br>
+						<span hidden>Ville</span><br>
+						<span><a data-target="#Modal_add_adresse" data-toggle="modal" href="#">Ajouter nouvelle adresse</a></span><br>
+						<span hidden>Pays</span><br>
+						<span hidden>Telephone</span><br>
+						<span hidden>Actions</span><br>
 					</div>
 					<?php get_adresses($db_handle); ?>
 				</div>
+
 			</div>
-			<div class="col-md-5 border shadow m-2">
+			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Moyen de paiement</h4>
 				<span>d</span>
 			</div>
 		</div>
 
 		<div class="row d-flex justify-content-center">
-			<div class="col-md-5 border shadow m-2">
+			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Info perso</h4>
 				<span>d</span>
 			</div>
-			<div class="col-md-5 border shadow m-2">
+			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Offrir cheque cadeau</h4>
 				<span>d</span>
 			</div>
 		</div>
 
 		<div class="row d-flex justify-content-center">
-			<div class="col-md-5 border shadow m-2">
+			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Mes Enchères</h4>
 				<span>d</span>
 			</div>
-			<div class="col-md-5 border shadow m-2">
+			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Mes Offres d'achat</h4>
 				<span>d</span>
 			</div>
 		</div>
 
 		<div class="row d-flex justify-content-center">
-			<div class="col-md-5 border shadow m-2">
+			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Mes commandes</h4>
 				<span>d</span>
 			</div>
-			<div class="col-md-5 border shadow m-2">
+			<div class="col-md-5 border shadow m-2 cat">
 				<h4> ??? </h4>
 				<span>d</span>
 			</div>
