@@ -208,7 +208,6 @@ if (isset($_POST['submitInfos']))
 				$("#achatIm").toggle();
 			});
 
-
 		//Affichage formulaire MEILLEURE OFFRE
 			//on cache le formulaire de prix Achat Immediat
 			$("#meilleureOffre").hide();
@@ -254,6 +253,7 @@ if (isset($_POST['submitInfos']))
 				$("#case3").prop( "checked", false );
 
 				//on cache les formulaires de prix
+				$("#achatIm").hide();
 				$("#meilleureOffre").hide();
 				$("#enchere").hide();
 			});
@@ -330,19 +330,18 @@ if (isset($_POST['submitInfos']))
 					
 					<!-- Ajout photos et vidéo -->
 					<div class="col-lg-3 col-md-3 col-sm-12 border-right">
-						<form class="form" action="vente.php" method="POST" enctype="multipart/form-data">
-							<div class="p-4 border">
+						<form class="form ml-2 mr-1" action="vente.php" method="POST" enctype="multipart/form-data">
+							<div class="p-2 mb-2 border text-center">
 								<div class="custom-file">
-									<span class="text-center">Ajouter une ou plusieurs photos</span>
-									<input type="file" name="files[]" class="col-xs-4 btn btn-default" id="photos" multiple/>
+									<p><strong>Ajouter une ou plusieurs photos</strong></p>
+									<input type="file" name="files[]" class="btn btn-default" id="photos" multiple/>
 							    </div>
 							</div>
-							<br>
-							<div class="p-4 border">
-								<label class="text-center">Ajouter une vidéo</label>
-								<input type="file" name="video" class="col-xs-4 btn btn-default" id="video"/>
+							<div class="p-1 mt-2 border text-center">
+								<p>Ajouter une vidéo</p>
+								<input type="file" name="video" class="btn btn-default" id="video"/>
 							</div>
-							<div class="text-center p-4">
+							<div class="m-4 text-center">
 								<input type="submit" name="submitFichiers" value="Upload fichiers" class="btn-success rounded mr-2">
 						  	</div>
 						</form>
@@ -353,29 +352,29 @@ if (isset($_POST['submitInfos']))
 
 					<!-- Infos sur l'objet -->
 					<div class="col-lg-9 col-md-9 col-sm-12">
-						<form class="form" action="vente.php" method="POST">
+						<form class="form m-2" action="vente.php" method="POST">
 					  	
 					  	<!-- Nom de l'objet -->
 						  	<div class="form-group">
 						  		<div class="row">
-						    		<div class="col-sm-4 col-md-4 col-lg-4 col-xs-4">
+						    		<div class="col-sm-12 col-md-4 col-lg-4">
 						    			<label class="control-label"><strong>Nom de l'objet</strong></label>
 						    			<hr>
 						    		</div>
-						    		<div class="col-sm-6 col-md-6 col-lg-6 col-xs-6">
+						    		<div class="col-sm-12 col-md-6 col-lg-6 col-xs-6">
 						    			<input type="text" class="form-control" name="nomObj" maxlength="65" autofocus>
 						    		</div>
 						    	</div>
 						  	</div>
-
+ 
 					    <!-- Catégorie -->	
 						    <div class="form-group">
 						    	<div class="row">
-						    		<div class="col-sm-4 col-md-4 col-lg-4 col-xs-4">
+						    		<div class="col-sm-12 col-md-4 col-lg-4">
 							  			<label class="control-label">Catégorie</label>
 							  			<hr>
 							  		</div>
-							  		<div class="col-sm-8 col-md-8 col-lg-8 col-xs-8">
+							  		<div class="col-sm-12 col-md-8 col-lg-8">
 							  			<input type="radio" name="categorie" value="1" id="cat1">
 							  			<label class="control-label" for="cat1" >Ferraille ou trésor</label><br>
 
@@ -391,42 +390,58 @@ if (isset($_POST['submitInfos']))
 						<!-- Type de vente -->
 						  	<div class="form-group">
 						  		<div class="row">
-						  			<div class="col-sm-4 col-md-4 col-lg-4 col-xs-4">
+						  			<div class="col-sm-12 col-md-4 col-lg-4">
 						  				<label class="control-label">Type de vente</label>
 						    			<hr>
 						  			</div>
-						  			<div class="col-md-8 col-lg-8 col-sm-8">
+						  			<div class="col-md-8 col-lg-8 col-sm-12">
 						  				
 					  				<!-- Achat Immediat -->
-				  						<input type="checkbox" name="typeVente" id="case1" /> <label for="case2">Achat immédiat</label>
-						  				<!-- Affiché si la case est cochée -->
-						  				<div id="achatIm">
-						  					<input type="number" class="form-control" name="prixAchat" placeholder="€">
-						  				</div>	
-
-						  				<br>
-
-					  				<!-- Meilleure offre -->
-				  						<input type="radio" name="typeVente" id="case2" /> <label for="case3">Meilleure offre</label>
-					  					<!-- Affiché si la case est cochée -->
-					  					<div id="meilleureOffre">
-					  						<input type="number" class="form-control" name="prixMin" placeholder="€">
+					  					<div class="row mb-1">
+					  						<div class="col-md-6 col-lg-6 col-sm-12">
+					  							<input type="checkbox" name="typeVente" id="case1" /> <label for="case2">Achat immédiat</label>
+					  						</div>
+					  						<div class="col-md-5 col-lg-5 col-sm-12">
+					  							<!-- Affiché si la case est cochée -->
+								  				<div id="achatIm">
+								  					<input type="number" class="form-control" name="prixAchat" placeholder="Prix €">
+								  				</div>
+					  						</div>
 					  					</div>
-
-					  					<br>
+				  						
+					  				<!-- Meilleure offre -->
+					  					<div class="row mb-1">
+					  						<div class="col-md-6 col-lg-6 col-sm-12">
+					  							<input type="radio" name="typeVente" id="case2" /> <label for="case3">Meilleure offre</label>
+					  						</div>
+					  						<div class="col-md-5 col-lg-5 col-sm-12">
+					  							<!-- Affiché si la case est cochée -->
+							  					<div id="meilleureOffre">
+							  						<input type="number" class="form-control" name="prixMin" placeholder="Prix minimum €">
+							  					</div>
+					  						</div>
+					  					</div>
 
 				  					<!-- Enchère -->
-				  						<input type="radio" name="typeVente" id="case3" /> <label for="case1">Enchère</label>
-					  					<!-- Affiché si la case est cochée -->
-					  					<div id="enchere">
-					  						<input type="number" class="form-control" name="prixEnchere" placeholder="€">
-					  						<input type="datetime-local" class="form-control" name="dateEnchere">
+				  						<div class="row">
+					  						<div class="col-md-4 col-lg-4 col-sm-12">
+					  							<input type="radio" name="typeVente" id="case3" /> <label for="case1">Enchère</label>
+					  						</div>
+					  						<!-- Affiché si la case est cochée -->
+					  						<div id="enchere" class="col-md-8 col-lg-8 col-sm-12">
+					  							<div class="row">
+					  								<div class="col-md-6 col-lg-6 col-sm-6">
+					  									<input type="number" class="form-control" name="prixEnchere" placeholder="Prix de départ €">
+						  							</div>
+						  							<div class="col-md-6 col-lg-6 col-sm-6">
+						  								<input type="datetime-local" class="form-control" name="dateEnchere">
+						  							</div>
+					  							</div>
+					  						</div>
 					  					</div>
 
-					  					<br>
-
 					  				<!-- Bouton pour tout décocher -->
-					  					<button type="button" class="btn btn-primary btn-sm" id="resetChoix">Réinitialiser les choix</button>
+					  					<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoix">Réinitialiser les choix</button>
 
 						  			</div>
 						  		</div>
@@ -435,12 +450,12 @@ if (isset($_POST['submitInfos']))
 						<!-- Description complète -->
 						  	<div class="form-group">
 						  		<div class="row">
-						  			<div class="col-md-4 col-lg-4 col-sm-4 ">
+						  			<div class="col-md-4 col-lg-4 col-sm-12 ">
 							  			<label class="control-label">Description complète</label>
 							  			<hr>
 							  		</div>
-							  		<div class="col-md-8 col-lg-8 col-sm-8">
-							  			<textarea rows="8" cols="80" name="description" placeholder="Etat, qualité, année de fabrication etc."></textarea>
+							  		<div class="col-md-8 col-lg-8 col-sm-12">
+							  			<textarea class="form-control" rows="5" name="description" placeholder="Etat, qualité, année de fabrication etc." maxlength="255"></textarea>
 							  		</div>
 						  		</div>
 						  	</div>
