@@ -62,6 +62,39 @@
 		}
 	}
 
+	if (isset($_POST['btn_edit_adresse'])) {
+		$id = isset($_POST["id"])? $_POST["id"] : "";
+		$ligne_1 = isset($_POST["ligne_1"])? $_POST["ligne_1"] : "";
+		$ligne_2 = isset($_POST["ligne_2"])? $_POST["ligne_2"] : "";
+		$ville = isset($_POST["ville"])? $_POST["ville"] : "";
+		$code_postal = isset($_POST["code_postal"])? $_POST["code_postal"] : "";
+		$pays = isset($_POST["pays"])? $_POST["pays"] : "";
+		$telephone = isset($_POST["telephone"])? $_POST["telephone"] : "";
+
+		if (!(empty($id) || empty($ligne_1) || empty($ville) || empty($code_postal) || empty($pays) || empty($telephone))) {
+			
+			$sql_update_adresse = "UPDATE adresse SET Ligne_1 = '$ligne_1', ";
+			if (!empty($ligne_2))
+				$sql_update_adresse .= "Ligne_2 = '$ligne_2', ";
+			else
+				$sql_update_adresse .= "Ligne_2 = NULL, ";	
+			$sql_update_adresse .= "Ville = '$ville', Code_Postal = '$code_postal', Pays = '$pays', Telephone = '$telephone' WHERE ID = '$id'";
+
+			//echo $sql_update_adresse;
+			$res = mysqli_query($db_handle, $sql_update_adresse);
+
+			//var_dump($res);
+		}
+	}
+
+	if (isset($_POST['btn_suppr_adresse'])) {
+		$id = isset($_POST["id"])? $_POST["id"] : "";
+
+		$sql_delete_adresse = "DELETE FROM adresse WHERE ID = '$id'";
+		$res = mysqli_query($db_handle, $sql_delete_adresse);
+		//var_dump($res);
+	}
+
 	function get_adresses($db_handle) {
 
 		$id = $_SESSION['user_ID'];
@@ -75,23 +108,43 @@
 
 		while ($data = mysqli_fetch_assoc($result)) {
 			echo '<div class="box-adresse mx-2 px-1 border">';
-			//echo "<p>";
 			echo $data['Ligne_1'] . "<br>";
+			//Affihce la ligne 2 si elle n'est pas vide
 			if (!empty($data['Ligne_2'])) 
 				echo $data['Ligne_2'] . "<br>";
+			
 			echo $data['Ville'] . "<br>";
 			echo $data['Code_Postal'] . "<br>";
 			echo $data['Pays'] . "<br>";
 			echo $data['Telephone'] . "<br>";
+			//Ajoute un saut de ligne si pas de ligne 2 (pour garder les boutons a la 7eme ligne)
 			if (empty($data['Ligne_2'])) 
 				echo "<br>";
 			echo "<span>";
-			echo "<a data-target='#Modal_edit_adresse' data-toggle='modal' href='#''>Modifier</a>";
-			echo " | <a data-target='#Modal_suppr_adresse' data-toggle='modal' href='#''>Effacer</a>";
+			//Bouton modifier
+			echo "<a data-target='#Modal_edit_adresse' data-toggle='modal'";
+			echo ' data-id="' . $data['ID'] . '"';
+			echo ' data-ligne_1="' . $data['Ligne_1'] . '"';
+			echo ' data-ligne_2="' . $data['Ligne_2'] . '"';
+			echo ' data-ville="' . $data['Ville'] . '"';
+			echo ' data-code_postal="' . $data['Code_Postal'] . '"';
+			echo ' data-pays="' . $data['Pays'] . '"';
+			echo ' data-telephone="' . $data['Telephone'] . '"';
+			echo " href='#''>Modifier</a>";
+			//bouton suppr
+			echo " | <a data-target='#Modal_suppr_adresse' data-toggle='modal'";
+			echo ' data-id="' . $data['ID'] . '"';
+			echo ' data-ligne_1="' . $data['Ligne_1'] . '"';
+			echo ' data-ligne_2="' . $data['Ligne_2'] . '"';
+			echo ' data-ville="' . $data['Ville'] . '"';
+			echo ' data-code_postal="' . $data['Code_Postal'] . '"';
+			echo ' data-pays="' . $data['Pays'] . '"';
+			echo ' data-telephone="' . $data['Telephone'] . '"';
+			echo "  href='#''>Effacer</a>";
+			//Affiche bouton set default si pas deja default
 			if ($data['Adresse'] != $data['ID'])
 				echo " | <a href='?main_adresse=" . $data['ID'] . "'>Définir par défaut</a>";
 			echo "</span><br>";
-			//echo "</p>";
 			echo '</div>';
 		}
 	}
@@ -110,6 +163,8 @@
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+	<script type="text/javascript" src="mon_compte.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="stylesheet" type="text/css" href="mon_compte.css">
