@@ -39,64 +39,43 @@ if(isset($_POST['submit']))
 	//c) Update infos de prix
 		
 	//Test prix achat
-		//Si coché, on update le prix
-		if ($prixAchat != "") 
+		//Si pas coché, on met le prix à zero
+		if ($prixAchat == "") 
+		{
+			$sql = "UPDATE produit SET Prix_Achat = '0' WHERE Nom = '$nomObj' ";
+			mysqli_query($db_handle, $sql);
+		}
+		//Sinon on update
+		else
 		{
 			$sql = "UPDATE produit SET Prix_Achat = $prixAchat WHERE Nom = '$nomObj' ";
-			
-			//Test requete
-			$result = mysqli_query($db_handle, $sql);
-			if ($result) {
-				echo "Requete update infos Prix Achat Immediat ok!<br>";
-			}
-			else{
-				echo "Requete update infos Prix Achat Immediat pas ok..<br>";
-			}
-		}
-		//Sinon on le met = à 0
-		else
-		{
-			$sql = "UPDATE produit SET Prix_Achat = 0 WHERE Nom = '$nomObj' ";
+			mysqli_query($db_handle, $sql);
 		}
 	//Test meilleure offre
-		//Si coché, on update le prix
-		if ($prixMin != "") 
+		//Si pas coché, on met le prix à zero
+		if ($prixMin == "") 
+		{
+			$sql = "UPDATE produit SET Prix_min = '0' WHERE Nom = '$nomObj'";
+			mysqli_query($db_handle, $sql);
+		}
+		//Sinon on update
+		else
 		{
 			$sql = "UPDATE produit SET Prix_min = $prixMin WHERE Nom = '$nomObj'";
-			
-			//Test requete
-			$result = mysqli_query($db_handle, $sql);
-			if ($result) {
-				echo "Requete update infos Prix Meilleure Offre ok!<br>";
-			}
-			else{
-				echo "Requete update infos Prix Meilleure Offre pas ok..<br>";
-			}
-		}
-		//Sinon on le met = à 0 
-		else
-		{
-			$sql = "UPDATE produit SET Prix_min = 0 WHERE Nom = '$nomObj'";
+			mysqli_query($db_handle, $sql);
 		}
 	//Test enchère
-		//Si coché, on update le prix et la date
-		if ($prixEnchere != "") 
+		//Si pas coché, on met le prix à zero (pas besoin pour la date)
+		if ($prixEnchere == "") 
 		{
-			$sql = "UPDATE produit SET Prix_Enchere = $prixEnchere, Date_fin_enchere = '$dateEnchere' WHERE Nom = '$nomObj'";
-			
-			//Test requete
-			$result = mysqli_query($db_handle, $sql);
-			if ($result) {
-				echo "Requete update infos Prix et Date Enchere ok!<br>";
-			}
-			else{
-				echo "Requete update infos Prix et Date Enchere pas ok..<br>";
-			}
+			$sql = "UPDATE produit SET Prix_Enchere = '0' WHERE Nom = '$nomObj'";
+			mysqli_query($db_handle, $sql);
 		}
-		//Sinon on le met = à 0 (pas besoin pour la date)
+		//Sinon on update le prix et la date
 		else
 		{
-			$sql = "UPDATE produit SET Prix_Enchere = 0 WHERE Nom = '$nomObj'";
+			$sql = "UPDATE produit SET Prix_Enchere = $prixEnchere, Date_fin_enchere = '$dateEnchere' WHERE Nom = '$nomObj'";
+			mysqli_query($db_handle, $sql);
 		}
 
 
@@ -131,9 +110,9 @@ if(isset($_POST['submit']))
 				{
 
 					echo "Photo ". $i ." téléchargée avec succès<br>";
-
+					echo "File name = ".$file_name."<br>";
 					//ajout URL de la photo dans la table img_produit avec l'ID du produit
-					$sql = "INSERT INTO img_produit VALUES((SELECT ID FROM produit WHERE Nom = '$nomObj'),'$file_name')";
+					$sql = "INSERT INTO img_produit(Produit, URL) VALUES((SELECT ID FROM produit WHERE Nom = '$nomObj'),'$file_name')";
 
 					//Test requete
 					$result = mysqli_query($db_handle, $sql);
@@ -401,11 +380,13 @@ if(isset($_POST['submit']))
 							<div class="p-2 mb-2 border text-center">
 								<div class="custom-file">
 									<p><strong>Ajouter une ou plusieurs photos</strong></p>
+									<input type="hidden" name="MAX_FILE_SIZE" value="50000000"/>
 									<input type="file" name="files[]" class="btn btn-default" id="photos" multiple/>
 								</div>
 							</div>
 							<div class="p-1 mt-2 border text-center">
 								<p>Ajouter une vidéo</p>
+								<input type="hidden" name="MAX_FILE_SIZE" value="50000000"/>
 								<input type="file" name="video" class="btn btn-default" id="video"/>
 							</div>
 						</div>
