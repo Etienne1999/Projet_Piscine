@@ -1,10 +1,10 @@
 <?php
 
 if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
+	session_start();
+}
 
-    include ("database/db_connect.php");
+include ("database/db_connect.php");
 
 
 //-----------------------------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ if(isset($_POST['submit']))
 //2. FICHIERS
 		///Emplacement d'enregistrement des fichier
 		$valuefldr = './img';
-			
+
 		//temp
 		$i = 0;
 
@@ -115,18 +115,18 @@ if(isset($_POST['submit']))
 				if(move_uploaded_file($file_tmp,"$desired_dir/".$file_name))
 				{
 
-					echo "Photo ". $i ." téléchargée avec succès";
+					echo "Photo ". $i ." téléchargée avec succès<br>";
 
 					//ajout URL de la photo dans la table img_produit avec l'ID du produit
-					$sql = "INSERT INTO img_produit VALUES((SELECT ID FROM produit WHERE Nom = '%$nomObj%'),'%$file_name%')";
+					$sql = "INSERT INTO img_produit VALUES((SELECT ID FROM produit WHERE Nom = '$nomObj'),'$file_name')";
 
 					//Test requete
 					$result = mysqli_query($db_handle, $sql);
 					if ($result) {
-						echo "Requete nouvelle photo ok!";
+						echo "Requete nouvelle photo ok!<br>";
 					}
 					else{
-						echo "Requete nouvelle photo pas ok..";
+						echo "Requete nouvelle photo pas ok..<br>";
 					}
 				}
 				else
@@ -137,7 +137,7 @@ if(isset($_POST['submit']))
 			}
 			else
 			{
-				echo "Format de la photo ".$i." non pris en charge";
+				echo "Format de la photo ".$i." non pris en charge<br>";
 			}
 		} 
 
@@ -151,12 +151,12 @@ if(isset($_POST['submit']))
 			$desired_dir = $valuefldr;
 
             //On vérifie l'extension du fichier uploadé
-            $infosvideo = pathinfo($video_name);
-            $extension_fichier = $infosvideo['extension'];
-            $extensions_autorisees = array('mp3', 'mp4');
+			$infosvideo = pathinfo($video_name);
+			$extension_fichier = $infosvideo['extension'];
+			$extensions_autorisees = array('mp3', 'mp4');
 
-            if (in_array($extension_fichier, $extensions_autorisees))
-            {
+			if (in_array($extension_fichier, $extensions_autorisees))
+			{
             	//On upload la vidéo dans le bon directory et on check si c'est bien fait
 				if(move_uploaded_file($video_tmp,"$desired_dir/".$video_name))
 				{
@@ -178,8 +178,8 @@ if(isset($_POST['submit']))
 				{
 					echo "Erreur de téléchargement de la vidéo<br>";
 				}
-            }
-            else
+			}
+			else
 			{
 				echo "Format de vidéo non pris en charge<br>";
 			}
@@ -215,7 +215,7 @@ if(isset($_POST['submit']))
 	<script type="text/javascript">
 		$(document).ready(function()
 		{
-		
+
 		//Affichage accueil vente / formulaire vente
 			//on cache le formulaire d'ajout d'un objet à la vente
 			$("#affichageFormulaire").hide();
@@ -224,15 +224,15 @@ if(isset($_POST['submit']))
 			$("#btnAccueil").click(function()
 			{
 				//on switch l'affichage 
-			    $("#affichageAccueil").toggle();
-			    $("#affichageFormulaire").toggle();
+				$("#affichageAccueil").toggle();
+				$("#affichageFormulaire").toggle();
 			});
 			//quand on clique sur le bouton submit du formulaire 
 			$("#btnForm").click(function()
 			{	
 				//on switch a nouveau pour retourner sur affichageAccueil
-			    $("#affichageAccueil").toggle();
-			    $("#affichageFormulaire").toggle();
+				$("#affichageAccueil").toggle();
+				$("#affichageFormulaire").toggle();
 			});
 
 
@@ -282,8 +282,8 @@ if(isset($_POST['submit']))
 			});
 
 		//RESET CHOIX
-			$("#resetChoix").click(function()
-			{
+		$("#resetChoix").click(function()
+		{
 				//on décoche tout
 				$("#case1").prop( "checked", false );
 				$("#case2").prop( "checked", false );
@@ -300,8 +300,8 @@ if(isset($_POST['submit']))
 				$("#prixEnchere").val('');
 				$("#dateEnchere").val('');
 			});
-		})
-	</script>
+	})
+</script>
 
 </head>
 
@@ -318,7 +318,7 @@ if(isset($_POST['submit']))
 	<!-- Conteneur -->
 	<div class="container-fluid">
 
-	<!-- Page d'accueil vente -->
+		<!-- Page d'accueil vente -->
 		<div id="affichageAccueil">
 			<div class="row pt-2">
 
@@ -365,7 +365,7 @@ if(isset($_POST['submit']))
 
 
 
-	<!-- Formulaire nouvel objet en vente -->
+		<!-- Formulaire nouvel objet en vente -->
 		<div id="affichageFormulaire">
 			<h3 class="text-center font-weight-bold pt-2 pb-4"><u>Nouvelle vente</u></h3>		
 			<!-- Début du formulaire -->
@@ -373,139 +373,139 @@ if(isset($_POST['submit']))
 				<div class="row ml-1 mr-1">
 
 
-				<!-- Ajout photos et vidéo -->
+					<!-- Ajout photos et vidéo -->
 					<div class="col-lg-3 col-md-3 col-sm-12 border-right">
-					<!--<form class="form ml-2 mr-1" action="vente.php" method="POST" enctype="multipart/form-data">-->
-						<div class="p-2 mb-2 border text-center">
-							<div class="custom-file">
-								<p><strong>Ajouter une ou plusieurs photos</strong></p>
-								<input type="file" name="files[]" class="btn btn-default" id="photos" multiple/>
-						    </div>
+						<!--<form class="form ml-2 mr-1" action="vente.php" method="POST" enctype="multipart/form-data">-->
+							<div class="p-2 mb-2 border text-center">
+								<div class="custom-file">
+									<p><strong>Ajouter une ou plusieurs photos</strong></p>
+									<input type="file" name="files[]" class="btn btn-default" id="photos" multiple/>
+								</div>
+							</div>
+							<div class="p-1 mt-2 border text-center">
+								<p>Ajouter une vidéo</p>
+								<input type="file" name="video" class="btn btn-default" id="video"/>
+							</div>
 						</div>
-						<div class="p-1 mt-2 border text-center">
-							<p>Ajouter une vidéo</p>
-							<input type="file" name="video" class="btn btn-default" id="video"/>
+
+
+						<!-- Infos sur l'objet -->
+						<div class="col-lg-9 col-md-9 col-sm-12">
+							<!--<form class="form m-2" action="vente.php" method="POST">-->
+								<!-- Nom de l'objet -->
+								<div class="form-group">
+									<div class="row">
+										<div class="col-sm-12 col-md-4 col-lg-4">
+											<label class="control-label"><strong>Nom de l'objet </strong></label>
+										</div>
+										<div class="col-sm-12 col-md-6 col-lg-6 col-xs-6">
+											<input type="text" class="form-control" name="nomObj" maxlength="65" autofocus>
+										</div>
+									</div>
+								</div>
+
+								<!-- Catégorie -->	
+								<div class="form-group">
+									<div class="row">
+										<div class="col-sm-12 col-md-4 col-lg-4">
+											<label class="control-label">Catégorie</label>
+										</div>
+										<div class="col-sm-12 col-md-8 col-lg-8">
+											<input type="radio" name="categorie" value="1" id="cat1">
+											<label class="control-label" for="cat1" >Ferraille ou trésor</label><br>
+
+											<input type="radio" name="categorie" value="2" id="cat2">
+											<label class="control-label" for="cat2" >Bon pour le musée</label><br>
+
+											<input type="radio" name="categorie" value="3" id="cat3">
+											<label class="control-label" for="cat3">Accessoire VIP</label>
+										</div>
+									</div>
+								</div>
+
+								<!-- Type de vente -->
+								<div class="form-group">
+									<div class="row">
+										<div class="col-sm-12 col-md-4 col-lg-4">
+											<label class="control-label">Type de vente</label>
+										</div>
+										<div class="col-md-8 col-lg-8 col-sm-12">
+
+											<!-- Achat Immediat -->
+											<div class="row mb-1">
+												<div class="col-md-6 col-lg-6 col-sm-12">
+													<label><input type="checkbox" name="typeVente" id="case1" />Achat immédiat</label>
+												</div>
+												<div class="col-md-5 col-lg-5 col-sm-12">
+													<!-- Affiché si la case est cochée -->
+													<div id="achatIm">
+														<input type="number" class="form-control" id="prixAchat" name="prixAchat" placeholder="Prix €">
+													</div>
+												</div>
+											</div>
+
+											<!-- Meilleure offre -->
+											<div class="row mb-1">
+												<div class="col-md-6 col-lg-6 col-sm-12">
+													<label><input type="radio" name="typeVente" id="case2" />Meilleure offre</label>
+												</div>
+												<div class="col-md-5 col-lg-5 col-sm-12">
+													<!-- Affiché si la case est cochée -->
+													<div id="meilleureOffre">
+														<input type="number" class="form-control" id="prixMin" name="prixMin" placeholder="Prix minimum €">
+													</div>
+												</div>
+											</div>
+
+											<!-- Enchère -->
+											<div class="row">
+												<div class="col-md-4 col-lg-4 col-sm-12">
+													<label><input type="radio" name="typeVente" id="case3"/>Enchère</label>
+												</div>
+												<!-- Affiché si la case est cochée -->
+												<div id="enchere" class="col-md-8 col-lg-8 col-sm-12">
+													<div class="row">
+														<div class="col-md-6 col-lg-6 col-sm-6">
+															<input type="number" class="form-control" id="prixEnchere" name="prixEnchere" placeholder="Prix de départ €">
+														</div>
+														<div class="col-md-6 col-lg-6 col-sm-6">
+															<input type="datetime-local" class="form-control" id="dateEnchere" name="dateEnchere">
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<!-- Bouton pour tout décocher -->
+											<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoix">Réinitialiser les choix</button>
+
+										</div>
+									</div>
+								</div>
+
+								<!-- Description complète -->
+								<div class="form-group">
+									<div class="row">
+										<div class="col-md-4 col-lg-4 col-sm-12">
+											<label class="control-label">Description complète</label>
+										</div>
+										<div class="col-md-8 col-lg-8 col-sm-12">
+											<textarea class="form-control" rows="5" name="description" placeholder="Etat, qualité, année de fabrication etc." maxlength="255"></textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- SUBMIT FORM -->
+							<div class="col-sm-12 text-center p-4">
+								<input type="submit" name="submit" value="Mettre en vente" class="btn-success rounded btn-lg" id="btnForm">
+							</div>
+
 						</div>
-					</div>
-
-
-				<!-- Infos sur l'objet -->
-					<div class="col-lg-9 col-md-9 col-sm-12">
-					<!--<form class="form m-2" action="vente.php" method="POST">-->
-				  	<!-- Nom de l'objet -->
-					  	<div class="form-group">
-					  		<div class="row">
-					    		<div class="col-sm-12 col-md-4 col-lg-4">
-					    			<label class="control-label"><strong>Nom de l'objet </strong></label>
-					    		</div>
-					    		<div class="col-sm-12 col-md-6 col-lg-6 col-xs-6">
-					    			<input type="text" class="form-control" name="nomObj" maxlength="65" autofocus>
-					    		</div>
-					    	</div>
-					  	</div>
-
-				    <!-- Catégorie -->	
-					    <div class="form-group">
-					    	<div class="row">
-					    		<div class="col-sm-12 col-md-4 col-lg-4">
-						  			<label class="control-label">Catégorie</label>
-						  		</div>
-						  		<div class="col-sm-12 col-md-8 col-lg-8">
-						  			<input type="radio" name="categorie" value="1" id="cat1">
-						  			<label class="control-label" for="cat1" >Ferraille ou trésor</label><br>
-
-						  			<input type="radio" name="categorie" value="2" id="cat2">
-						  			<label class="control-label" for="cat2" >Bon pour le musée</label><br>
-
-						  			<input type="radio" name="categorie" value="3" id="cat3">
-						  			<label class="control-label" for="cat3">Accessoire VIP</label>
-						  		</div>
-					    	</div>
-					  	</div>
-
-					<!-- Type de vente -->
-					  	<div class="form-group">
-					  		<div class="row">
-					  			<div class="col-sm-12 col-md-4 col-lg-4">
-					  				<label class="control-label">Type de vente</label>
-					  			</div>
-					  			<div class="col-md-8 col-lg-8 col-sm-12">
-					  				
-				  				<!-- Achat Immediat -->
-				  					<div class="row mb-1">
-				  						<div class="col-md-6 col-lg-6 col-sm-12">
-				  							<label><input type="checkbox" name="typeVente" id="case1" />Achat immédiat</label>
-				  						</div>
-				  						<div class="col-md-5 col-lg-5 col-sm-12">
-				  							<!-- Affiché si la case est cochée -->
-							  				<div id="achatIm">
-							  					<input type="number" class="form-control" id="prixAchat" name="prixAchat" placeholder="Prix €">
-							  				</div>
-				  						</div>
-				  					</div>
-			  						
-				  				<!-- Meilleure offre -->
-				  					<div class="row mb-1">
-				  						<div class="col-md-6 col-lg-6 col-sm-12">
-				  							<label><input type="radio" name="typeVente" id="case2" />Meilleure offre</label>
-				  						</div>
-				  						<div class="col-md-5 col-lg-5 col-sm-12">
-				  							<!-- Affiché si la case est cochée -->
-						  					<div id="meilleureOffre">
-						  						<input type="number" class="form-control" id="prixMin" name="prixMin" placeholder="Prix minimum €">
-						  					</div>
-				  						</div>
-				  					</div>
-
-			  					<!-- Enchère -->
-			  						<div class="row">
-				  						<div class="col-md-4 col-lg-4 col-sm-12">
-				  							<label><input type="radio" name="typeVente" id="case3"/>Enchère</label>
-				  						</div>
-				  						<!-- Affiché si la case est cochée -->
-				  						<div id="enchere" class="col-md-8 col-lg-8 col-sm-12">
-				  							<div class="row">
-				  								<div class="col-md-6 col-lg-6 col-sm-6">
-				  									<input type="number" class="form-control" id="prixEnchere" name="prixEnchere" placeholder="Prix de départ €">
-					  							</div>
-					  							<div class="col-md-6 col-lg-6 col-sm-6">
-					  								<input type="datetime-local" class="form-control" id="dateEnchere" name="dateEnchere">
-					  							</div>
-				  							</div>
-				  						</div>
-				  					</div>
-
-				  				<!-- Bouton pour tout décocher -->
-				  					<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoix">Réinitialiser les choix</button>
-
-					  			</div>
-					  		</div>
-					  	</div>
-
-					<!-- Description complète -->
-					  	<div class="form-group">
-					  		<div class="row">
-					  			<div class="col-md-4 col-lg-4 col-sm-12">
-						  			<label class="control-label">Description complète</label>
-						  		</div>
-						  		<div class="col-md-8 col-lg-8 col-sm-12">
-						  			<textarea class="form-control" rows="5" name="description" placeholder="Etat, qualité, année de fabrication etc." maxlength="255"></textarea>
-						  		</div>
-					  		</div>
-					  	</div>
-					</div>
-
-				<!-- SUBMIT FORM -->
-					<div class="col-sm-12 text-center p-4">
-						<input type="submit" name="submit" value="Mettre en vente" class="btn-success rounded btn-lg" id="btnForm">
-				  	</div>
-
+					</form>
 				</div>
-			</form>
-		</div>
-	</div>
+			</div>
 
-	<!-- Footer -->	
-	<?php include("footer.php") ?>
-</body>
-</html>
+			<!-- Footer -->	
+			<?php include("footer.php") ?>
+		</body>
+		</html>
