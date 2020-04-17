@@ -26,11 +26,33 @@
 		$check = mysqli_query($db_handle, $sql_check);
 
 		if (mysqli_num_rows($check) == 1){
-			//Si oui on met a jour l'adresse de l'utilisateur dans la table utilisateur
+				//Si oui on met a jour l'adresse de l'utilisateur dans la table utilisateur
 			$id_user = $_SESSION['user_ID'];
 			$sql_update_main_adresse = "UPDATE `utilisateur` SET `Adresse` = '$id_adresse'  WHERE ID = '$id_user'";
 
 			$res = mysqli_query($db_handle, $sql_update_main_adresse);
+				//var_dump($res);
+		}
+	}
+
+	if (isset($_GET['main_carte'])) {
+		$hash_carte = $_GET['main_carte'];
+		$id = $_SESSION['user_ID'];
+		$sql_check = "SELECT Numero_Carte FROM carte_bancaire WHERE ID_User = '$id'";
+		$check = mysqli_query($db_handle, $sql_check);
+
+		$num_carte;
+		while ($num = mysqli_fetch_assoc($check)) {
+			//Teste toutes les carte de l'utilisateur jusqu'a trouver la bonne
+			if (md5($num['Numero_Carte']) == $hash_carte)	
+				$num_carte = $num['Numero_Carte'];
+		}
+
+		//Si on a trouver une carte, on update l'utilisateur
+		if (!empty($num_carte)) {
+			$sql_update_main_carte = "UPDATE `utilisateur` SET `Carte_Paiement` = '$num_carte'  WHERE ID = '$id'";
+
+			$res = mysqli_query($db_handle, $sql_update_main_carte);
 			//var_dump($res);
 		}
 	}
@@ -49,7 +71,7 @@
 
 			$sql_add_adresse = "INSERT INTO `adresse`(`ID`, `Ligne_1`, `Ligne_2`, `Ville`, `Code_Postal`, `Pays`, `Telephone`, `ID_User`) VALUES (NULL, '$ligne_1', ";
 
-			//Si pas de date d'expiration on envoi NULL
+				//Si pas de date d'expiration on envoi NULL
 			if (empty($ligne_2))
 				$sql_add_adresse .= 'NULL, ';
 			else
@@ -58,10 +80,11 @@
 			$sql_add_adresse .= "'$ville', '$code_postal', '$pays', '$telephone', '$id')";
 
 			$res = mysqli_query($db_handle, $sql_add_adresse);
-			//var_dump($res);
+				//var_dump($res);
 		}
 	}
 
+	//Modification Adresse
 	if (isset($_POST['btn_edit_adresse'])) {
 		$id = isset($_POST["id"])? $_POST["id"] : "";
 		$ligne_1 = isset($_POST["ligne_1"])? $_POST["ligne_1"] : "";
@@ -72,7 +95,7 @@
 		$telephone = isset($_POST["telephone"])? $_POST["telephone"] : "";
 
 		if (!(empty($id) || empty($ligne_1) || empty($ville) || empty($code_postal) || empty($pays) || empty($telephone))) {
-			
+
 			$sql_update_adresse = "UPDATE adresse SET Ligne_1 = '$ligne_1', ";
 			if (!empty($ligne_2))
 				$sql_update_adresse .= "Ligne_2 = '$ligne_2', ";
@@ -87,6 +110,7 @@
 		}
 	}
 
+	//Suppression Adresse
 	if (isset($_POST['btn_suppr_adresse'])) {
 		$id = isset($_POST["id"])? $_POST["id"] : "";
 
@@ -95,33 +119,67 @@
 		//var_dump($res);
 	}
 
+	if (isset($_POST['btn_add_carte'])) {
+		$id = $_SESSION['user_ID'];
+		$num_carte = isset($_POST["num_carte"])? $_POST["num_carte"] : "";
+		$proprietaire = isset($_POST["proprietaire"])? $_POST["proprietaire"] : "";
+		$exp_MM = isset($_POST["exp_MM"])? $_POST["exp_MM"] : "";
+		$exp_YY = isset($_POST["exp_YY"])? $_POST["exp_YY"] : "";
+		$cvv = isset($_POST["cvv"])? $_POST["cvv"] : "";
+		$plafond = isset($_POST["plafond"])? $_POST["plafond"] : "";
+		$type = isset($_POST["type"])? $_POST["type"] : "";
+		$adresse_factu = isset($_POST["adresse_factu"])? $_POST["adresse_factu"] : "";
+
+		//formate la date
+		$date_exp = $exp_YY . "-" . $exp_MM . '-01';
+
+		$sql = "INSERT INTO `carte_bancaire` (`Numero_Carte`, `Nom_Proprietaire`, `Date_exp`, `CVV`, `Plafond`, `ID_User`, `Type`, `Adresse_Facturation`) VALUES ('$num_carte', '$proprietaire', '$date_exp', '$cvv', ";
+		if (!empty($plafond))
+			$sql .= "'$plafond', ";
+		else
+			$sql .= "NULL, ";
+		$sql .= "'$id', '$type', '$adresse_factu')";
+
+		$res = mysqli_query($db_handle, $sql);
+		//var_dump($res);
+	}
+
+	//Suppression Carte
+	if (isset($_POST['btn_suppr_carte'])) {
+		$id = isset($_POST["id"])? $_POST["id"] : "";
+
+		$sql_delete_carte = "DELETE FROM carte_bancaire WHERE Numero_Carte = '$id'";
+		$res = mysqli_query($db_handle, $sql_delete_carte);
+		//var_dump($res);
+	}
+
 	function get_adresses($db_handle) {
 
 		$id = $_SESSION['user_ID'];
-		//$sql = "SELECT * FROM adresse WHERE ID_User = $id";
+			//$sql = "SELECT * FROM adresse WHERE ID_User = $id";
 		$sql = "SELECT a.*, utilisateur.Adresse FROM adresse AS a, utilisateur WHERE a.ID_User = '$id' AND utilisateur.ID = '$id'";
 		$result = mysqli_query($db_handle, $sql);
 
-		//$sql_check_default_adress = "SELECT Adresse FROM utilisateur WHERE ID = '$id'";
-		//$default_adress = mysqli_query($db_handle, $sql_check_default_adress);
+			//$sql_check_default_adress = "SELECT Adresse FROM utilisateur WHERE ID = '$id'";
+			//$default_adress = mysqli_query($db_handle, $sql_check_default_adress);
 
 
 		while ($data = mysqli_fetch_assoc($result)) {
 			echo '<div class="box-adresse mx-2 px-1 border">';
 			echo $data['Ligne_1'] . "<br>";
-			//Affihce la ligne 2 si elle n'est pas vide
+				//Affihce la ligne 2 si elle n'est pas vide
 			if (!empty($data['Ligne_2'])) 
 				echo $data['Ligne_2'] . "<br>";
-			
+
 			echo $data['Ville'] . "<br>";
 			echo $data['Code_Postal'] . "<br>";
 			echo $data['Pays'] . "<br>";
 			echo $data['Telephone'] . "<br>";
-			//Ajoute un saut de ligne si pas de ligne 2 (pour garder les boutons a la 7eme ligne)
+				//Ajoute un saut de ligne si pas de ligne 2 (pour garder les boutons a la 7eme ligne)
 			if (empty($data['Ligne_2'])) 
 				echo "<br>";
 			echo "<span>";
-			//Bouton modifier
+				//Bouton modifier
 			echo "<a data-target='#Modal_edit_adresse' data-toggle='modal'";
 			echo ' data-id="' . $data['ID'] . '"';
 			echo ' data-ligne_1="' . $data['Ligne_1'] . '"';
@@ -131,7 +189,7 @@
 			echo ' data-pays="' . $data['Pays'] . '"';
 			echo ' data-telephone="' . $data['Telephone'] . '"';
 			echo " href='#''>Modifier</a>";
-			//bouton suppr
+				//bouton suppr
 			echo " | <a data-target='#Modal_suppr_adresse' data-toggle='modal'";
 			echo ' data-id="' . $data['ID'] . '"';
 			echo ' data-ligne_1="' . $data['Ligne_1'] . '"';
@@ -141,14 +199,108 @@
 			echo ' data-pays="' . $data['Pays'] . '"';
 			echo ' data-telephone="' . $data['Telephone'] . '"';
 			echo "  href='#''>Effacer</a>";
-			//Affiche bouton set default si pas deja default
+				//Affiche bouton set default si pas deja default
 			if ($data['Adresse'] != $data['ID'])
 				echo " | <a href='?main_adresse=" . $data['ID'] . "'>Définir par défaut</a>";
 			echo "</span><br>";
 			echo '</div>';
 		}
 	}
- ?>
+
+	function get_credit_card ($db_handle) {
+		$id = $_SESSION['user_ID'];
+		$sql = "SELECT c.*, utilisateur.Carte_Paiement, type_carte.Nom, a.* FROM carte_bancaire AS c, utilisateur, type_carte, adresse AS a WHERE type_carte.ID = c.Type AND c.Adresse_Facturation = a.ID AND c.ID_User = '$id' AND utilisateur.ID = '$id'";
+		$result = mysqli_query($db_handle, $sql);
+
+		while ($data = mysqli_fetch_assoc($result)) {
+
+			$num_carte_confidentiel = substr_replace($data['Numero_Carte'], '***-', 0, -4);
+			if ($data['Numero_Carte'] != $data['Carte_Paiement']){
+				echo '<div class="card mb-1 mr-1"><div class="card-header"><h5 class="mb-0"><button class="btn btn-link" data-toggle="collapse" data-target="#cc' . $data['Numero_Carte'] . '">';
+				echo $data['Nom'] . " : " . $num_carte_confidentiel;
+				echo '</button></h5></div><div id="cc' . $data['Numero_Carte'] . '" class="collapse"><div class="card-body">';
+				echo 'Proprietaire : ' . $data['Nom_Proprietaire'] . '<br>';
+				echo 'Expire le : ' . $data['Date_exp'] . '<br>';
+				if (empty($data['Plafond']))
+					echo 'Plafond maximum de : Pas de plafond<br>';
+				else
+					echo 'Plafond maximum de : ' . $data['Plafond'] . '<br>';
+				echo '<br><u>Adresse de facturation</u> : <br>';
+				echo $data['Ligne_1'] . '<br>';
+				if (!empty($data['Ligne_2']))
+					echo $data['Ligne_2'] . '<br>';
+				echo $data['Ville'] . ', ' . $data['Code_Postal'] . '<br>';
+				echo $data['Pays'] . '<br>';
+				echo $data['Telephone'] . '<br><br>';
+	
+				echo "<span>";
+				//bouton suppr
+				echo "<a data-target='#Modal_suppr_carte' data-toggle='modal'";
+				echo ' data-id="' . $data['Numero_Carte'] . '"';
+				echo ' data-num_cache="' . $num_carte_confidentiel . '"';
+				echo ' data-type="' . $data['Nom'] . '"';
+				echo "  href='#''>Effacer</a>";
+				//Bouton modifier
+				/*
+				echo " | <a data-target='#Modal_edit_carte' data-toggle='modal'";
+				echo ' data-id="' . $data['Numero_Carte'] . '"';
+				echo ' data-num_cache="' . $num_carte_confidentiel . '"';
+				echo ' data-proprietaire="' . $data['Nom_Proprietaire'] . '"';
+				echo ' data-date_exp="' . $data['Date_exp'] . '"';
+				echo " href='#''>Modifier</a>";
+				*/
+				echo " | <a href='?main_carte=" .md5($data['Numero_Carte']) . "'>Définir par défaut</a>";
+				echo "</span>";
+	
+				echo '</div></div></div>';
+			}
+		}
+	}
+
+	function get_default_card ($db_handle) {
+		$id = $_SESSION['user_ID'];
+
+		$sql = "SELECT c.*, type_carte.Nom, a.* FROM carte_bancaire AS c, utilisateur, type_carte, adresse AS a WHERE type_carte.ID = c.Type AND c.Adresse_Facturation = a.ID AND utilisateur.ID = '$id' AND c.Numero_Carte = utilisateur.Carte_Paiement";
+		$result = mysqli_query($db_handle, $sql);
+
+		if (mysqli_num_rows($result)) {
+			
+			while ($data = mysqli_fetch_assoc($result)) {
+
+				$num_carte_confidentiel = substr_replace($data['Numero_Carte'], '***-', 0, -4);
+
+				echo '<div class="card mb-1 mr-1"><div class="card-header"><h5 class="mb-0"><button class="btn btn-link" data-toggle="collapse" data-target="#default_card">';
+				echo $data['Nom'] . " : " . $num_carte_confidentiel . '</button><span>-----</span><a data-target="#Modal_add_carte" data-toggle="modal" href="#" class="font-weight-light add_carte">Ajouter nouvelle adresse</a></h5></div><div id="default_card" class="collapse"><div class="card-body">';
+			echo 'Proprietaire : ' . $data['Nom_Proprietaire'] . '<br>';
+			echo 'Expire le : ' . $data['Date_exp'] . '<br>';
+			if (empty($data['Plafond']))
+				echo 'Plafond maximum de : Pas de plafond<br>';
+			else
+				echo 'Plafond maximum de : ' . $data['Plafond'] . '<br>';
+			echo '<br><u>Adresse de facturation</u> : <br>';
+			echo $data['Ligne_1'] . '<br>';
+			if (!empty($data['Ligne_2']))
+				echo $data['Ligne_2'] . '<br>';
+			echo $data['Ville'] . ', ' . $data['Code_Postal'] . '<br>';
+			echo $data['Pays'] . '<br>';
+			echo $data['Telephone'] . '<br><br>';
+
+			echo "<span>";
+			//bouton suppr
+			echo "<a data-target='#Modal_suppr_carte' data-toggle='modal'";
+			echo ' data-id="' . $data['Numero_Carte'] . '"';
+			echo ' data-num_cache="' . $num_carte_confidentiel . '"';
+			echo ' data-type="' . $data['Nom'] . '"';
+			echo "  href='#''>Effacer</a>";
+			echo "</span><br>";
+			echo '</div></div></div>';
+			}
+		}
+
+
+	}
+
+?>
 
 <!DOCTYPE html>
 <html>
@@ -184,6 +336,7 @@
 	<!-- Conteneur -->
 
 	<?php include("modal/modal_adresse.php") ?>
+	<?php include("modal/modal_carte_credit.php") ?>
 
 	<div class="container-fluid">
 		<div class="row no-gutters">
@@ -216,7 +369,11 @@
 			</div>
 			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Moyen de paiement</h4>
-				<span>d</span>
+				<div id="accordeon_paiement">
+					
+					<?php get_default_card($db_handle); ?>
+					<?php get_credit_card($db_handle); ?>
+				</div>
 			</div>
 		</div>
 
@@ -226,7 +383,7 @@
 				<span>d</span>
 			</div>
 			<div class="col-md-5 border shadow m-2 cat">
-				<h4>Offrir cheque cadeau</h4>
+				<h4>Mes commandes</h4>
 				<span>d</span>
 			</div>
 		</div>
@@ -244,7 +401,7 @@
 
 		<div class="row d-flex justify-content-center">
 			<div class="col-md-5 border shadow m-2 cat">
-				<h4>Mes commandes</h4>
+				<h4>Offrir cheque cadeau</h4>
 				<span>d</span>
 			</div>
 			<div class="col-md-5 border shadow m-2 cat">
