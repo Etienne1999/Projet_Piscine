@@ -8,31 +8,96 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 //-----------------------------------------------------------------------------------------------------
-//Formulaire 1 : UPLOAD DES PHOTOS + VIDEOS
-if(isset($_POST['submitFichiers']))
+//FORMULAIRE
+if(isset($_POST['submit']))
 {	
 	if ($db_found) 
 	{
-		//création d'un nouveau produit, avec titre temporaire
-		$sql = "INSERT INTO produit(Nom) VALUES('New Produit Name Temp') ";
-		$result = mysqli_query($db_handle, $sql);
+
+//1. INFOS PRODUIT
+	//a) Récupération des données hors fichiers
+		$nomObj = isset($_POST['nomObj'])? $_POST['nomObj'] : "";
+		$categorie = isset($_POST['categorie'])? $_POST['categorie'] : "";
+		$prixAchat = isset($_POST['prixAchat'])? $_POST['prixAchat'] : "";
+		$prixMin = isset($_POST['prixMin'])? $_POST['prixMin'] : "";
+		$prixEnchere = isset($_POST['prixEnchere'])? $_POST['prixEnchere'] : "";
+		$dateEnchere = isset($_POST['dateEnchere'])? $_POST['dateEnchere'] : "";
+		$description = isset($_POST['description'])? $_POST['description'] : "";
+
+	//b) Création d'un nouveau produit
+		$sql = "INSERT INTO produit(Nom, Description, Categorie) VALUES('$nomObj', '$description', $categorie)";
+
 		//Test requete
+		$result = mysqli_query($db_handle, $sql);
 		if ($result) {
-			echo "Requete nouveau produit ok!";
+			echo "Requete création nouveau produit ok!<br>";
 		}
 		else{
-			echo "Requete nouveau produit pas ok..";
+			echo "Requete création nouveau produit pas ok..<br>";
+		}
+
+	//c) Update infos de prix
+		
+	//Test prix achat
+		//Si coché, on update le prix
+		if ($prixAchat != "") 
+		{
+			$sql = "UPDATE produit SET Prix_Achat = $prixAchat WHERE Nom = '$nomObj' ";
+			
+			//Test requete
+			$result = mysqli_query($db_handle, $sql);
+			if ($result) {
+				echo "Requete update infos Prix Achat Immediat ok!<br>";
+			}
+			else{
+				echo "Requete update infos Prix Achat Immediat pas ok..<br>";
+			}
+		}
+	//Test meilleure offre
+		//Si coché, on update le prix
+		if ($prixMin != "") 
+		{
+			$sql = "UPDATE produit SET Prix_min = $prixMin WHERE Nom = '$nomObj'";
+			
+			//Test requete
+			$result = mysqli_query($db_handle, $sql);
+			if ($result) {
+				echo "Requete update infos Prix Meilleure Offre ok!<br>";
+			}
+			else{
+				echo "Requete update infos Prix Meilleure Offre pas ok..<br>";
+			}
+		}
+	//Test enchère
+		//Si coché, on update le prix et la date
+		if ($prixEnchere != "") 
+		{
+			$sql = "UPDATE produit SET Prix_Enchere = $prixEnchere, Date_fin_enchere = '$dateEnchere' WHERE Nom = '$nomObj'";
+			
+			//Test requete
+			$result = mysqli_query($db_handle, $sql);
+			if ($result) {
+				echo "Requete update infos Prix et Date Enchere ok!<br>";
+			}
+			else{
+				echo "Requete update infos Prix et Date Enchere pas ok..<br>";
+			}
 		}
 
 
-		//1. Upload des fichiers
+//2. FICHIERS
 		///Emplacement d'enregistrement des fichier
 		$valuefldr = './img';
-		
-	//PHOTOS
+			
+		//temp
+		$i = 0;
+
+	//a) PHOTOS
 		//Pour chaque photo
 		foreach($_FILES['files']['tmp_name'] as $key => $tmp_name )
 		{
+			$i = $i + 1;
+
 			$file_name = $key.$_FILES['files']['name'][$key];
 			$file_size = $_FILES['files']['size'][$key];
 			$file_tmp = $_FILES['files']['tmp_name'][$key];
@@ -49,17 +114,14 @@ if(isset($_POST['submitFichiers']))
 				//On upload la photo dans le bon directory et on check si c'est bien fait
 				if(move_uploaded_file($file_tmp,"$desired_dir/".$file_name))
 				{
-					?>
-					<script>
-						alert('Photos téléchargés avec succès');
-					</script>
-					<?php
+
+					echo "Photo ". $i ." téléchargée avec succès";
 
 					//ajout URL de la photo dans la table img_produit avec l'ID du produit
-					$sql = "INSERT INTO img_produit VALUES((SELECT ID FROM produit WHERE Nom = 'New Produit Name Temp'),'%$file_name%')";
-					$result = mysqli_query($db_handle, $sql);
+					$sql = "INSERT INTO img_produit VALUES((SELECT ID FROM produit WHERE Nom = '%$nomObj%'),'%$file_name%')";
 
 					//Test requete
+					$result = mysqli_query($db_handle, $sql);
 					if ($result) {
 						echo "Requete nouvelle photo ok!";
 					}
@@ -69,24 +131,17 @@ if(isset($_POST['submitFichiers']))
 				}
 				else
 				{
-					?>
-					<script>
-						alert('Erreur de téléchargement des photos');
-					</script>
-					<?php
+
+					echo "Erreur de téléchargement de la photo ".$i." <br>";
 				}
 			}
 			else
 			{
-				?>
-				<script>
-					alert('Format de photo non pris en charge');
-				</script>
-				<?php
+				echo "Format de la photo ".$i." non pris en charge";
 			}
 		} 
 
-	//VIDEO
+	//b) VIDEO
 		//check si une video a été upload
 		if (isset($_FILES['video']))
 		{
@@ -105,116 +160,37 @@ if(isset($_POST['submitFichiers']))
             	//On upload la vidéo dans le bon directory et on check si c'est bien fait
 				if(move_uploaded_file($video_tmp,"$desired_dir/".$video_name))
 				{
-					?>
-					<script>
-						alert('Vidéo téléchargée avec succès');
-					</script>
-					<?php
+					echo "Vidéo téléchargée avec succès<br>";
 
 					//ajout URL vidéo dans la fiche du produit
-					$sql = "UPDATE produit SET Video = '%$video_name%' WHERE Nom = 'New Produit Name Temp'";
-					$result = mysqli_query($db_handle, $sql);
+					$sql = "UPDATE produit SET Video = '%$video_name%' WHERE Nom = '%$nomObj%'";
 
 					//Test requete
+					$result = mysqli_query($db_handle, $sql);
 					if ($result) {
-						echo "Requete video ok!";
+						echo "Requete ajout URL video ok!<br>";
 					}
 					else{
-						echo "Requete video pas ok..";
+						echo "Requete ajout URL video pas ok..<br>";
 					}
 				}
 				else
 				{
-					?>
-					<script>
-						alert('Erreur de téléchargement de la vidéo');
-					</script>
-					<?php
+					echo "Erreur de téléchargement de la vidéo<br>";
 				}
             }
             else
 			{
-				?>
-				<script>
-					alert('Format de vidéo non pris en charge');
-				</script>
-				<?php
+				echo "Format de vidéo non pris en charge<br>";
 			}
+		}
+		//Sinon, pas de video upload (temporaire, juste pour l'affichage)
+		else 
+		{
+			echo "Pas de vidéo upload <br>";
 		}
 	}
 } 
-
-//-----------------------------------------------------------------------------------------------------
-//Formulaire 2 : INFOS OBJET 
-if(isset($_POST['submitInfos']))
-{
-	if (db_found) 
-	{
-		//Récupération des données
-		$nomObj = isset($_POST['nomObj'])? $_POST['nomObj'] : "";
-		$categorie = isset($_POST['categorie'])? $_POST['categorie'] : "";
-		$prixAchat = isset($_POST['prixAchat'])? $_POST['prixAchat'] : "";
-		$prixMin = isset($_POST['prixMin'])? $_POST['prixMin'] : "";
-		$prixEnchere = isset($_POST['prixEnchere'])? $_POST['prixEnchere'] : "";
-		$dateEnchere = isset($_POST['dateEnchere'])? $_POST['dateEnchere'] : "";
-		$description = isset($_POST['description'])? $_POST['description'] : "";
-
-		//Update des infos du produit temporaire à partir du formulaire 'Infos'
-		$sql = "UPDATE produit SET Nom = '%$nomObj%', Description = '%$description%', Categorie = '%$categorie%' WHERE Nom = 'New Produit Name Temp'";
-		$result = mysqli_query($db_handle, $sql);
-		//Test requete
-		if ($result) {
-			echo "Requete update infos (avant prix) ok!";
-		}
-		else{
-			echo "Requete update infos (avant prix) pas ok..";
-		}
-
-	//Test prix achat
-		//Si coché, on update le prix
-		if ($prixAchat != "") 
-		{
-			$sql = "UPDATE produit SET Prix_Achat = '%$prixAchat%' WHERE Nom = '%$nomObj%' ";
-			$result = mysqli_query($db_handle, $sql);
-			//Test requete
-			if ($result) {
-				echo "Requete update infos Prix Achat Immediat ok!";
-			}
-			else{
-				echo "Requete update infos Prix Achat Immediat pas ok..";
-			}
-		}
-	//Test meilleure offre
-		//Si coché, on update le prix
-		if ($prixMin != "") 
-		{
-			$sql = "UPDATE produit SET Prix_min = '%$prixMin%' WHERE Nom = '%$nomObj%'";
-			$result = mysqli_query($db_handle, $sql);
-			//Test requete
-			if ($result) {
-				echo "Requete update infos Prix Meilleure Offre ok!";
-			}
-			else{
-				echo "Requete update infos Prix Meilleure Offre pas ok..";
-			}
-		}
-	//Test enchère
-		//Si coché, on update le prix et la date
-		if ($prixEnchere != "") 
-		{
-			$sql = "UPDATE produit SET Prix_Enchere = '%$prixEnchere%', Date_fin_enchere = '%$dateEnchere%' WHERE Nom = '%$nomObj%'";
-			$result = mysqli_query($db_handle, $sql);
-			//Test requete
-			if ($result) {
-				echo "Requete update infos Prix et Date Enchere ok!";
-			}
-			else{
-				echo "Requete update infos Prix et Date Enchere pas ok..";
-			}
-		}
-	}
-}
-  
 ?>
 
 
@@ -391,146 +367,141 @@ if(isset($_POST['submitInfos']))
 
 	<!-- Formulaire nouvel objet en vente -->
 		<div id="affichageFormulaire">
-			<h3 class="text-center font-weight-bold pt-2 pb-4"><u>Nouvelle vente</u></h3>
-			
-				<div class="row">
-					
-					<!-- Ajout photos et vidéo -->
+			<h3 class="text-center font-weight-bold pt-2 pb-4"><u>Nouvelle vente</u></h3>		
+			<!-- Début du formulaire -->
+			<form class="form" action="vente.php" method="POST" enctype="multipart/form-data">	
+				<div class="row ml-1 mr-1">
+
+
+				<!-- Ajout photos et vidéo -->
 					<div class="col-lg-3 col-md-3 col-sm-12 border-right">
-						<form class="form ml-2 mr-1" action="vente.php" method="POST" enctype="multipart/form-data">
-							<div class="p-2 mb-2 border text-center">
-								<div class="custom-file">
-									<p><strong>Ajouter une ou plusieurs photos</strong></p>
-									<input type="file" name="files[]" class="btn btn-default" id="photos" multiple/>
-							    </div>
-							</div>
-							<div class="p-1 mt-2 border text-center">
-								<p>Ajouter une vidéo</p>
-								<input type="file" name="video" class="btn btn-default" id="video"/>
-							</div>
-							<div class="m-4 text-center">
-								<input type="submit" name="submitFichiers" value="Upload fichiers" class="btn-success rounded mr-2">
-						  	</div>
-						</form>
+					<!--<form class="form ml-2 mr-1" action="vente.php" method="POST" enctype="multipart/form-data">-->
+						<div class="p-2 mb-2 border text-center">
+							<div class="custom-file">
+								<p><strong>Ajouter une ou plusieurs photos</strong></p>
+								<input type="file" name="files[]" class="btn btn-default" id="photos" multiple/>
+						    </div>
+						</div>
+						<div class="p-1 mt-2 border text-center">
+							<p>Ajouter une vidéo</p>
+							<input type="file" name="video" class="btn btn-default" id="video"/>
+						</div>
 					</div>
-					
 
 
-
-					<!-- Infos sur l'objet -->
+				<!-- Infos sur l'objet -->
 					<div class="col-lg-9 col-md-9 col-sm-12">
-						<form class="form m-2" action="vente.php" method="POST">
-					  	
-					  	<!-- Nom de l'objet -->
-						  	<div class="form-group">
-						  		<div class="row">
-						    		<div class="col-sm-12 col-md-4 col-lg-4">
-						    			<label class="control-label"><strong>Nom de l'objet </strong></label>
-						    		</div>
-						    		<div class="col-sm-12 col-md-6 col-lg-6 col-xs-6">
-						    			<input type="text" class="form-control" name="nomObj" maxlength="65" autofocus>
-						    		</div>
-						    	</div>
-						  	</div>
- 
-					    <!-- Catégorie -->	
-						    <div class="form-group">
-						    	<div class="row">
-						    		<div class="col-sm-12 col-md-4 col-lg-4">
-							  			<label class="control-label">Catégorie</label>
-							  		</div>
-							  		<div class="col-sm-12 col-md-8 col-lg-8">
-							  			<input type="radio" name="categorie" value="1" id="cat1">
-							  			<label class="control-label" for="cat1" >Ferraille ou trésor</label><br>
+					<!--<form class="form m-2" action="vente.php" method="POST">-->
+				  	<!-- Nom de l'objet -->
+					  	<div class="form-group">
+					  		<div class="row">
+					    		<div class="col-sm-12 col-md-4 col-lg-4">
+					    			<label class="control-label"><strong>Nom de l'objet </strong></label>
+					    		</div>
+					    		<div class="col-sm-12 col-md-6 col-lg-6 col-xs-6">
+					    			<input type="text" class="form-control" name="nomObj" maxlength="65" autofocus>
+					    		</div>
+					    	</div>
+					  	</div>
 
-							  			<input type="radio" name="categorie" value="2" id="cat2">
-							  			<label class="control-label" for="cat2" >Bon pour le musée</label><br>
+				    <!-- Catégorie -->	
+					    <div class="form-group">
+					    	<div class="row">
+					    		<div class="col-sm-12 col-md-4 col-lg-4">
+						  			<label class="control-label">Catégorie</label>
+						  		</div>
+						  		<div class="col-sm-12 col-md-8 col-lg-8">
+						  			<input type="radio" name="categorie" value="1" id="cat1">
+						  			<label class="control-label" for="cat1" >Ferraille ou trésor</label><br>
 
-							  			<input type="radio" name="categorie" value="3" id="cat3">
-							  			<label class="control-label" for="cat3">Accessoire VIP</label>
-							  		</div>
-						    	</div>
-						  	</div>
+						  			<input type="radio" name="categorie" value="2" id="cat2">
+						  			<label class="control-label" for="cat2" >Bon pour le musée</label><br>
 
-						<!-- Type de vente -->
-						  	<div class="form-group">
-						  		<div class="row">
-						  			<div class="col-sm-12 col-md-4 col-lg-4">
-						  				<label class="control-label">Type de vente</label>
-						  			</div>
-						  			<div class="col-md-8 col-lg-8 col-sm-12">
-						  				
-					  				<!-- Achat Immediat -->
-					  					<div class="row mb-1">
-					  						<div class="col-md-6 col-lg-6 col-sm-12">
-					  							<label><input type="checkbox" name="typeVente" id="case1" />Achat immédiat</label>
-					  						</div>
-					  						<div class="col-md-5 col-lg-5 col-sm-12">
-					  							<!-- Affiché si la case est cochée -->
-								  				<div id="achatIm">
-								  					<input type="number" class="form-control" id="prixAchat" name="prixAchat" placeholder="Prix €">
-								  				</div>
-					  						</div>
-					  					</div>
-				  						
-					  				<!-- Meilleure offre -->
-					  					<div class="row mb-1">
-					  						<div class="col-md-6 col-lg-6 col-sm-12">
-					  							<label><input type="radio" name="typeVente" id="case2" />Meilleure offre</label>
-					  						</div>
-					  						<div class="col-md-5 col-lg-5 col-sm-12">
-					  							<!-- Affiché si la case est cochée -->
-							  					<div id="meilleureOffre">
-							  						<input type="number" class="form-control" id="prixMin" name="prixMin" placeholder="Prix minimum €">
-							  					</div>
-					  						</div>
-					  					</div>
+						  			<input type="radio" name="categorie" value="3" id="cat3">
+						  			<label class="control-label" for="cat3">Accessoire VIP</label>
+						  		</div>
+					    	</div>
+					  	</div>
 
-				  					<!-- Enchère -->
-				  						<div class="row">
-					  						<div class="col-md-4 col-lg-4 col-sm-12">
-					  							<label><input type="radio" name="typeVente" id="case3"/>Enchère</label>
-					  						</div>
-					  						<!-- Affiché si la case est cochée -->
-					  						<div id="enchere" class="col-md-8 col-lg-8 col-sm-12">
-					  							<div class="row">
-					  								<div class="col-md-6 col-lg-6 col-sm-6">
-					  									<input type="number" class="form-control" id="prixEnchere" name="prixEnchere" placeholder="Prix de départ €">
-						  							</div>
-						  							<div class="col-md-6 col-lg-6 col-sm-6">
-						  								<input type="datetime-local" class="form-control" id="dateEnchere" name="dateEnchere">
-						  							</div>
+					<!-- Type de vente -->
+					  	<div class="form-group">
+					  		<div class="row">
+					  			<div class="col-sm-12 col-md-4 col-lg-4">
+					  				<label class="control-label">Type de vente</label>
+					  			</div>
+					  			<div class="col-md-8 col-lg-8 col-sm-12">
+					  				
+				  				<!-- Achat Immediat -->
+				  					<div class="row mb-1">
+				  						<div class="col-md-6 col-lg-6 col-sm-12">
+				  							<label><input type="checkbox" name="typeVente" id="case1" />Achat immédiat</label>
+				  						</div>
+				  						<div class="col-md-5 col-lg-5 col-sm-12">
+				  							<!-- Affiché si la case est cochée -->
+							  				<div id="achatIm">
+							  					<input type="number" class="form-control" id="prixAchat" name="prixAchat" placeholder="Prix €">
+							  				</div>
+				  						</div>
+				  					</div>
+			  						
+				  				<!-- Meilleure offre -->
+				  					<div class="row mb-1">
+				  						<div class="col-md-6 col-lg-6 col-sm-12">
+				  							<label><input type="radio" name="typeVente" id="case2" />Meilleure offre</label>
+				  						</div>
+				  						<div class="col-md-5 col-lg-5 col-sm-12">
+				  							<!-- Affiché si la case est cochée -->
+						  					<div id="meilleureOffre">
+						  						<input type="number" class="form-control" id="prixMin" name="prixMin" placeholder="Prix minimum €">
+						  					</div>
+				  						</div>
+				  					</div>
+
+			  					<!-- Enchère -->
+			  						<div class="row">
+				  						<div class="col-md-4 col-lg-4 col-sm-12">
+				  							<label><input type="radio" name="typeVente" id="case3"/>Enchère</label>
+				  						</div>
+				  						<!-- Affiché si la case est cochée -->
+				  						<div id="enchere" class="col-md-8 col-lg-8 col-sm-12">
+				  							<div class="row">
+				  								<div class="col-md-6 col-lg-6 col-sm-6">
+				  									<input type="number" class="form-control" id="prixEnchere" name="prixEnchere" placeholder="Prix de départ €">
 					  							</div>
-					  						</div>
-					  					</div>
+					  							<div class="col-md-6 col-lg-6 col-sm-6">
+					  								<input type="datetime-local" class="form-control" id="dateEnchere" name="dateEnchere">
+					  							</div>
+				  							</div>
+				  						</div>
+				  					</div>
 
-					  				<!-- Bouton pour tout décocher -->
-					  					<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoix">Réinitialiser les choix</button>
+				  				<!-- Bouton pour tout décocher -->
+				  					<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoix">Réinitialiser les choix</button>
 
-						  			</div>
+					  			</div>
+					  		</div>
+					  	</div>
+
+					<!-- Description complète -->
+					  	<div class="form-group">
+					  		<div class="row">
+					  			<div class="col-md-4 col-lg-4 col-sm-12">
+						  			<label class="control-label">Description complète</label>
 						  		</div>
-						  	</div>
-
-						<!-- Description complète -->
-						  	<div class="form-group">
-						  		<div class="row">
-						  			<div class="col-md-4 col-lg-4 col-sm-12">
-							  			<label class="control-label">Description complète</label>
-							  		</div>
-							  		<div class="col-md-8 col-lg-8 col-sm-12">
-							  			<textarea class="form-control" rows="5" name="description" placeholder="Etat, qualité, année de fabrication etc." maxlength="255"></textarea>
-							  		</div>
+						  		<div class="col-md-8 col-lg-8 col-sm-12">
+						  			<textarea class="form-control" rows="5" name="description" placeholder="Etat, qualité, année de fabrication etc." maxlength="255"></textarea>
 						  		</div>
-						  	</div>
-
-						  	<!-- Submit formulaire infos-->
-							<div class="text-center p-4">
-								<input type="submit" name="submitInfos" value="Mettre en vente" class="btn-success rounded mr-2" id="btnForm">
-						  	</div>
-
-					 	</form>
+					  		</div>
+					  	</div>
 					</div>
+
+				<!-- SUBMIT FORM -->
+					<div class="col-sm-12 text-center p-4">
+						<input type="submit" name="submit" value="Mettre en vente" class="btn-success rounded btn-lg" id="btnForm">
+				  	</div>
+
 				</div>
+			</form>
 		</div>
 	</div>
 
