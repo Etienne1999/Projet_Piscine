@@ -53,6 +53,11 @@ if(isset($_POST['submit']))
 				echo "Requete update infos Prix Achat Immediat pas ok..<br>";
 			}
 		}
+		//Sinon on le met = à 0
+		else
+		{
+			$sql = "UPDATE produit SET Prix_Achat = 0 WHERE Nom = '$nomObj' ";
+		}
 	//Test meilleure offre
 		//Si coché, on update le prix
 		if ($prixMin != "") 
@@ -68,6 +73,11 @@ if(isset($_POST['submit']))
 				echo "Requete update infos Prix Meilleure Offre pas ok..<br>";
 			}
 		}
+		//Sinon on le met = à 0 
+		else
+		{
+			$sql = "UPDATE produit SET Prix_min = 0 WHERE Nom = '$nomObj'";
+		}
 	//Test enchère
 		//Si coché, on update le prix et la date
 		if ($prixEnchere != "") 
@@ -82,6 +92,11 @@ if(isset($_POST['submit']))
 			else{
 				echo "Requete update infos Prix et Date Enchere pas ok..<br>";
 			}
+		}
+		//Sinon on le met = à 0 (pas besoin pour la date)
+		else
+		{
+			$sql = "UPDATE produit SET Prix_Enchere = 0 WHERE Nom = '$nomObj'";
 		}
 
 
@@ -190,7 +205,7 @@ if(isset($_POST['submit']))
 			echo "Pas de vidéo upload <br>";
 		}
 	}
-} 
+}
 ?>
 
 
@@ -220,8 +235,15 @@ if(isset($_POST['submit']))
 			//on cache le formulaire d'ajout d'un objet à la vente
 			$("#affichageFormulaire").hide();
 
-			//quand on clique sur le bouton 'nouvelle vente'
-			$("#btnAccueil").click(function()
+			//quand on clique sur le bouton 'nouvelle vente' 1
+			$("#btnAccueil1").click(function()
+			{
+				//on switch l'affichage 
+				$("#affichageAccueil").toggle();
+				$("#affichageFormulaire").toggle();
+			});
+			//quand on clique sur le bouton 'nouvelle vente' 2
+			$("#btnAccueil2").click(function()
 			{
 				//on switch l'affichage 
 				$("#affichageAccueil").toggle();
@@ -328,10 +350,10 @@ if(isset($_POST['submit']))
 
 					<!-- Boutons nouvelle vente -->
 					<div class="text-center pt-4 pb-4">
-						<button type="button" class="btn btn-outline-light rounded-circle" id="btnAccueil">
+						<button type="button" class="btn btn-outline-light rounded-circle" id="btnAccueil1">
 							<strong>+</strong>
 						</button>
-						<button type="button" class="btn btn-light rounded ml-2" id="btnAccueil">
+						<button type="button" class="btn btn-light rounded ml-2" id="btnAccueil2">
 							<h4>Vendre</h4>
 							<h6>un nouvel objet</h6>
 						</button>
@@ -374,7 +396,7 @@ if(isset($_POST['submit']))
 
 
 					<!-- Ajout photos et vidéo -->
-					<div class="col-lg-3 col-md-3 col-sm-12 border-right">
+					<div class="col-lg-4 col-md-4 col-sm-12 border-right">
 						<!--<form class="form ml-2 mr-1" action="vente.php" method="POST" enctype="multipart/form-data">-->
 							<div class="p-2 mb-2 border text-center">
 								<div class="custom-file">
@@ -390,7 +412,7 @@ if(isset($_POST['submit']))
 
 
 						<!-- Infos sur l'objet -->
-						<div class="col-lg-9 col-md-9 col-sm-12">
+						<div class="col-lg-8 col-md-8 col-sm-12">
 							<!--<form class="form m-2" action="vente.php" method="POST">-->
 								<!-- Nom de l'objet -->
 								<div class="form-group">
