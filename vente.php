@@ -13,6 +13,18 @@ if(isset($_POST['submitFichiers']))
 {	
 	if ($db_found) 
 	{
+		//création d'un nouveau produit, avec titre temporaire
+		$sql = "INSERT INTO produit(Nom) VALUES('New Produit Name Temp') ";
+		$result = mysqli_query($db_handle, $sql);
+		//Test requete
+		if ($result) {
+			echo "Requete nouveau produit ok!";
+		}
+		else{
+			echo "Requete nouveau produit pas ok..";
+		}
+
+
 		//1. Upload des fichiers
 		///Emplacement d'enregistrement des fichier
 		$valuefldr = './img';
@@ -43,19 +55,16 @@ if(isset($_POST['submitFichiers']))
 					</script>
 					<?php
 
-					//envois des données vers BDD
-					$sql = "INSERT INTO produit(ID, Nom, Description, Video, Prix_Achat, Prix_Enchere, Date_Enchere, Prix_Min
-
-
-					$sql = "INSERT INTO img_produit (URL) VALUES('$file_name')";
+					//ajout URL de la photo dans la table img_produit avec l'ID du produit
+					$sql = "INSERT INTO img_produit VALUES((SELECT ID FROM produit WHERE Nom = 'New Produit Name Temp'),'%$file_name%')";
 					$result = mysqli_query($db_handle, $sql);
 
 					//Test requete
 					if ($result) {
-						echo "Requete photo ok!";
+						echo "Requete nouvelle photo ok!";
 					}
 					else{
-						echo "Requete photo pas ok..";
+						echo "Requete nouvelle photo pas ok..";
 					}
 				}
 				else
@@ -102,8 +111,8 @@ if(isset($_POST['submitFichiers']))
 					</script>
 					<?php
 
-					//envois des données vers BDD
-					$sql = "INSERT INTO produit(Video) VALUES($video_name')";
+					//ajout URL vidéo dans la fiche du produit
+					$sql = "UPDATE produit SET Video = '%$video_name%' WHERE Nom = 'New Produit Name Temp'";
 					$result = mysqli_query($db_handle, $sql);
 
 					//Test requete
@@ -137,16 +146,74 @@ if(isset($_POST['submitFichiers']))
 
 //-----------------------------------------------------------------------------------------------------
 //Formulaire 2 : INFOS OBJET 
+if(isset($_POST['submitInfos']))
+{
+	if (db_found) 
+	{
+		//Récupération des données
+		$nomObj = isset($_POST['nomObj'])? $_POST['nomObj'] : "";
+		$categorie = isset($_POST['categorie'])? $_POST['categorie'] : "";
+		$prixAchat = isset($_POST['prixAchat'])? $_POST['prixAchat'] : "";
+		$prixMin = isset($_POST['prixMin'])? $_POST['prixMin'] : "";
+		$prixEnchere = isset($_POST['prixEnchere'])? $_POST['prixEnchere'] : "";
+		$dateEnchere = isset($_POST['dateEnchere'])? $_POST['dateEnchere'] : "";
+		$description = isset($_POST['description'])? $_POST['description'] : "";
 
-//Récupération des données
-$nomObj = $_POST['nomObj'];
-$categorie = $_POST['categorie'];
-$prixAchat = $_POST['prixAchat'];
-$prixMin = $_POST['prixMin'];
-$prixEnchere = $_POST['prixEnchere'];
-$dateEnchere = $_POST['dateEnchere'];
-$description = $_POST['description'];
+		//Update des infos du produit temporaire à partir du formulaire 'Infos'
+		$sql = "UPDATE produit SET Nom = '%$nomObj%', Description = '%$description%', Categorie = '%$categorie%' WHERE Nom = 'New Produit Name Temp'";
+		$result = mysqli_query($db_handle, $sql);
+		//Test requete
+		if ($result) {
+			echo "Requete update infos (avant prix) ok!";
+		}
+		else{
+			echo "Requete update infos (avant prix) pas ok..";
+		}
 
+	//Test prix achat
+		//Si coché, on update le prix
+		if ($prixAchat != "") 
+		{
+			$sql = "UPDATE produit SET Prix_Achat = '%$prixAchat%' WHERE Nom = '%$nomObj%' ";
+			$result = mysqli_query($db_handle, $sql);
+			//Test requete
+			if ($result) {
+				echo "Requete update infos Prix Achat Immediat ok!";
+			}
+			else{
+				echo "Requete update infos Prix Achat Immediat pas ok..";
+			}
+		}
+	//Test meilleure offre
+		//Si coché, on update le prix
+		if ($prixMin != "") 
+		{
+			$sql = "UPDATE produit SET Prix_min = '%$prixMin%' WHERE Nom = '%$nomObj%'";
+			$result = mysqli_query($db_handle, $sql);
+			//Test requete
+			if ($result) {
+				echo "Requete update infos Prix Meilleure Offre ok!";
+			}
+			else{
+				echo "Requete update infos Prix Meilleure Offre pas ok..";
+			}
+		}
+	//Test enchère
+		//Si coché, on update le prix et la date
+		if ($prixEnchere != "") 
+		{
+			$sql = "UPDATE produit SET Prix_Enchere = '%$prixEnchere%', Date_fin_enchere = '%$dateEnchere%' WHERE Nom = '%$nomObj%'";
+			$result = mysqli_query($db_handle, $sql);
+			//Test requete
+			if ($result) {
+				echo "Requete update infos Prix et Date Enchere ok!";
+			}
+			else{
+				echo "Requete update infos Prix et Date Enchere pas ok..";
+			}
+		}
+	}
+}
   
 ?>
 
