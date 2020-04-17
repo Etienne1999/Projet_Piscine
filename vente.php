@@ -44,6 +44,9 @@ if(isset($_POST['submitFichiers']))
 					<?php
 
 					//envois des données vers BDD
+					$sql = "INSERT INTO produit(ID, Nom, Description, Video, Prix_Achat, Prix_Enchere, Date_Enchere, Prix_Min
+
+
 					$sql = "INSERT INTO img_produit (URL) VALUES('$file_name')";
 					$result = mysqli_query($db_handle, $sql);
 
@@ -100,7 +103,7 @@ if(isset($_POST['submitFichiers']))
 					<?php
 
 					//envois des données vers BDD
-					$sql = "INSERT INTO produit (Video) VALUES('$video_name')";
+					$sql = "INSERT INTO produit(Video) VALUES($video_name')";
 					$result = mysqli_query($db_handle, $sql);
 
 					//Test requete
@@ -133,24 +136,18 @@ if(isset($_POST['submitFichiers']))
 } 
 
 //-----------------------------------------------------------------------------------------------------
-//Formulaire 2 : INFOS OBJET
-if (isset($_POST['submitInfos'])) 
-{
-	$nomObj = $_POST['nomObj'];
-	$categorie = $_POST['categorie'];
-	$prix = $_POST['prix'];
+//Formulaire 2 : INFOS OBJET 
 
-	$description = $_POST['description'];
+//Récupération des données
+$nomObj = $_POST['nomObj'];
+$categorie = $_POST['categorie'];
+$prixAchat = $_POST['prixAchat'];
+$prixMin = $_POST['prixMin'];
+$prixEnchere = $_POST['prixEnchere'];
+$dateEnchere = $_POST['dateEnchere'];
+$description = $_POST['description'];
 
-	//Si typeVente == enchère, alors il faut un prix min et une date en +
-
-	if ($db_found) {
-		$sql = "INSERT INTO produit";
-
-
-	}
-
-}  
+  
 ?>
 
 
@@ -254,7 +251,7 @@ if (isset($_POST['submitInfos']))
 				$("#meilleureOffre").hide();
 				$("#enchere").hide();
 
-				//on reset les données
+				//on reset les données rentrées
 				$("#prixAchat").val('');
 				$("#prixMin").val('');
 				$("#prixEnchere").val('');
