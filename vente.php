@@ -96,7 +96,6 @@ if(isset($_POST['submitFichiers']))
 					?>
 					<script>
 						alert('Vidéo téléchargée avec succès');
-						window.location.href='#';
 					</script>
 					<?php
 
@@ -117,7 +116,6 @@ if(isset($_POST['submitFichiers']))
 					?>
 					<script>
 						alert('Erreur de téléchargement de la vidéo');
-						window.location.href='#';
 					</script>
 					<?php
 				}
@@ -127,7 +125,6 @@ if(isset($_POST['submitFichiers']))
 				?>
 				<script>
 					alert('Format de vidéo non pris en charge');
-					window.location.href='#';
 				</script>
 				<?php
 			}
@@ -142,7 +139,7 @@ if (isset($_POST['submitInfos']))
 	$nomObj = $_POST['nomObj'];
 	$categorie = $_POST['categorie'];
 	$prix = $_POST['prix'];
-	//$typeVente = $_POST['typeVente'];
+
 	$description = $_POST['description'];
 
 	//Si typeVente == enchère, alors il faut un prix min et une date en +
@@ -256,6 +253,12 @@ if (isset($_POST['submitInfos']))
 				$("#achatIm").hide();
 				$("#meilleureOffre").hide();
 				$("#enchere").hide();
+
+				//on reset les données
+				$("#prixAchat").val('');
+				$("#prixMin").val('');
+				$("#prixEnchere").val('');
+				$("#dateEnchere").val('');
 			});
 		})
 	</script>
@@ -275,7 +278,7 @@ if (isset($_POST['submitInfos']))
 	<!-- Conteneur -->
 	<div class="container-fluid">
 
-		<!-- Page d'accueil vente -->
+	<!-- Page d'accueil vente -->
 		<div id="affichageAccueil">
 			<div class="row pt-2">
 
@@ -322,7 +325,7 @@ if (isset($_POST['submitInfos']))
 
 
 
-		<!-- Formulaire nouvel objet en vente -->
+	<!-- Formulaire nouvel objet en vente -->
 		<div id="affichageFormulaire">
 			<h3 class="text-center font-weight-bold pt-2 pb-4"><u>Nouvelle vente</u></h3>
 			
@@ -358,8 +361,7 @@ if (isset($_POST['submitInfos']))
 						  	<div class="form-group">
 						  		<div class="row">
 						    		<div class="col-sm-12 col-md-4 col-lg-4">
-						    			<label class="control-label"><strong>Nom de l'objet</strong></label>
-						    			<hr>
+						    			<label class="control-label"><strong>Nom de l'objet </strong></label>
 						    		</div>
 						    		<div class="col-sm-12 col-md-6 col-lg-6 col-xs-6">
 						    			<input type="text" class="form-control" name="nomObj" maxlength="65" autofocus>
@@ -372,7 +374,6 @@ if (isset($_POST['submitInfos']))
 						    	<div class="row">
 						    		<div class="col-sm-12 col-md-4 col-lg-4">
 							  			<label class="control-label">Catégorie</label>
-							  			<hr>
 							  		</div>
 							  		<div class="col-sm-12 col-md-8 col-lg-8">
 							  			<input type="radio" name="categorie" value="1" id="cat1">
@@ -392,19 +393,18 @@ if (isset($_POST['submitInfos']))
 						  		<div class="row">
 						  			<div class="col-sm-12 col-md-4 col-lg-4">
 						  				<label class="control-label">Type de vente</label>
-						    			<hr>
 						  			</div>
 						  			<div class="col-md-8 col-lg-8 col-sm-12">
 						  				
 					  				<!-- Achat Immediat -->
 					  					<div class="row mb-1">
 					  						<div class="col-md-6 col-lg-6 col-sm-12">
-					  							<input type="checkbox" name="typeVente" id="case1" /> <label for="case2">Achat immédiat</label>
+					  							<label><input type="checkbox" name="typeVente" id="case1" />Achat immédiat</label>
 					  						</div>
 					  						<div class="col-md-5 col-lg-5 col-sm-12">
 					  							<!-- Affiché si la case est cochée -->
 								  				<div id="achatIm">
-								  					<input type="number" class="form-control" name="prixAchat" placeholder="Prix €">
+								  					<input type="number" class="form-control" id="prixAchat" name="prixAchat" placeholder="Prix €">
 								  				</div>
 					  						</div>
 					  					</div>
@@ -412,12 +412,12 @@ if (isset($_POST['submitInfos']))
 					  				<!-- Meilleure offre -->
 					  					<div class="row mb-1">
 					  						<div class="col-md-6 col-lg-6 col-sm-12">
-					  							<input type="radio" name="typeVente" id="case2" /> <label for="case3">Meilleure offre</label>
+					  							<label><input type="radio" name="typeVente" id="case2" />Meilleure offre</label>
 					  						</div>
 					  						<div class="col-md-5 col-lg-5 col-sm-12">
 					  							<!-- Affiché si la case est cochée -->
 							  					<div id="meilleureOffre">
-							  						<input type="number" class="form-control" name="prixMin" placeholder="Prix minimum €">
+							  						<input type="number" class="form-control" id="prixMin" name="prixMin" placeholder="Prix minimum €">
 							  					</div>
 					  						</div>
 					  					</div>
@@ -425,16 +425,16 @@ if (isset($_POST['submitInfos']))
 				  					<!-- Enchère -->
 				  						<div class="row">
 					  						<div class="col-md-4 col-lg-4 col-sm-12">
-					  							<input type="radio" name="typeVente" id="case3" /> <label for="case1">Enchère</label>
+					  							<label><input type="radio" name="typeVente" id="case3"/>Enchère</label>
 					  						</div>
 					  						<!-- Affiché si la case est cochée -->
 					  						<div id="enchere" class="col-md-8 col-lg-8 col-sm-12">
 					  							<div class="row">
 					  								<div class="col-md-6 col-lg-6 col-sm-6">
-					  									<input type="number" class="form-control" name="prixEnchere" placeholder="Prix de départ €">
+					  									<input type="number" class="form-control" id="prixEnchere" name="prixEnchere" placeholder="Prix de départ €">
 						  							</div>
 						  							<div class="col-md-6 col-lg-6 col-sm-6">
-						  								<input type="datetime-local" class="form-control" name="dateEnchere">
+						  								<input type="datetime-local" class="form-control" id="dateEnchere" name="dateEnchere">
 						  							</div>
 					  							</div>
 					  						</div>
@@ -450,9 +450,8 @@ if (isset($_POST['submitInfos']))
 						<!-- Description complète -->
 						  	<div class="form-group">
 						  		<div class="row">
-						  			<div class="col-md-4 col-lg-4 col-sm-12 ">
+						  			<div class="col-md-4 col-lg-4 col-sm-12">
 							  			<label class="control-label">Description complète</label>
-							  			<hr>
 							  		</div>
 							  		<div class="col-md-8 col-lg-8 col-sm-12">
 							  			<textarea class="form-control" rows="5" name="description" placeholder="Etat, qualité, année de fabrication etc." maxlength="255"></textarea>
