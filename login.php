@@ -15,7 +15,7 @@
 	if ($db_found){
 
 		if (isset($_POST['btn_login'])){
-
+			
 			//Si tout les champs sont correctement rempli on cherche l'utilisateur dans la bdd
 			if (!(empty($login) || empty($password))){
 
@@ -33,7 +33,7 @@
 					$_SESSION['user_Pseudo'] = $data['Pseudo'];
 					$_SESSION['user_Email'] = $data['Email'];
 					$_SESSION['user_Role'] = $data['Role'];
-					$_SESSION['panier'][]= 0;
+					$_SESSION['panier'][] = "0";
 
 					mysqli_close($db_handle);
 

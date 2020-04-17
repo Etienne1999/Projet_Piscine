@@ -99,7 +99,7 @@
 			<div >
 				<?php if ($data3 > 0)
 				{ ?>
-					<br><a href="#" class="btn btn-primary btn-block is-invalid"><H3> Procéder à l'enchere </H3> </a> 
+					<br><a href="enchere.php?id=<?php echo $produit ?>" class="btn btn-primary btn-block is-invalid"><H3> Procéder à l'enchere </H3> </a> 
 
 				<?php	}
 				?>			
@@ -107,7 +107,7 @@
 			<div >
 				<?php if ($data4 > 0)
 				{ ?>
-					<br><a href="#" class="btn btn-primary btn-block is-invalid"><H3> Accéder à la meilleure offre </H3> </a> 
+					<br><a href="meilleure_offre.php?id=<?php echo $produit ?>" class="btn btn-primary btn-block is-invalid"><H3> Accéder à la meilleure offre </H3> </a> 
 
 				<?php	}
 				?>

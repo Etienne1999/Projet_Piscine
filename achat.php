@@ -290,7 +290,7 @@
 						 ?>								
 							<div class="container" id="affichage">
 							  	<div class="card" style="margin-top: 20px; max-width: 600px;">
-								  	<img class="card-img-top" src="<?php echo $data['img']; ?>" alt="Card image"   height="450">
+								  	<img class="card-img-top" src="img/france1" alt="Card image"   height="450">
 								  	<div class="card-body">
 								    	<h4 class="card-title"><?php echo $data['ID'] . ". ". $data['Nom'];?></h4>
 								    	<h6> 	<?php 	echo "Disponible :";
