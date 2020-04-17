@@ -143,7 +143,7 @@ if(isset($_POST['submit']))
 
 	//b) VIDEO
 		//check si une video a été upload
-		if (isset($_FILES['video']))
+		if (is_uploaded_file($_FILES['video']['tmp_name']))
 		{
 			$video_name = $_FILES['video']['name'];
 			$video_tmp = $_FILES['video']['tmp_name'];
@@ -163,7 +163,7 @@ if(isset($_POST['submit']))
 					echo "Vidéo téléchargée avec succès<br>";
 
 					//ajout URL vidéo dans la fiche du produit
-					$sql = "UPDATE produit SET Video = '%$video_name%' WHERE Nom = '%$nomObj%'";
+					$sql = "UPDATE produit SET Video = '$video_name' WHERE Nom = '$nomObj'";
 
 					//Test requete
 					$result = mysqli_query($db_handle, $sql);
