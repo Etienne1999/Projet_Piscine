@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mer. 15 avr. 2020 à 01:06
+-- Généré le :  ven. 17 avr. 2020 à 11:51
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -39,8 +39,20 @@ CREATE TABLE IF NOT EXISTS `adresse` (
   `Code_Postal` varchar(255) NOT NULL,
   `Pays` varchar(255) NOT NULL,
   `Telephone` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `ID_User` int(11) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `ID_User` (`ID_User`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `adresse`
+--
+
+INSERT INTO `adresse` (`ID`, `Ligne_1`, `Ligne_2`, `Ville`, `Code_Postal`, `Pays`, `Telephone`, `ID_User`) VALUES
+(1, '15 rue guillaume apollinaire', NULL, 'Saint Denis', '93200', 'France ', '01 02 03 04 05', 1),
+(2, '37 Quai de grenelle', 'zeae', 'Paris', '75015', 'France', '01 03 02 04 05', 1),
+(4, '37 Quai de grenelle', NULL, 'Paris', '75015', 'France', '01 03 02 05 01', 1),
+(5, '37 Quai de grenelle', NULL, 'Paris', '75015', 'France', '01 03 02 05 01', 1);
 
 -- --------------------------------------------------------
 
@@ -51,16 +63,28 @@ CREATE TABLE IF NOT EXISTS `adresse` (
 DROP TABLE IF EXISTS `carte_bancaire`;
 CREATE TABLE IF NOT EXISTS `carte_bancaire` (
   `Numero_Carte` varchar(255) NOT NULL,
-  `Nom_Propietaire` varchar(255) NOT NULL,
+  `Nom_Proprietaire` varchar(255) NOT NULL,
   `Date_exp` date NOT NULL,
+  `CVV` int(11) NOT NULL,
+  `Plafond` int(11) DEFAULT NULL COMMENT 'Si null alors pas de plafond',
   `ID_User` int(11) NOT NULL,
   `Type` int(11) NOT NULL,
-  `Adresse_Facturation` int(11) NOT NULL,
+  `Adresse_Facturation` int(11) DEFAULT NULL,
   PRIMARY KEY (`Numero_Carte`),
   KEY `Adresse_Facturation` (`Adresse_Facturation`),
   KEY `carte_bancaire_ibfk_2` (`Type`),
   KEY `carte_bancaire_ibfk_3` (`ID_User`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `carte_bancaire`
+--
+
+INSERT INTO `carte_bancaire` (`Numero_Carte`, `Nom_Proprietaire`, `Date_exp`, `CVV`, `Plafond`, `ID_User`, `Type`, `Adresse_Facturation`) VALUES
+('1234123412341234', 'DIAS DA SILVA', '2020-01-01', 213, NULL, 1, 2, 2),
+('7987514573582530', 'DIAS DA SILVA', '2022-01-01', 841, NULL, 1, 3, 1),
+('9172321441098454', 'DIAS DA SILVA', '2021-03-01', 231, 500, 1, 2, 2),
+('9900940620967860', 'DIAS DA SILVA', '2020-04-01', 111, NULL, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -97,6 +121,17 @@ CREATE TABLE IF NOT EXISTS `cheque_cadeau` (
   `Montant` double NOT NULL,
   PRIMARY KEY (`Numero_Carte`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `cheque_cadeau`
+--
+
+INSERT INTO `cheque_cadeau` (`Numero_Carte`, `Montant`) VALUES
+('3135593021726809', 15),
+('3639105189200888', 75),
+('7228364643893480', 15),
+('8844954369134026', 25),
+('9753923560804818', 150);
 
 -- --------------------------------------------------------
 
@@ -148,7 +183,17 @@ CREATE TABLE IF NOT EXISTS `coupon_reduc` (
   `Date_exp` datetime DEFAULT NULL,
   `Utilisations` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `coupon_reduc`
+--
+
+INSERT INTO `coupon_reduc` (`ID`, `Montant`, `Type`, `Code`, `Date_exp`, `Utilisations`) VALUES
+(1, 15, 1, 'SEGADO420', '2020-04-19 23:55:05', NULL),
+(2, 5, 0, 'PAQUES2020', NULL, NULL),
+(3, 20, 0, 'PREMIEREFOIS', NULL, 1),
+(4, 40, 1, 'TEST', '1998-06-18 15:05:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -173,10 +218,9 @@ CREATE TABLE IF NOT EXISTS `enchere` (
 
 DROP TABLE IF EXISTS `img_produit`;
 CREATE TABLE IF NOT EXISTS `img_produit` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Produit` int(11) NOT NULL,
   `URL` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`),
+  PRIMARY KEY (`Produit`),
   KEY `img_produit_ibfk_1` (`Produit`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -212,6 +256,7 @@ CREATE TABLE IF NOT EXISTS `produit` (
   `Nom` varchar(255) NOT NULL,
   `Description` varchar(255) NOT NULL,
   `Video` varchar(255) DEFAULT NULL,
+  `Prix_min` double DEFAULT NULL COMMENT 'prix mini offre d''achat',
   `Prix_Achat` double DEFAULT NULL,
   `Prix_Enchere` double DEFAULT NULL,
   `Date_fin_enchere` datetime DEFAULT NULL,
@@ -226,10 +271,10 @@ CREATE TABLE IF NOT EXISTS `produit` (
 -- Déchargement des données de la table `produit`
 --
 
-INSERT INTO `produit` (`ID`, `Nom`, `Description`, `Video`, `Prix_Achat`, `Prix_Enchere`, `Date_fin_enchere`, `Vendeur`, `Categorie`) VALUES
-(1, 'Le précieux', 'test bijou', NULL, 500, NULL, NULL, 1, 3),
-(2, 'Pieces d\'or romain', 'Lot de 200 pieces', NULL, 2000, 1500, '2020-04-16 13:37:00', 2, 1),
-(3, 'Mona Lisa', 'tqt bro ', NULL, NULL, 1000000, '2020-04-19 23:55:00', 3, 2);
+INSERT INTO `produit` (`ID`, `Nom`, `Description`, `Video`, `Prix_min`, `Prix_Achat`, `Prix_Enchere`, `Date_fin_enchere`, `Vendeur`, `Categorie`) VALUES
+(1, 'Le précieux', 'test bijou', NULL, NULL, 500, NULL, NULL, 1, 3),
+(2, 'Pieces d\'or romain', 'Lot de 200 pieces', NULL, NULL, 2000, 1500, '2020-04-16 13:37:00', 2, 1),
+(3, 'Mona Lisa', 'tqt bro ', NULL, NULL, NULL, 1000000, '2020-04-19 23:55:00', 3, 2);
 
 -- --------------------------------------------------------
 
@@ -295,31 +340,39 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   `Pseudo` varchar(255) NOT NULL,
   `Password` varchar(255) NOT NULL,
   `Email` varchar(255) NOT NULL,
-  `Adresse` int(11) DEFAULT NULL,
+  `Adresse` int(11) DEFAULT NULL COMMENT 'Adresse principale',
+  `Carte_Paiement` varchar(255) DEFAULT NULL COMMENT 'Moyen de paiement par defaut',
   `Role` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `Role` (`Role`),
-  KEY `utilisateur_ibfk_1` (`Adresse`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+  KEY `utilisateur_ibfk_1` (`Adresse`),
+  KEY `Carte_Paiement` (`Carte_Paiement`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`ID`, `Nom`, `Prenom`, `Pseudo`, `Password`, `Email`, `Adresse`, `Role`) VALUES
-(1, 'DIAS DA SILVA', 'Daniel', 'Magic-System', 'azerty', 'daniel.dias-da-silva@edu.ece.fr', NULL, 1),
-(2, 'GESLIN', 'Etienne', 'Xoxonoxir', 'qwerty', 'etienne.geslin@edu.ece.fr', NULL, 1),
-(3, 'KOZLOW', 'Constantin', 'saladetomate', 'azertyuiop', 'constantin.kozlow@edu.ece.fr', NULL, 1);
+INSERT INTO `utilisateur` (`ID`, `Nom`, `Prenom`, `Pseudo`, `Password`, `Email`, `Adresse`, `Carte_Paiement`, `Role`) VALUES
+(1, 'DIAS DA SILVA', 'Daniel', 'Magic-System', 'azerty', 'daniel.dias-da-silva@edu.ece.fr', 1, '1234123412341234', 1),
+(2, 'GESLIN', 'Etienne', 'Xoxonoxir', 'qwerty', 'etienne.geslin@edu.ece.fr', NULL, NULL, 1),
+(3, 'KOZLOW', 'Constantin', 'saladetomate', 'azertyuiop', 'constantin.kozlow@edu.ece.fr', NULL, NULL, 1);
 
 --
 -- Contraintes pour les tables déchargées
 --
 
 --
+-- Contraintes pour la table `adresse`
+--
+ALTER TABLE `adresse`
+  ADD CONSTRAINT `adresse_ibfk_1` FOREIGN KEY (`ID_User`) REFERENCES `utilisateur` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Contraintes pour la table `carte_bancaire`
 --
 ALTER TABLE `carte_bancaire`
-  ADD CONSTRAINT `carte_bancaire_ibfk_1` FOREIGN KEY (`Adresse_Facturation`) REFERENCES `adresse` (`ID`),
+  ADD CONSTRAINT `carte_bancaire_ibfk_1` FOREIGN KEY (`Adresse_Facturation`) REFERENCES `adresse` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `carte_bancaire_ibfk_2` FOREIGN KEY (`Type`) REFERENCES `type_carte` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `carte_bancaire_ibfk_3` FOREIGN KEY (`ID_User`) REFERENCES `utilisateur` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -369,7 +422,8 @@ ALTER TABLE `produit`
 --
 ALTER TABLE `utilisateur`
   ADD CONSTRAINT `utilisateur_ibfk_1` FOREIGN KEY (`Adresse`) REFERENCES `adresse` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `utilisateur_ibfk_2` FOREIGN KEY (`Role`) REFERENCES `role` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `utilisateur_ibfk_2` FOREIGN KEY (`Role`) REFERENCES `role` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `utilisateur_ibfk_3` FOREIGN KEY (`Carte_Paiement`) REFERENCES `carte_bancaire` (`Numero_Carte`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
