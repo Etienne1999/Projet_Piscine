@@ -37,3 +37,11 @@
 .add_carte{
 	font-size: small;
 }
+
+.btn-link{
+	color: #007a7b;
+}
+
+.btn-link:hover{
+	color: #007a7b;
+}
