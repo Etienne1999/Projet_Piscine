@@ -182,21 +182,29 @@
 		if (mysqli_num_rows($result)) {
 			
 			while ($data = mysqli_fetch_assoc($result)) {
-				/*
+				$commande_id = $data['ID'];
 				echo '<div class="card mb-1 mr-1">
-						<div class="card-header">
+						<div class="card-header ">
 							<h5 class="mb-0">
-								<button class="btn btn-link" data-toggle="collapse" data-target="#default_card">Commande effectuée le' . $data['Date_Commande'] . '</button><br>
-								<span>Total : ' . $data['Montant_Total'] . '</span>
+								<button class="btn btn-link" data-toggle="collapse" data-target="#c' . $commande_id . '">Commande effectuée le ' . $data['Date_Commande'] . '</button><br>
+								<span style="color: #007a7b;">Total : ' . $data['Montant_total'] . ' €</span>
 							</h5>
 						</div>
-						<div id="default_card" class="collapse">
-							<div class="card-body">
-								Pas de carte
-							</div>
+						<div id="c' . $commande_id . '" class="collapse">
+							<div class="card-body">';
+				$sql_commande_detail = "SELECT cd.*, produit.Nom, utilisateur.Pseudo FROM commande_detail AS cd, produit, utilisateur WHERE cd.Commande = '$commande_id' AND cd.Objet = produit.ID AND produit.Vendeur = utilisateur.ID";
+
+				$detail = mysqli_query($db_handle, $sql_commande_detail);
+				while ($data_cd = mysqli_fetch_assoc($detail)) {
+					echo "<b>" . $data_cd['Nom'] . "</b><br>";
+					echo 'Vendu par : ' . $data_cd['Pseudo'] . "<br>";
+					echo "EUR " . $data_cd['Montant'] . "<br>";
+					echo "Quantité : " . $data_cd['Quantite'] . "<br>";
+					echo "<br>";
+				}
+				echo 		'</div>
 						</div>
 					</div>';
-				*/
 			}
 
 		}

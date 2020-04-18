@@ -7,7 +7,7 @@
 
 #accordeon_paiement {
 	height: 200px;
-	overflow-y: scroll;
+	overflow-y: auto;
 	overflow-x: hidden;
 }
 
@@ -47,7 +47,7 @@
 }
 
 .box-commande{
-	max-height: 488px;
+	max-height: 450px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
