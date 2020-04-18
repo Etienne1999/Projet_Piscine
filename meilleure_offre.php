@@ -44,7 +44,7 @@ include ("database/db_connect.php");
 				$id = $_GET['id'];
 				$data2 = $data3 = $data4 = 0;
 
-				$sql = "SELECT  produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE produit.ID like '%$id%'  ";
+				$sql = "SELECT  produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE produit.ID like '$id'  ";
 				
 				$result = mysqli_query($db_handle, $sql);
 				if ($result != NULL) {	

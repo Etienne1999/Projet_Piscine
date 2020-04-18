@@ -90,13 +90,13 @@ include ("database/db_connect.php");
 								$id_ses = $_SESSION['user_ID'];
 								$id_obj = $data['ID'];
 								//echo $id_obj.$id_ses;
-								$sql_offre = "SELECT * FROM enchere WHERE Acheteur = '%$id_ses%' AND Objet = '%$id_obj%'";
+								$sql_offre = "SELECT * FROM enchere WHERE Acheteur = '$id_ses' AND Objet = '$id_obj'";
 								$resultOffre = mysqli_query($db_handle, $sql_offre);
 								if ($resultOffre != NULL)
 								{	//echo "test1";
 									while ($dataOffre = mysqli_fetch_assoc($resultOffre))
-									{echo "test2";
-										?><p class="card-text"> <?php echo "Vous avez déjà fait une offre :" . $dataOffre['Prix'] ?> </p> <?php
+									{
+										?><p class="card-text"> <?php echo "Vous avez déjà fait une offre de " . $dataOffre['Prix'] ." euros." ?> </p> <?php
 									}
 								}
 								?>

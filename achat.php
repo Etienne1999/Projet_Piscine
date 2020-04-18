@@ -33,9 +33,9 @@
 		<h1> ECE EBAY </h1>
 		<div class="row">
 		  <div class="col-md-3">
-		  <div class="left_col_achat">
-				<h2> Filtrer </h2>
-				<div class="rechercheVendeur">
+		  <div class="left_col_achat" style="border-radius: 3% 3%;">
+				<h4 class="container"> Filtrez selon : </h4>
+				<div class="rechercheVendeur" style="border-radius: 2% 2%;">
 					<form action="achat.php" method="post">
 						<p><input type="text" id="rechercheVendeur "name="rechercheVendeur" placeholder="Chercher un vendeur "></p>
 						<div >
@@ -43,7 +43,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="check_checkbox">
+				<div class="container check_checkbox" style="border-radius: 1% 1%; margin-right: 10px;">
 					<form action="achat.php" method="post">
 						<!-- SELECTEUR EN FONCTION DE L'URL -->
 						<?php 
@@ -132,7 +132,7 @@
 			
 
 			<!-- Affichage selon le filtre -->
-			<div class="achat_objet_listening"> Liste des objets en Vente : 
+			<div class="achat_objet_listening container"> <div class="card card-title col-md-8 container" style=" border: 2px solid;"> Liste des objets en Vente : </div> 
 				<?php
 				
 				$check_vendeur = isset($_POST["rechercheVendeur"])? $_POST["rechercheVendeur"] : "";
@@ -289,7 +289,7 @@
 						 {
 						 ?>								
 							<div class="container" id="affichage">
-							  	<div class="card" style="margin-top: 20px; max-width: 600px;">
+							  	<div class="card container" style="margin-top: 20px; max-width: 600px; padding-top: 10px;  ">
 								  	<img class="card-img-top" src="img/france1" alt="Card image"   height="450">
 								  	<div class="card-body">
 								    	<h4 class="card-title"><?php echo $data['ID'] . ". ". $data['Nom'];?></h4>

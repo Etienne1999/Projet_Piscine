@@ -2,17 +2,17 @@
 .left_col_achat
 {	
 
+	margin-top: 60px;
 	border: 3px black solid;
-	margin: 10px;
-	padding:5px;
 	background-color: white;
+	padding: 5px;
 }
 
 .check_checkbox
 {
 	border: 2px black solid;
 	background: orange;
-	margin: 6px;
+	padding-bottom: 5px;
 	
 }
 
@@ -21,9 +21,8 @@
 {
 	border: 2px black solid;
 	background: orange;
-	margin: 6px;
-	padding-top: 6px;		
-	padding-bottom: 6px;
+	margin-bottom: 5px;
+	padding: 5px; 
 }
 
 #image

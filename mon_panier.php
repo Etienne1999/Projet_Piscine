@@ -45,7 +45,7 @@ include ("database/db_connect.php");
 				if ($pine != 0)
 				{
 					
-					$sql = "SELECT DISTINCT produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE produit.ID like '%$pine%'  ";
+					$sql = "SELECT DISTINCT produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE produit.ID like '$pine'  ";
 					$result = mysqli_query($db_handle, $sql);
 					if ($result != NULL) 
 					{	
