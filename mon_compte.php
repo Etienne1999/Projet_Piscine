@@ -174,6 +174,38 @@
 		}
 	}
 
+	function get_commande($db_handle) {
+		$id = $_SESSION['user_ID'];
+		$sql = "SELECT * FROM commande WHERE Acheteur = '$id'";
+		$result = mysqli_query($db_handle, $sql);
+
+		if (mysqli_num_rows($result)) {
+			
+			while ($data = mysqli_fetch_assoc($result)) {
+				/*
+				echo '<div class="card mb-1 mr-1">
+						<div class="card-header">
+							<h5 class="mb-0">
+								<button class="btn btn-link" data-toggle="collapse" data-target="#default_card">Commande effectuée le' . $data['Date_Commande'] . '</button><br>
+								<span>Total : ' . $data['Montant_Total'] . '</span>
+							</h5>
+						</div>
+						<div id="default_card" class="collapse">
+							<div class="card-body">
+								Pas de carte
+							</div>
+						</div>
+					</div>';
+				*/
+			}
+
+		}
+		else {
+		echo "Nous n'avez passé aucune commande.";
+		}
+
+	}
+
 	function get_info($db_handle) {
 		$id = $_SESSION['user_ID'];
 		 $sql = "SELECT Nom, Prenom, Pseudo, Email FROM utilisateur WHERE id = '$id'";
@@ -450,7 +482,9 @@
 			</div>
 			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Mes commandes</h4>
-				<span>d</span>
+				<div class="box-commande">
+					<?php get_commande($db_handle); ?>
+				</div>
 			</div>
 		</div>
 

@@ -45,3 +45,9 @@
 .btn-link:hover{
 	color: #007a7b;
 }
+
+.box-commande{
+	max-height: 488px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
