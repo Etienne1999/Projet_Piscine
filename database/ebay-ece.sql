@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  sam. 18 avr. 2020 à 07:02
+-- Généré le :  sam. 18 avr. 2020 à 07:08
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -241,9 +241,10 @@ CREATE TABLE IF NOT EXISTS `enchere` (
 
 DROP TABLE IF EXISTS `img_produit`;
 CREATE TABLE IF NOT EXISTS `img_produit` (
+  `ID` int(11) NOT NULL,
   `Produit` int(11) NOT NULL,
   `URL` varchar(255) NOT NULL,
-  PRIMARY KEY (`Produit`),
+  PRIMARY KEY (`ID`),
   KEY `img_produit_ibfk_1` (`Produit`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
