@@ -467,14 +467,13 @@ if(isset($_POST['submit']))
 	<!-- Conteneur -->
 	<div class="container-fluid">
 
-		<!-- Page d'accueil vente -->
+	<!-- Page d'accueil vente -->
 		<div id="affichageAccueil">
 			<div class="row pt-2">
 
-				<!-- Bouton nouvelle vente -->
+				<!-- Nouvelle vente -->
 				<div class="col-lg-4 col-md-4 col-sm-12 border-right">
 					<h3 class="font-weight-bold text-center"><u>Nouvelle vente</u></h3>
-
 					<!-- Boutons nouvelle vente -->
 					<div class="text-center pt-4 pb-4">
 						<button type="button" class="btn btn-outline-light rounded-circle" id="btnAccueil1">
@@ -487,26 +486,73 @@ if(isset($_POST['submit']))
 					</div>
 				</div>
 
-				<!-- Affichage ventes en cours -->
+				
 				<div class="col-lg-8 col-md-8 col-sm-12">
-					<h3 class="font-weight-bold text-center"><u>Mes ventes en cours</u></h3>
+					<div class="row">
+
+					<!-- Ventes en cours -->
+						<div class="col-sm-12">
+							<h3 class="font-weight-bold text-center"><u>Mes ventes en cours</u></h3>
+
+							<?php		
+									if ($db_found) 
+									{
+										//on récupère l'ID du vendeur en cours
+										$userID = $_SESSION['user_ID'];
+
+										//on récupère les ID des produits liés au vendeur connecté qui n'ont pas encore été vendus
+										//on compte le nombre de résultat 
+										$sql = "SELECT ID FROM produit WHERE Vendeur = '$userID'"; //A RAJOUTER QUAND BDD A JOUR : "AND Statut = 'pas vendu'" !!!
+										$result = mysqli_query($db_handle, $sql);
+
+										if (mysqli_num_rows($result) == 0) 
+										{
+											//afficher div comme quoi pas de ventes en cours
+										}
+										//Si le vendeur a des ventes en cours
+										else
+										{
+											//afficher les ventes en cours
+										}
+									}
+								?>
+
+						</div>
+
+						<hr>
+
+					<!-- Ventes terminées -->
+						<div class="col-sm-12">
+							<h3 class="font-weight-bold text-center"><u>Mes ventes terminées</u></h3>
+							
+							<?php		
+									if ($db_found) 
+									{
+										//on récupère l'ID du vendeur en cours
+										$userID = $_SESSION['user_ID'];										
+
+										//on récupère les ID des produits du vendeur co qui ont déja été vendu
+										//on compte le nombre de résultat
+										$sql = "SELECT ID FROM produit WHERE Vendeur = '$userID'"; //A RAJOUTER QUAND BDD A JOUR : "AND Statut = 'vendu' " !!!!
+										$result = mysqli_query($db_handle, $sql);
+
+										if (mysqli_num_rows($result) == 0) 
+										{
+											//afficher div comme quoi pas de ventes terminée
+										}
+										//Si le vendeur a des ventes terminées (statut produit = vendu)
+										else
+										{
+											//les afficher
+										}
+									}
+								?>
+
+						</div>
+					</div>
 					
-					<?php
-
-						$venteEnCours = 
-
-						if ($db_found) {
-							//tester si vendeur a des ventes en cours
-							if (venteEnCours != NULL) {
-								//afficher les ventes en cours
-							}
-							else{
-								//afficher comme quoi pas de ventes en cours
-							}
-
-						}
-
-					?>
+					
+								
 				</div>
 				
 			</div>
@@ -519,7 +565,6 @@ if(isset($_POST['submit']))
 			<h3 class="text-center font-weight-bold pt-2 pb-4"><u>Nouvelle vente</u></h3>		
 			<!-- Début du formulaire -->
 			<form class="form" action="vente.php" method="POST" enctype="multipart/form-data" id="formulaire" name="formVente">
-																					<!-- onsubmit="return checkform()" -->	
 				<div class="row ml-1 mr-1">
 
 
