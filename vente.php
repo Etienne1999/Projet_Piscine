@@ -33,7 +33,6 @@ if(isset($_POST['submit']))
 		$id = $_SESSION['user_ID'];
 		$sql = "INSERT INTO produit(Nom, Description, Categorie, Vendeur) VALUES('$nomObj', '$description', $categorie, '$id')";
 		$test = mysqli_query($db_handle, $sql);
-		var_dump($test);
 
 	//c) Update infos de prix
 		
@@ -128,7 +127,7 @@ if(isset($_POST['submit']))
 
 	//b) VIDEO
 		//check si une video a été upload
-		if(isset($_FILES['video']))
+		if(is_uploaded_file($_FILES['video']['tmp_name']))
 		{	
 			$video_name = $_FILES['video']['name'];
 			$video_tmp = $_FILES['video']['tmp_name'];
@@ -215,6 +214,7 @@ if(isset($_POST['submit']))
 			$("#affichageFormulaire").toggle();
 		});
 		//quand on clique sur le bouton submit du formulaire 
+		//Enlevé, ça se met a jour automatiquement
 		$("#btnForm").click(function()
 		{	
 			//on switch a nouveau pour retourner sur affichageAccueil
@@ -270,7 +270,43 @@ if(isset($_POST['submit']))
 		//Si on coche la case, on l'affiche
 		$("#case1").click(function()
 		{
-			$("#achatIm").toggle();
+			var isChecked = $("#case1").prop('checked');
+			if (isChecked) 
+			{
+				$("#achatIm").show();
+				//on oblige a renseigner le prix
+				$("#prixAchat").prop('required',true);
+				//cases 2 et 3 plus obligatoires
+				$("#case2").prop( "required", false );
+				$("#case3").prop( "required", false );
+				//cases prix min + prix enchere & date plus obligatoires
+				$("#prixMin").prop( "required", false );
+				$("#prixEnchere").prop( "required", false );
+				$("#dateEnchere").prop( "required", false );
+			}
+			else
+			{
+				$("#achatIm").hide();
+				//on reset le prix
+				$("#prixAchat").val('');
+				//prix achat im = plus obligatoire
+				$("#prixAchat").prop('required',false);
+
+				var case2isChecked = $("#case2").prop('checked');
+				var case3isChecked = $("#case3").prop('checked');
+				//Si case 2 ou 3 est cochée, pas besoin de rendre case1 obligatoire
+				if (case2isChecked || case3isChecked) 
+				{
+					//rien besoin de faire
+				}
+				//Sinon, ça veut dire que rien n'est coché donc on re rend tout obligatoire
+				else
+				{
+					$("#case1").prop( "required", true );
+					$("#case2").prop( "required", true );
+					$("#case3").prop( "required", true );
+				}
+			}
 		});
 
 	//Affichage formulaire MEILLEURE OFFRE
@@ -284,10 +320,30 @@ if(isset($_POST['submit']))
 			{
 				$("#meilleureOffre").show();
 				$("#enchere").hide();
+				//on reset les valeurs de enchere
+				$("#prixEnchere").val('');
+				$("#dateEnchere").val('');
+				//on oblige a renseigner le prix min
+				$("#prixMin").prop('required',true);
+				//cases 1 et 3 plus obligatoires
+				$("#case1").prop( "required", false );
+				$("#case3").prop( "required", false );
+				//cases prix im + prix enchere & date plus obligatoires
+				$("#prixAchat").prop( "required", false );
+				$("#prixEnchere").prop( "required", false );
+				$("#dateEnchere").prop( "required", false );
 			}
 			else
 			{
 				$("#meilleureOffre").hide();
+				//on reset le prix min
+				$("#prixMin").val('');
+				//prix min = plus obligatoire
+				$("#prixMin").prop('required',false);
+				//cases 1 et 3 de nouveau obligatoires
+				$("#case1").prop( "required", true );
+				$("#case2").prop( "required", true );
+				$("#case3").prop( "required", true );
 			}
 		});
 
@@ -302,10 +358,31 @@ if(isset($_POST['submit']))
 			{
 				$("#enchere").show();
 				$("#meilleureOffre").hide();
+				//on reset le prix min
+				$("#prixMin").val('');
+				//on oblige a renseigner le prix enchere + date
+				$("#prixEnchere").prop('required',true);
+				$("#dateEnchere").prop('required',true);
+				//cases 1 et 2 plus obligatoires
+				$("#case1").prop( "required", false );
+				$("#case2").prop( "required", false );
+				//cases prix min + prix enchere & date plus obligatoires
+				$("#prixAchat").prop( "required", false );
+				$("#prixMin").prop( "required", false );
 			}
 			else
 			{
 				$("#enchere").hide();
+				//on reset les valeurs
+				$("#prixEnchere").val('');
+				$("#dateEnchere").val('');
+				//prix enchere + date = plus obligatoires
+				$("#prixEnchere").prop('required',false);
+				$("#dateEnchere").prop('required',false);
+				//cases 1 et 2 de nouveau obligatoires
+				$("#case1").prop( "required", true );
+				$("#case2").prop( "required", true );
+				$("#case3").prop( "required", true );
 			}
 		});
 
@@ -339,7 +416,47 @@ if(isset($_POST['submit']))
 			$("#prixMin").val('');
 			$("#prixEnchere").val('');
 			$("#dateEnchere").val('');
+
+			//on reset le caractère obligatoire de 
+			$("#prixAchat").prop('required',false);
+			$("#prixMin").prop('required',false);
+			$("#prixEnchere").prop('required',false);
+			$("#dateEnchere").prop('required',false);
+
+			//on remet une obligation sur le type de vente
+			$("#case1").prop( "required", true );
+			$("#case2").prop( "required", true );
+			$("#case3").prop( "required", true );
 		});
+
+	//CHECK FORMULAIRE
+		//Check si type de vente est rempli
+		function checkform()
+		{
+			var case1Checked = $("#case1").prop('checked');
+			var case2Checked = $("#case2").prop('checked');
+			var case3Checked = $("#case3").prop('checked');
+
+			alert(case1Checked);
+			alert("Avant return");
+
+			//Si au moins un est coché
+			if ((case1Checked == true) || (case2Checked == true) || (case3Checked == true))
+			{
+				//on accepte le formulaire
+				alert("Objet mis en vente !");
+				return true;
+			}
+			//Sinon (aucun n'est coché)
+			else
+			{
+				//on accepte pas le formulaire
+				alert("Veuillez choisir le type de vente de votre objet.");
+				return false;
+			}
+		}
+
+	//balise fin	
 	})
 </script>
 
@@ -409,7 +526,8 @@ if(isset($_POST['submit']))
 		<div id="affichageFormulaire">
 			<h3 class="text-center font-weight-bold pt-2 pb-4"><u>Nouvelle vente</u></h3>		
 			<!-- Début du formulaire -->
-			<form class="form" action="vente.php" method="POST" enctype="multipart/form-data">	
+			<form class="form" action="vente.php" method="POST" enctype="multipart/form-data" id="formulaire" name="formVente">
+																					<!-- onsubmit="return checkform()" -->	
 				<div class="row ml-1 mr-1">
 
 
@@ -421,7 +539,7 @@ if(isset($_POST['submit']))
 									<div id="imgPreview" class="noborder img-thumbnail">
 										<div class="imgPreview"></div>
 									</div>
-									<input type="file" name="files[]" class="btn btn-default" id="photos" multiple/>
+									<input type="file" name="files[]" class="btn btn-default" id="photos" required="true" multiple/>
 								</div>
 							</div>
 							<div class="p-1 mt-2 border text-center">
@@ -436,28 +554,28 @@ if(isset($_POST['submit']))
 						</div>
 
 
-						<!-- Infos sur l'objet -->
+					<!-- Infos sur l'objet -->
 						<div class="col-lg-8 col-md-8 col-sm-12">
-								<!-- Nom de l'objet -->
+							<!-- Nom de l'objet -->
 								<div class="form-group">
 									<div class="row">
 										<div class="col-sm-12 col-md-4 col-lg-4">
 											<label class="control-label"><strong>Nom de l'objet </strong></label>
 										</div>
 										<div class="col-sm-12 col-md-6 col-lg-6 col-xs-6">
-											<input type="text" class="form-control" name="nomObj" id="nomObj" maxlength="65" autofocus>
+											<input type="text" class="form-control" name="nomObj" id="nomObj" maxlength="65" autofocus required="true">
 										</div>
 									</div>
 								</div>
 
-								<!-- Catégorie -->	
+							<!-- Catégorie -->	
 								<div class="form-group">
 									<div class="row">
 										<div class="col-sm-12 col-md-4 col-lg-4">
 											<label class="control-label">Catégorie</label>
 										</div>
 										<div class="col-sm-12 col-md-8 col-lg-8">
-											<input type="radio" name="categorie" value="1" id="cat1">
+											<input type="radio" name="categorie" value="1" id="cat1" required="true">
 											<label class="control-label" for="cat1" >Ferraille ou trésor</label><br>
 
 											<input type="radio" name="categorie" value="2" id="cat2">
@@ -469,7 +587,7 @@ if(isset($_POST['submit']))
 									</div>
 								</div>
 
-								<!-- Type de vente -->
+							<!-- Type de vente -->
 								<div class="form-group">
 									<div class="row">
 										<div class="col-sm-12 col-md-4 col-lg-4">
@@ -477,51 +595,51 @@ if(isset($_POST['submit']))
 										</div>
 										<div class="col-md-8 col-lg-8 col-sm-12">
 
-											<!-- Achat Immediat -->
+										<!-- Achat Immediat -->
 											<div class="row mb-1">
 												<div class="col-md-6 col-lg-6 col-sm-12">
-													<label><input type="checkbox" name="typeVente" id="case1" />Achat immédiat</label>
+													<label><input type="checkbox" name="typeVente" id="case1" required="true"/>Achat immédiat</label>
 												</div>
 												<div class="col-md-5 col-lg-5 col-sm-12">
 													<!-- Affiché si la case est cochée -->
 													<div id="achatIm">
-														<input type="number" class="form-control" id="prixAchat" name="prixAchat" placeholder="Prix €">
+														<input type="number" class="form-control" id="prixAchat" name="prixAchat" placeholder="Prix €" required="">
 													</div>
 												</div>
 											</div>
 
-											<!-- Meilleure offre -->
+										<!-- Meilleure offre -->
 											<div class="row mb-1">
 												<div class="col-md-6 col-lg-6 col-sm-12">
-													<label><input type="radio" name="typeVente" id="case2" />Meilleure offre</label>
+													<label><input type="radio" name="typeVente" id="case2" required="true"/>Meilleure offre</label>
 												</div>
 												<div class="col-md-5 col-lg-5 col-sm-12">
 													<!-- Affiché si la case est cochée -->
 													<div id="meilleureOffre">
-														<input type="number" class="form-control" id="prixMin" name="prixMin" placeholder="Prix minimum €">
+														<input type="number" class="form-control" id="prixMin" name="prixMin" placeholder="Prix minimum €" required="">
 													</div>
 												</div>
 											</div>
 
-											<!-- Enchère -->
+										<!-- Enchère -->
 											<div class="row">
 												<div class="col-md-4 col-lg-4 col-sm-12">
-													<label><input type="radio" name="typeVente" id="case3"/>Enchère</label>
+													<label><input type="radio" name="typeVente" id="case3" required="true"/>Enchère</label>
 												</div>
 												<!-- Affiché si la case est cochée -->
 												<div id="enchere" class="col-md-8 col-lg-8 col-sm-12">
 													<div class="row">
 														<div class="col-md-6 col-lg-6 col-sm-6">
-															<input type="number" class="form-control" id="prixEnchere" name="prixEnchere" placeholder="Prix de départ €">
+															<input type="number" class="form-control" id="prixEnchere" name="prixEnchere" placeholder="Prix de départ €" required="">
 														</div>
 														<div class="col-md-6 col-lg-6 col-sm-6">
-															<input type="datetime-local" class="form-control" id="dateEnchere" name="dateEnchere">
+															<input type="datetime-local" class="form-control" id="dateEnchere" name="dateEnchere" required="">
 														</div>
 													</div>
 												</div>
 											</div>
 
-											<!-- Bouton pour tout décocher -->
+										<!-- Bouton pour tout décocher -->
 											<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoixTypeVente">Réinitialiser les choix</button>
 
 										</div>
@@ -535,7 +653,7 @@ if(isset($_POST['submit']))
 											<label class="control-label">Description complète</label>
 										</div>
 										<div class="col-md-8 col-lg-8 col-sm-12">
-											<textarea class="form-control" rows="5" name="description" placeholder="Etat, qualité, année de fabrication etc." maxlength="255"></textarea>
+											<textarea class="form-control" rows="5" name="description" placeholder="Etat, qualité, année de fabrication etc." maxlength="255" required="true"></textarea>
 										</div>
 									</div>
 								</div>
@@ -543,7 +661,7 @@ if(isset($_POST['submit']))
 
 							<!-- SUBMIT FORM -->
 							<div class="col-sm-12 text-center p-4">
-								<input type="submit" name="submit" value="Mettre en vente" class="btn-success rounded btn-lg" id="btnForm">
+								<input type="submit" name="submit" value="Mettre en vente" class="btn-success rounded btn-lg">
 							</div>
 
 						</div>
