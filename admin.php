@@ -18,7 +18,7 @@
 		LEFT JOIN role ON u.Role = Role.ID
 		LEFT JOIN produit ON u.ID = produit.Vendeur
 		LEFT JOIN commande_detail ON produit.ID = commande_detail.Objet
-		GROUP BY u.Pseudo, produit.ID";
+		GROUP BY u.Pseudo";
 
 		$result = mysqli_query($db_handle, $sql);	
 
