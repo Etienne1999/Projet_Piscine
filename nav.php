@@ -29,7 +29,7 @@
                     	<a class="dropdown-item" href="achat.php?Check=Meilleure_offre">Meilleure offre</a>
                     </div>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="vente.php">Vente</a></li>
+                 <?php if (!empty($_SESSION['user_Role'])) { if ($_SESSION['user_Role'] == 3 || $_SESSION['user_Role'] == 1){ echo '<li class="nav-item"><a class="nav-link" href="vente.php">Vente</a></li>'; }else{ echo '<li class="nav-item"><a class="nav-link" href="devenir_vendeur.php">Devenir vendeur</a></li>';} }?>
             </ul>
             <ul class="nav navbar-nav ml-md-auto">
                 <!-- Affiche le lien vers la page d'admin si on a le role admin -->
