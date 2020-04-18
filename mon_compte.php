@@ -312,7 +312,7 @@
 				$num_carte_confidentiel = substr_replace($data['Numero_Carte'], '***-', 0, -4);
 
 				echo '<div class="card mb-1 mr-1"><div class="card-header"><h5 class="mb-0"><button class="btn btn-link" data-toggle="collapse" data-target="#default_card">';
-				echo $data['Nom'] . " : " . $num_carte_confidentiel . '</button><span>-----</span><a data-target="#Modal_add_carte" data-toggle="modal" href="#" class="font-weight-light add_carte">Ajouter nouvelle adresse</a></h5></div><div id="default_card" class="collapse"><div class="card-body">';
+				echo $data['Nom'] . " : " . $num_carte_confidentiel . '</button><span>-----</span><a data-target="#Modal_add_carte" data-toggle="modal" href="#" class="font-weight-light add_carte">Ajouter nouvelle Carte</a></h5></div><div id="default_card" class="collapse"><div class="card-body">';
 			echo 'Proprietaire : ' . $data['Nom_Proprietaire'] . '<br>';
 			echo 'Expire le : ' . $data['Date_exp'] . '<br>';
 			if (empty($data['Plafond']))
@@ -337,6 +337,22 @@
 			echo "</span><br>";
 			echo '</div></div></div>';
 			}
+		}
+		else {
+		echo '<div class="card mb-1 mr-1">
+				<div class="card-header">
+					<h5 class="mb-0">
+						<button class="btn btn-link" data-toggle="collapse" data-target="#default_card"></button>
+						<span>-----</span>
+						<a data-target="#Modal_add_carte" data-toggle="modal" href="#" class="font-weight-light add_carte">Ajouter nouvelle Carte de paiement</a>
+					</h5>
+				</div>
+				<div id="default_card" class="collapse">
+					<div class="card-body">
+						Pas de carte
+					</div>
+				</div>
+			</div>';
 		}
 
 

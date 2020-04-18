@@ -51,14 +51,6 @@ $(document).ready(function () {
 		modal.find('.modal-body #date_exp').val(date_exp)
 	});
 
-	/*
-	info_nom
-	info_prenom
-	info_pseudo
-	info_email
-	info_password
-	*/
-
 	$("#info_edit").click(function() {
 		document.getElementById("info_nom").removeAttribute("readonly");
 		document.getElementById("info_prenom").removeAttribute("readonly");
