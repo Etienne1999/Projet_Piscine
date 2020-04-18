@@ -68,4 +68,19 @@ $(document).ready(function () {
 		document.getElementById("info_save_edit").setAttribute("hidden", "true");
 		document.getElementById("info_edit").removeAttribute("hidden");
 	});
+
+	//Genere nombre aléatoire entre min inclus et max exclu
+	function getRandomArbitrary(min, max) {
+		return parseInt(Math.random() * (max - min) + min);
+	};
+	
+	$('#Modal_add_cadeau').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget)
+		//Recupere les données de l'utilisateur a editer
+		var num_carte = getRandomArbitrary(1000000000000000, 9999999999999999)
+		var modal = $(this)
+
+		//Rempli le modal avec les données approprié
+		modal.find('.modal-body #num_carte').val(num_carte)
+	});
 });

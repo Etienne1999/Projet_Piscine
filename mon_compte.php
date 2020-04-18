@@ -209,9 +209,8 @@
 
 		}
 		else {
-		echo "Nous n'avez passé aucune commande.";
+			echo "Vous n'avez passé aucune commande.";
 		}
-
 	}
 
 	function get_info($db_handle) {
@@ -394,9 +393,38 @@
 				</div>
 			</div>';
 		}
-
-
 	}
+
+	function get_enchere($db_handle) {
+		$id = $_SESSION['user_ID'];
+		$sql = "SELECT * FROM enchere WHERE Acheteur = '$id'";
+		$result = mysqli_query($db_handle, $sql);
+
+		if (mysqli_num_rows($result)) {
+			
+			echo "a faire";
+
+		}
+		else {
+			echo "Vous ne participez a aucune enchère en cours.";
+		}
+	}
+
+	function get_meilleur_offre($db_handle) {
+		$id = $_SESSION['user_ID'];
+		$sql = "SELECT * FROM offre_achat WHERE Acheteur = '$id'";
+		$result = mysqli_query($db_handle, $sql);
+
+		if (mysqli_num_rows($result)) {
+			
+			echo "a faire";
+
+		}
+		else {
+			echo "Vous n'avez aucune offre d'achat en cours.";
+		}
+	}
+
 
 ?>
 
@@ -435,6 +463,7 @@
 
 	<?php include("modal/modal_adresse.php") ?>
 	<?php include("modal/modal_carte_credit.php") ?>
+	<?php include("modal/modal_carte_cadeau.php") ?>
 
 	<div class="container-fluid">
 		<div class="row no-gutters">
@@ -484,6 +513,7 @@
 						<div class="my-3">
 							<button type="button" class="btn btn-success" id="info_edit">Modifier</button>
 							<button type="submit" class="btn btn-primary" id="info_save_edit" name="info_save_edit" hidden>Enregistrer</button>
+							<button class="btn btn-primary" type="submit" name="btn">Se déconnecter</button>
 						</div>
 					</form>
 				</div>
@@ -499,18 +529,25 @@
 		<div class="row d-flex justify-content-center">
 			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Mes Enchères</h4>
-				<span>d</span>
+				<div>
+					<?php get_enchere($db_handle); ?>
+				</div>
 			</div>
 			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Mes Offres d'achat</h4>
-				<span>d</span>
+				<div class="mb-2">
+					<?php get_meilleur_offre($db_handle); ?>
+				</div>
 			</div>
 		</div>
 
 		<div class="row d-flex justify-content-center">
 			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Offrir cheque cadeau</h4>
-				<span>d</span>
+				<div class="mb-2">
+					Offrez une carte cadeau d'un montant personnalisé à quelqu'un !
+					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Modal_add_cadeau">Offrir</button>
+				</div>
 			</div>
 			<div class="col-md-5 border shadow m-2 cat">
 				<h4> ??? </h4>
@@ -518,10 +555,6 @@
 			</div>
 		</div>
 	</div>
-
-	<form method="post">
-		<button class="btn btn-primary btn-block" type="submit" name="btn">Se déconnecter</button>
-	</form>
 
 	<!-- Footer -->	
 	<?php include("footer.php") ?>
