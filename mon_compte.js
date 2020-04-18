@@ -51,5 +51,29 @@ $(document).ready(function () {
 		modal.find('.modal-body #date_exp').val(date_exp)
 	});
 
+	/*
+	info_nom
+	info_prenom
+	info_pseudo
+	info_email
+	info_password
+	*/
 
+	$("#info_edit").click(function() {
+		document.getElementById("info_nom").removeAttribute("readonly");
+		document.getElementById("info_prenom").removeAttribute("readonly");
+		document.getElementById("info_email").removeAttribute("readonly");
+		document.getElementById("info_password").removeAttribute("readonly");
+		document.getElementById("info_save_edit").removeAttribute("hidden");
+		document.getElementById("info_edit").setAttribute("hidden", "true");
+	});
+
+	$("#info_save_edit").click(function() {
+		document.getElementById("info_nom").setAttribute("readonly", "true");
+		document.getElementById("info_prenom").setAttribute("readonly", "true");
+		document.getElementById("info_email").setAttribute("readonly", "true");
+		document.getElementById("info_password").setAttribute("readonly", "true");
+		document.getElementById("info_save_edit").setAttribute("hidden", "true");
+		document.getElementById("info_edit").removeAttribute("hidden");
+	});
 });

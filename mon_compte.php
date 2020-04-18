@@ -153,6 +153,48 @@
 		//var_dump($res);
 	}
 
+	if (isset($_POST['info_save_edit'])) {
+		$id = $_SESSION['user_ID'];
+		$info_nom = isset($_POST["info_nom"])? $_POST["info_nom"] : "";
+		$info_prenom = isset($_POST["info_prenom"])? $_POST["info_prenom"] : "";
+		$info_password = isset($_POST["info_password"])? $_POST["info_password"] : "";
+		$info_email = isset($_POST["info_email"])? $_POST["info_email"] : "";
+
+		if (!(empty($info_nom) || empty($info_prenom) || empty($info_email) || empty($info_password))) {
+			//Verifie que l'adresse mail n'est pas deja utilisé par un autre utilisateur
+			$sql_check_doublon_mail = "SELECT * FROM utilisateur WHERE Email = '$info_email' AND ID != '$id'";
+			$check_result = mysqli_query($db_handle, $sql_check_doublon_mail);
+
+			//Met a jour l'utilisateur
+			if (mysqli_num_rows($check_result) == 0){
+				$sql_edit_info = "UPDATE `utilisateur` SET `Nom`= '$info_nom',`Prenom`= '$info_prenom',`Password`= '$info_password',`Email`= '$info_email' WHERE id = '$id'";
+				$res = mysqli_query($db_handle, $sql_edit_info);
+				//var_dump($res);
+			}
+		}
+	}
+
+	function get_info($db_handle) {
+		$id = $_SESSION['user_ID'];
+		 $sql = "SELECT Nom, Prenom, Pseudo, Email FROM utilisateur WHERE id = '$id'";
+
+		 $result = mysqli_query($db_handle, $sql);
+
+		 while ($data = mysqli_fetch_assoc($result)) {
+
+			echo '<label for="info_pseudo" class="col-form-label">Pseudo :</label>';;
+			echo '<input type="text" class="form-control" id="info_pseudo" name="info_pseudo" value="' . $data['Pseudo'] . '" readonly>';
+			echo '<label for="info_nom" class="col-form-label">Nom :</label>';
+			echo '<input type="text" class="form-control" id="info_nom" name="info_nom" value="' . $data['Nom'] . '" readonly>';
+			echo '<label for="info_prenom" class="col-form-label">Prenom :</label>';
+			echo '<input type="text" class="form-control" id="info_prenom" name="info_prenom" value="' . $data['Prenom'] . '" readonly>';
+			echo '<label for="info_email" class="col-form-label">Email :</label>';
+			echo '<input type="email" class="form-control" id="info_email" name="info_email" value="' . $data['Email'] . '" readonly>';
+			echo '<label for="info_password" class="col-form-label">Mot de passe :</label>';
+			echo '<input type="password" class="form-control" id="info_password" name="info_password" readonly>';
+		 }
+	}
+
 	function get_adresses($db_handle) {
 
 		$id = $_SESSION['user_ID'];
@@ -380,7 +422,15 @@
 		<div class="row d-flex justify-content-center">
 			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Info perso</h4>
-				<span>d</span>
+				<div>
+					<form method="post">
+						<?php get_info($db_handle); ?>
+						<div class="my-3">
+							<button type="button" class="btn btn-success" id="info_edit">Modifier</button>
+							<button type="submit" class="btn btn-primary" id="info_save_edit" name="info_save_edit" hidden>Enregistrer</button>
+						</div>
+					</form>
+				</div>
 			</div>
 			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Mes commandes</h4>
