@@ -251,8 +251,26 @@ if(isset($_POST['submit']))
     	};
 	    $('#photos').on('change', function() 
 	    {
-	        imagesPreview(this, 'div.gallery');
+	        imagesPreview(this, 'div.imgPreview');
 	    });
+
+    //VIDEO PREVIEW
+    	$('#video').on('change', function()
+    	{
+    		var file = this.files[0];
+    		var reader = new FileReader();
+    		reader.onload = viewer.load;
+    		reader.readAsDataURL(file);
+    		viewer.setProperties(file);
+    	});
+
+    	var viewer = 
+    	{
+    		load : function(e)
+    		{
+    			$('#vidPreview').attr('src', e.target.result);
+    		}
+    	}
 
 	//Affichage formulaire ACHAT IMMEDIAT
 		//on cache le formulaire de prix Achat Immediat
@@ -306,8 +324,9 @@ if(isset($_POST['submit']))
 			document.getElementById("photos").value = "";
 			document.getElementById("video").value = "";
 
-			//Clear div contenant les photos
-			$(".gallery").html("");
+			//Clear divs contenant les photos & video
+			$(".imgPreview").html("");
+			$("#divVideo").html("");
 		});
 
 	//RESET CHOIX TYPE VENTE
@@ -408,12 +427,13 @@ if(isset($_POST['submit']))
 							<div class="p-2 mb-2 border text-center">
 								<div class="custom-file">
 									<p><strong>Ajouter une ou plusieurs photos</strong></p>
-									<div class="gallery"></div>
+									<div class="imgPreview"></div>
 									<input type="file" name="files[]" class="btn btn-default" id="photos" multiple/>
 								</div>
 							</div>
 							<div class="p-1 mt-2 border text-center">
 								<p>Ajouter une vidéo</p>
+								<div id="divVideo"><video id="vidPreview" class="img-thumbnail img-responsive image" src="" controls></video></div>
 								<input type="hidden" name="MAX_FILE_SIZE" value="50000000"/>
 								<input type="file" name="video" class="btn btn-default" id="video"/>
 							</div>
