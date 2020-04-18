@@ -90,7 +90,7 @@
 						unset($_SESSION['err_email']);
 						unset($_SESSION['err_pwd']);
 
-						header('Location: index.php');
+						header('Location: mails.php?signup=true');
 					}
 				}
 
