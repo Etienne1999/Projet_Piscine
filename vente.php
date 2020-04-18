@@ -326,7 +326,7 @@ if(isset($_POST['submit']))
 
 			//Clear divs contenant les photos & video
 			$(".imgPreview").html("");
-			$("#divVideo").html("");
+			$("#vidPreview").attr('src', '');
 		});
 
 	//RESET CHOIX TYPE VENTE
@@ -433,7 +433,7 @@ if(isset($_POST['submit']))
 							</div>
 							<div class="p-1 mt-2 border text-center">
 								<p>Ajouter une vidéo</p>
-								<div id="divVideo"><video id="vidPreview" class="img-thumbnail img-responsive image" src="" controls></video></div>
+								<video id="vidPreview" class="img-thumbnail img-responsive image" src="" controls></video>
 								<input type="hidden" name="MAX_FILE_SIZE" value="50000000"/>
 								<input type="file" name="video" class="btn btn-default" id="video"/>
 							</div>
