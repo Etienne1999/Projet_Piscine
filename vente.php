@@ -6,6 +6,11 @@ if (session_status() == PHP_SESSION_NONE) {
 
 include ("database/db_connect.php");
 
+//Redirection vers login si pas d'utilisateur connecté
+if (!isset($_SESSION['user_ID'])) 
+{
+    header("Location: login.php");
+}
 
 //-----------------------------------------------------------------------------------------------------
 //FORMULAIRE
@@ -25,8 +30,10 @@ if(isset($_POST['submit']))
 		$description = isset($_POST['description'])? $_POST['description'] : "";
 
 	//b) Création d'un nouveau produit
-		$sql = "INSERT INTO produit(Nom, Description, Categorie) VALUES('$nomObj', '$description', $categorie)";
-		mysqli_query($db_handle, $sql);
+		$id = $_SESSION['user_ID'];
+		$sql = "INSERT INTO produit(Nom, Description, Categorie, Vendeur) VALUES('$nomObj', '$description', $categorie, '$id')";
+		$test = mysqli_query($db_handle, $sql);
+		var_dump($test);
 
 	//c) Update infos de prix
 		
@@ -75,15 +82,10 @@ if(isset($_POST['submit']))
 		///Emplacement d'enregistrement des fichier
 		$valuefldr = './img';
 
-		//temp
-		$i = 0;
-
 	//a) PHOTOS
 		//Pour chaque photo
 		foreach($_FILES['files']['tmp_name'] as $key => $tmp_name )
 		{
-			$i = $i + 1;
-
 			$file_name = $key.$_FILES['files']['name'][$key];
 			$file_size = $_FILES['files']['size'][$key];
 			$file_tmp = $_FILES['files']['tmp_name'][$key];
@@ -97,40 +99,37 @@ if(isset($_POST['submit']))
 
 			if (in_array($extension_fichier, $extensions_autorisees))
 			{
+				$cheminFichier = "$desired_dir/".$file_name;
 				//On upload la photo dans le bon directory et on check si c'est bien fait
 				if(move_uploaded_file($file_tmp,"$desired_dir/".$file_name))
 				{
-
-					echo "Photo ". $i ." téléchargée avec succès<br>";
-					echo "File name = ".$file_name."<br>";
 					//ajout URL de la photo dans la table img_produit avec l'ID du produit
-					$sql = "INSERT INTO img_produit(Produit, URL) VALUES((SELECT ID FROM produit WHERE Nom = '$nomObj'),'$file_name')";
-
-					//Test requete
-					$result = mysqli_query($db_handle, $sql);
-					if ($result) {
-						echo "Requete nouvelle photo ok!<br>";
-					}
-					else{
-						echo "Requete nouvelle photo pas ok..<br>";
-					}
+					$sql = "INSERT INTO img_produit(Produit, URL) VALUES((SELECT ID FROM produit WHERE Nom = '$nomObj' AND Vendeur = '$id'),'$cheminFichier')";
+					mysqli_query($db_handle, $sql);
 				}
 				else
 				{
-
-					echo "Erreur de téléchargement de la photo ".$i." <br>";
+					?>
+						<script>
+					 		alert("Erreur de téléchargement d'une des photos");
+						</script>
+			   		<?php
 				}
 			}
 			else
 			{
-				echo "Format de la photo ".$i." non pris en charge<br>";
+				?>
+					<script>
+				 		alert("Format d'une des photos non pris en charge. Les formats autorisés sont : jpg, jpeg, gif, png");
+					</script>
+			   	<?php
 			}
 		} 
 
 	//b) VIDEO
 		//check si une video a été upload
-		if (is_uploaded_file($_FILES['video']['tmp_name']))
-		{
+		if(isset($_FILES['video']))
+		{	
 			$video_name = $_FILES['video']['name'];
 			$video_tmp = $_FILES['video']['tmp_name'];
 			$video_size = $_FILES['video']['size'];
@@ -143,37 +142,31 @@ if(isset($_POST['submit']))
 
 			if (in_array($extension_fichier, $extensions_autorisees))
 			{
+				$cheminVideo = "$desired_dir/".$video_name;
             	//On upload la vidéo dans le bon directory et on check si c'est bien fait
 				if(move_uploaded_file($video_tmp,"$desired_dir/".$video_name))
 				{
-					echo "Vidéo téléchargée avec succès<br>";
-
 					//ajout URL vidéo dans la fiche du produit
-					$sql = "UPDATE produit SET Video = '$video_name' WHERE Nom = '$nomObj'";
-
-					//Test requete
-					$result = mysqli_query($db_handle, $sql);
-					if ($result) {
-						echo "Requete ajout URL video ok!<br>";
-					}
-					else{
-						echo "Requete ajout URL video pas ok..<br>";
-					}
+					$sql = "UPDATE produit SET Video = '$cheminVideo' WHERE Nom = '$nomObj' AND Vendeur = '$id'";
+					mysqli_query($db_handle, $sql);
 				}
 				else
 				{
-					echo "Erreur de téléchargement de la vidéo<br>";
+					?>
+						<script>
+					 		alert("Erreur lors du téléchargement de la vidéo");
+						</script>
+			   		<?php
 				}
 			}
 			else
 			{
-				echo "Format de vidéo non pris en charge<br>";
+				?>
+					<script>
+				 		alert("Le fichier choisi n'est pas au bon format. Les formats vidéos autorisés sont : mp3, mp4");
+					</script>
+			   	<?php
 			}
-		}
-		//Sinon, pas de video upload (temporaire, juste pour l'affichage)
-		else 
-		{
-			echo "Pas de vidéo upload <br>";
 		}
 	}
 }
@@ -261,7 +254,6 @@ if(isset($_POST['submit']))
     		var reader = new FileReader();
     		reader.onload = viewer.load;
     		reader.readAsDataURL(file);
-    		viewer.setProperties(file);
     	});
 
     	var viewer = 
@@ -348,8 +340,6 @@ if(isset($_POST['submit']))
 			$("#prixEnchere").val('');
 			$("#dateEnchere").val('');
 		});
-
-		$("#nomObj").prop('required',true);
 	})
 </script>
 
@@ -425,21 +415,22 @@ if(isset($_POST['submit']))
 
 					<!-- Ajout photos et vidéo -->
 						<div class="col-lg-4 col-md-4 col-sm-12 border-right">
-						<!--<form class="form ml-2 mr-1" action="vente.php" method="POST" enctype="multipart/form-data">-->
 							<div class="p-2 mb-2 border text-center">
 								<div class="custom-file">
 									<p><strong>Ajouter une ou plusieurs photos</strong></p>
-									<div class="imgPreview responsive"></div>
+									<div id="imgPreview" class="noborder img-thumbnail">
+										<div class="imgPreview"></div>
+									</div>
 									<input type="file" name="files[]" class="btn btn-default" id="photos" multiple/>
 								</div>
 							</div>
 							<div class="p-1 mt-2 border text-center">
 								<p>Ajouter une vidéo</p>
-								<video class="img-thumbnail img-responsive" src="" id="vidPreview" controls></video>
-								<input type="hidden" name="MAX_FILE_SIZE" value="50000000"/>
+								<video class="img-thumbnail img-responsive" src="" id="vidPreview" controls></video><br>
+								<input type="hidden" name="MAX_FILE_SIZE" value="20000000"/>
 								<input type="file" name="video" class="btn btn-default" id="video"/>
 							</div>
-							<div class="p-1 mt-2 border text-center">
+							<div class="p-1 mt-2 text-center">
 								<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoixFichiers">Supprimer les fichiers</button>
 							</div>
 						</div>
@@ -447,7 +438,6 @@ if(isset($_POST['submit']))
 
 						<!-- Infos sur l'objet -->
 						<div class="col-lg-8 col-md-8 col-sm-12">
-							<!--<form class="form m-2" action="vente.php" method="POST">-->
 								<!-- Nom de l'objet -->
 								<div class="form-group">
 									<div class="row">
