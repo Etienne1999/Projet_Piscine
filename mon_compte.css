@@ -1,0 +1,68 @@
+.container_adresses {
+	height: 200px;
+	overflow-y: hidden;
+	overflow-x: auto;
+	white-space: nowrap;
+}
+
+#accordeon_paiement {
+	height: 200px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.card-body {
+	color: black;
+}
+
+.box-adresse {
+	display: inline-block;	
+	min-width: 250px;
+	width: auto;
+	background-color: #343a40;
+	color: white;
+}
+
+.box-adresse span a {
+	text-align: center;
+	color: white;
+}
+
+.cat {
+	background-color: #007a7b;
+	color: white;
+
+}
+
+.add_carte{
+	font-size: small;
+}
+
+.btn-link{
+	color: #007a7b;
+}
+
+.btn-link:hover{
+	color: #007a7b;
+}
+
+.box-commande{
+	max-height: 450px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.banniere {
+	background-size: cover;
+	height: 250px;
+	width: auto;
+}
+
+.avatar {
+	height: 160px;
+	width: 160px;
+
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}

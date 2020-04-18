@@ -357,7 +357,7 @@
 
 			//Genere un numéro de carte a 16 chiffres pour la creation de carte cadeau
 			$("#btn_rand").click(function() {
-				$('#num_carte_rand').val(getRandomArbitrary(1000000000000000, 10000000000000000));
+				$('#num_carte_rand').val(getRandomArbitrary(1000000000000000, 9999999999999999));
 			});
 
 			//Ouvre le modal d'edition de code de reduction
