@@ -229,7 +229,7 @@ if(isset($_POST['submit']))
 			$("#affichageFormulaire").toggle();
 		});
 
-	//Image Preview
+	//IMAGE PREVIEW
 	    // Multiple images preview in browser
     	var imagesPreview = function(input, placeToInsertImagePreview) 
     	{
@@ -243,7 +243,7 @@ if(isset($_POST['submit']))
 	                var reader = new FileReader();
 
 	                reader.onload = function(event) {
-	                    $($.parseHTML('<img class="img-thumbnail img-responsive">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+	                    $($.parseHTML('<img class="img-thumbnail">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
 	                }
 	                reader.readAsDataURL(input.files[i]);
 	            }
@@ -348,6 +348,8 @@ if(isset($_POST['submit']))
 			$("#prixEnchere").val('');
 			$("#dateEnchere").val('');
 		});
+
+		$("#nomObj").prop('required',true);
 	})
 </script>
 
@@ -427,13 +429,13 @@ if(isset($_POST['submit']))
 							<div class="p-2 mb-2 border text-center">
 								<div class="custom-file">
 									<p><strong>Ajouter une ou plusieurs photos</strong></p>
-									<div class="imgPreview"></div>
+									<div class="imgPreview responsive"></div>
 									<input type="file" name="files[]" class="btn btn-default" id="photos" multiple/>
 								</div>
 							</div>
 							<div class="p-1 mt-2 border text-center">
 								<p>Ajouter une vidéo</p>
-								<video id="vidPreview" class="img-thumbnail img-responsive image" src="" controls></video>
+								<video class="img-thumbnail img-responsive" src="" id="vidPreview" controls></video>
 								<input type="hidden" name="MAX_FILE_SIZE" value="50000000"/>
 								<input type="file" name="video" class="btn btn-default" id="video"/>
 							</div>
@@ -453,7 +455,7 @@ if(isset($_POST['submit']))
 											<label class="control-label"><strong>Nom de l'objet </strong></label>
 										</div>
 										<div class="col-sm-12 col-md-6 col-lg-6 col-xs-6">
-											<input type="text" class="form-control" name="nomObj" maxlength="65" autofocus>
+											<input type="text" class="form-control" name="nomObj" id="nomObj" maxlength="65" autofocus>
 										</div>
 									</div>
 								</div>
