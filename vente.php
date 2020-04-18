@@ -18,6 +18,7 @@ if(isset($_POST['submit']))
 {	
 	if ($db_found) 
 	{
+		$errorCount = 0;
 
 //1. INFOS PRODUIT
 	//a) Récupération des données hors fichiers
@@ -113,6 +114,7 @@ if(isset($_POST['submit']))
 					 		alert("Erreur de téléchargement d'une des photos");
 						</script>
 			   		<?php
+			   		$errorCount += 1;
 				}
 			}
 			else
@@ -122,6 +124,7 @@ if(isset($_POST['submit']))
 				 		alert("Format d'une des photos non pris en charge. Les formats autorisés sont : jpg, jpeg, gif, png");
 					</script>
 			   	<?php
+			   	$errorCount += 1;
 			}
 		} 
 
@@ -156,6 +159,7 @@ if(isset($_POST['submit']))
 					 		alert("Erreur lors du téléchargement de la vidéo");
 						</script>
 			   		<?php
+			   		$errorCount += 1;
 				}
 			}
 			else
@@ -165,7 +169,17 @@ if(isset($_POST['submit']))
 				 		alert("Le fichier choisi n'est pas au bon format. Les formats vidéos autorisés sont : mp3, mp4");
 					</script>
 			   	<?php
+			   	$errorCount += 1;
 			}
+		}
+		//Alerte mise en vente
+		if ($errorCount == 0) 
+		{
+			?>
+				<script>
+			 		alert("Votre objet a été mis en vente avec succès !");
+				</script>
+	   		<?php
 		}
 	}
 }
@@ -397,6 +411,11 @@ if(isset($_POST['submit']))
 			$(".imgPreview").html("");
 			$("#vidPreview").attr('src', '');
 		});
+		//supprimer les preview existantes quand on reclique sur "selectionner fichiers"
+		$("#photos").click(function()
+		{
+			$(".imgPreview").html("");
+		})
 
 	//RESET CHOIX TYPE VENTE
 		$("#resetChoixTypeVente").click(function()
@@ -428,33 +447,6 @@ if(isset($_POST['submit']))
 			$("#case2").prop( "required", true );
 			$("#case3").prop( "required", true );
 		});
-
-	//CHECK FORMULAIRE
-		//Check si type de vente est rempli
-		function checkform()
-		{
-			var case1Checked = $("#case1").prop('checked');
-			var case2Checked = $("#case2").prop('checked');
-			var case3Checked = $("#case3").prop('checked');
-
-			alert(case1Checked);
-			alert("Avant return");
-
-			//Si au moins un est coché
-			if ((case1Checked == true) || (case2Checked == true) || (case3Checked == true))
-			{
-				//on accepte le formulaire
-				alert("Objet mis en vente !");
-				return true;
-			}
-			//Sinon (aucun n'est coché)
-			else
-			{
-				//on accepte pas le formulaire
-				alert("Veuillez choisir le type de vente de votre objet.");
-				return false;
-			}
-		}
 
 	//balise fin	
 	})
@@ -498,23 +490,23 @@ if(isset($_POST['submit']))
 				<!-- Affichage ventes en cours -->
 				<div class="col-lg-8 col-md-8 col-sm-12">
 					<h3 class="font-weight-bold text-center"><u>Mes ventes en cours</u></h3>
-					<!--
+					
 					<?php
 
-					//	$venteEnCours = 
+						$venteEnCours = 
 
-						//if ($db_found) {
+						if ($db_found) {
 							//tester si vendeur a des ventes en cours
-						//	if (venteEnCours != NULL) {
+							if (venteEnCours != NULL) {
 								//afficher les ventes en cours
-						//	}
-						//	else{
-								//afficher message comme quoi pas de ventes en cours
-						//	}
+							}
+							else{
+								//afficher comme quoi pas de ventes en cours
+							}
 
-						//}
+						}
 
-					?>-->
+					?>
 				</div>
 				
 			</div>
@@ -661,7 +653,7 @@ if(isset($_POST['submit']))
 
 							<!-- SUBMIT FORM -->
 							<div class="col-sm-12 text-center p-4">
-								<input type="submit" name="submit" value="Mettre en vente" class="btn-success rounded btn-lg">
+								<input type="submit" name="submit" value="Mettre en vente" class="btn-success rounded btn-lg" id="submitBtn">
 							</div>
 
 						</div>
