@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  ven. 17 avr. 2020 à 11:51
+-- Généré le :  sam. 18 avr. 2020 à 07:02
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `adresse` (
   `ID_User` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `ID_User` (`ID_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `adresse`
@@ -52,7 +52,8 @@ INSERT INTO `adresse` (`ID`, `Ligne_1`, `Ligne_2`, `Ville`, `Code_Postal`, `Pays
 (1, '15 rue guillaume apollinaire', NULL, 'Saint Denis', '93200', 'France ', '01 02 03 04 05', 1),
 (2, '37 Quai de grenelle', 'zeae', 'Paris', '75015', 'France', '01 03 02 04 05', 1),
 (4, '37 Quai de grenelle', NULL, 'Paris', '75015', 'France', '01 03 02 05 01', 1),
-(5, '37 Quai de grenelle', NULL, 'Paris', '75015', 'France', '01 03 02 05 01', 1);
+(5, '37 Quai de grenelle', NULL, 'Paris', '75015', 'France', '01 03 02 05 01', 1),
+(6, '12, rue du test', NULL, 'Paris', '75000', 'France', '01 05 02 03 04', 3);
 
 -- --------------------------------------------------------
 
@@ -84,6 +85,7 @@ INSERT INTO `carte_bancaire` (`Numero_Carte`, `Nom_Proprietaire`, `Date_exp`, `C
 ('1234123412341234', 'DIAS DA SILVA', '2020-01-01', 213, NULL, 1, 2, 2),
 ('7987514573582530', 'DIAS DA SILVA', '2022-01-01', 841, NULL, 1, 3, 1),
 ('9172321441098454', 'DIAS DA SILVA', '2021-03-01', 231, 500, 1, 2, 2),
+('9874563214589875', 'kozlow', '2027-02-01', 564, 10000, 3, 2, 6),
 ('9900940620967860', 'DIAS DA SILVA', '2020-04-01', 111, NULL, 1, 1, 1);
 
 -- --------------------------------------------------------
@@ -150,7 +152,15 @@ CREATE TABLE IF NOT EXISTS `commande` (
   PRIMARY KEY (`ID`),
   KEY `commande_ibfk_1` (`Acheteur`),
   KEY `commande_ibfk_2` (`Adresse_Livraison`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `commande`
+--
+
+INSERT INTO `commande` (`ID`, `Acheteur`, `Adresse_Livraison`, `Montant_total`, `Date_Commande`, `Date_Livraison`) VALUES
+(1, 1, 1, 12, '2020-04-18 03:47:00', '2020-04-20'),
+(2, 1, 1, 385, '2020-04-18 03:47:00', '2020-04-21');
 
 -- --------------------------------------------------------
 
@@ -160,13 +170,24 @@ CREATE TABLE IF NOT EXISTS `commande` (
 
 DROP TABLE IF EXISTS `commande_detail`;
 CREATE TABLE IF NOT EXISTS `commande_detail` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Commande` int(11) NOT NULL,
   `Objet` int(11) NOT NULL,
-  `Quantité` int(11) NOT NULL,
+  `Quantite` int(11) NOT NULL,
   `Montant` double NOT NULL,
   PRIMARY KEY (`ID`),
-  KEY `commande_detail_ibfk_2` (`Objet`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `commande_detail_ibfk_2` (`Objet`),
+  KEY `Commande` (`Commande`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `commande_detail`
+--
+
+INSERT INTO `commande_detail` (`ID`, `Commande`, `Objet`, `Quantite`, `Montant`) VALUES
+(1, 1, 13, 1, 12),
+(2, 2, 14, 1, 350),
+(3, 2, 15, 1, 35);
 
 -- --------------------------------------------------------
 
@@ -203,11 +224,13 @@ INSERT INTO `coupon_reduc` (`ID`, `Montant`, `Type`, `Code`, `Date_exp`, `Utilis
 
 DROP TABLE IF EXISTS `enchere`;
 CREATE TABLE IF NOT EXISTS `enchere` (
+  `ID` int(11) NOT NULL,
   `Objet` int(11) NOT NULL,
   `Acheteur` int(11) NOT NULL,
   `Prix` double NOT NULL,
-  PRIMARY KEY (`Objet`,`Acheteur`),
-  KEY `enchere_ibfk_1` (`Acheteur`)
+  PRIMARY KEY (`ID`),
+  KEY `enchere_ibfk_1` (`Acheteur`),
+  KEY `Objet` (`Objet`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -265,7 +288,7 @@ CREATE TABLE IF NOT EXISTS `produit` (
   PRIMARY KEY (`ID`),
   KEY `produit_ibfk_2` (`Vendeur`),
   KEY `produit_ibfk_1` (`Categorie`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `produit`
@@ -274,7 +297,10 @@ CREATE TABLE IF NOT EXISTS `produit` (
 INSERT INTO `produit` (`ID`, `Nom`, `Description`, `Video`, `Prix_min`, `Prix_Achat`, `Prix_Enchere`, `Date_fin_enchere`, `Vendeur`, `Categorie`) VALUES
 (1, 'Le précieux', 'test bijou', NULL, NULL, 500, NULL, NULL, 1, 3),
 (2, 'Pieces d\'or romain', 'Lot de 200 pieces', NULL, NULL, 2000, 1500, '2020-04-16 13:37:00', 2, 1),
-(3, 'Mona Lisa', 'tqt bro ', NULL, NULL, NULL, 1000000, '2020-04-19 23:55:00', 3, 2);
+(3, 'Mona Lisa', 'tqt bro ', NULL, NULL, NULL, 1000000, '2020-04-19 23:55:00', 3, 2),
+(13, 'objet1', 'description 1', NULL, NULL, 12, NULL, NULL, 2, 1),
+(14, 'objet2', 'description2', NULL, NULL, 350, NULL, NULL, 2, 2),
+(15, 'objet3', 'description3', NULL, NULL, 35, NULL, NULL, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -343,6 +369,8 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   `Adresse` int(11) DEFAULT NULL COMMENT 'Adresse principale',
   `Carte_Paiement` varchar(255) DEFAULT NULL COMMENT 'Moyen de paiement par defaut',
   `Role` int(11) DEFAULT NULL,
+  `Avatar` varchar(255) NOT NULL DEFAULT 'img/profil/avatar.jpg',
+  `Banniere` varchar(255) NOT NULL DEFAULT 'img/profil/banniere.jpg',
   PRIMARY KEY (`ID`),
   KEY `Role` (`Role`),
   KEY `utilisateur_ibfk_1` (`Adresse`),
@@ -353,10 +381,10 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`ID`, `Nom`, `Prenom`, `Pseudo`, `Password`, `Email`, `Adresse`, `Carte_Paiement`, `Role`) VALUES
-(1, 'DIAS DA SILVA', 'Daniel', 'Magic-System', 'azerty', 'daniel.dias-da-silva@edu.ece.fr', 1, '1234123412341234', 1),
-(2, 'GESLIN', 'Etienne', 'Xoxonoxir', 'qwerty', 'etienne.geslin@edu.ece.fr', NULL, NULL, 1),
-(3, 'KOZLOW', 'Constantin', 'saladetomate', 'azertyuiop', 'constantin.kozlow@edu.ece.fr', NULL, NULL, 1);
+INSERT INTO `utilisateur` (`ID`, `Nom`, `Prenom`, `Pseudo`, `Password`, `Email`, `Adresse`, `Carte_Paiement`, `Role`, `Avatar`, `Banniere`) VALUES
+(1, 'DIAS DA SILVA', 'Daniel', 'Magic-System', 'azerty', 'daniel.dias-da-silva@ece.fr', 1, '1234123412341234', 1, 'img/profil/avatar.jpg', 'img/profil/banniere.jpg'),
+(2, 'GESLIN', 'Etienne', 'Xoxonoxir', 'qwerty', 'etienne.geslin@edu.ece.fr', NULL, NULL, 1, 'img/profil/avatar.jpg', 'img/profil/banniere.jpg'),
+(3, 'KOZLOW', 'Constantin', 'saladetomate', 'azertyuiop', 'constantin.kozlow@edu.ece.fr', 6, '9874563214589875', 1, 'img/profil/avatar.jpg', 'img/profil/banniere.jpg');
 
 --
 -- Contraintes pour les tables déchargées
@@ -387,15 +415,15 @@ ALTER TABLE `commande`
 -- Contraintes pour la table `commande_detail`
 --
 ALTER TABLE `commande_detail`
-  ADD CONSTRAINT `commande_detail_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `commande` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `commande_detail_ibfk_2` FOREIGN KEY (`Objet`) REFERENCES `produit` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `commande_detail_ibfk_2` FOREIGN KEY (`Objet`) REFERENCES `produit` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `commande_detail_ibfk_3` FOREIGN KEY (`Commande`) REFERENCES `commande` (`ID`);
 
 --
 -- Contraintes pour la table `enchere`
 --
 ALTER TABLE `enchere`
-  ADD CONSTRAINT `enchere_ibfk_1` FOREIGN KEY (`Acheteur`) REFERENCES `utilisateur` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `enchere_ibfk_2` FOREIGN KEY (`Objet`) REFERENCES `produit` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `enchere_ibfk_1` FOREIGN KEY (`Objet`) REFERENCES `produit` (`ID`),
+  ADD CONSTRAINT `enchere_ibfk_2` FOREIGN KEY (`Acheteur`) REFERENCES `utilisateur` (`ID`);
 
 --
 -- Contraintes pour la table `img_produit`
