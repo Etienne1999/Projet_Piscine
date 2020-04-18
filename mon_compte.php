@@ -174,6 +174,38 @@
 		}
 	}
 
+	if (isset($_POST['btn_change_avatar'])) {
+		$id = $_SESSION['user_ID'];
+		$target_dir = "img/profil/";
+		$target_file = $target_dir . $id . basename($_FILES["avatarToUpload"]["name"]);
+		$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+		if($imageFileType == "jpg" || $imageFileType == "png" || $imageFileType == "jpeg" || $imageFileType == "gif") {
+			if (move_uploaded_file($_FILES["avatarToUpload"]["tmp_name"], $target_file)) {
+				$sql = "UPDATE `utilisateur` SET `Avatar` = '$target_file' WHERE ID = '$id'";
+
+				$res = mysqli_query($db_handle, $sql);
+				//var_dump($res);
+			} 
+		}
+	}
+
+	if (isset($_POST['btn_change_banniere'])) {
+		$id = $_SESSION['user_ID'];
+		$target_dir = "img/profil/";
+		$target_file = $target_dir . $id . basename($_FILES["banniereToUpload"]["name"]);
+		$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+		if($imageFileType == "jpg" || $imageFileType == "png" || $imageFileType == "jpeg" || $imageFileType == "gif") {
+			if (move_uploaded_file($_FILES["banniereToUpload"]["tmp_name"], $target_file)) {
+				$sql = "UPDATE `utilisateur` SET `Banniere` = '$target_file' WHERE ID = '$id'";
+
+				$res = mysqli_query($db_handle, $sql);
+				//var_dump($res);
+			} 
+		}
+	}
+
 	function get_commande($db_handle) {
 		$id = $_SESSION['user_ID'];
 		$sql = "SELECT * FROM commande WHERE Acheteur = '$id'";
@@ -553,13 +585,23 @@
 			<div class="col-md-5 border shadow m-2 cat">
 				<h4>Offrir cheque cadeau</h4>
 				<div class="mb-2">
-					Offrez une carte cadeau d'un montant personnalisé à quelqu'un !
+					Offrez une carte cadeau d'un montant personnalisé à quelqu'un !<br>
 					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Modal_add_cadeau">Offrir</button>
 				</div>
 			</div>
 			<div class="col-md-5 border shadow m-2 cat">
-				<h4> ??? </h4>
-				<span>d</span>
+				<h4>Reglages mon compte</h4>
+				<div class="mb-2">
+					<form method="post" enctype="multipart/form-data">
+					    <input type="file" name="avatarToUpload" id="avatarToUpload">
+					    <input type="submit" value="Changer Avatar" name="btn_change_avatar">
+					</form>
+					<br>
+					<form method="post" enctype="multipart/form-data">
+					    <input type="file" name="banniereToUpload" id="banniereToUpload">
+					    <input type="submit" value="Changer Banniere" name="btn_change_banniere">
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
