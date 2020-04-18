@@ -8,7 +8,7 @@
 						<span>&times;</span>
 					</button>
 				</div>
-				<form method="post">
+				<form method="post" action="mails.php">
 					<div class="modal-body">
 						<div class="form-group">
 							<label for="num_carte" class="col-form-label">Numéro Carte :</label>
