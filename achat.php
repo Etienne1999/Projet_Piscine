@@ -141,15 +141,26 @@
 					{	
 						// TESTER La recherche
 						if ($check_vendeur != '') {
-							$sql ="SELECT DISTINCT p.* FROM produit AS p, utilisateur WHERE utilisateur.ID = p.Vendeur AND utilisateur.Pseudo LIKE '%$check_vendeur%'";
+							$sql ="SELECT  produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE utilisateur.ID = produit.Vendeur AND utilisateur.Pseudo LIKE '%$check_vendeur%'";
 							$result = mysqli_query($db_handle, $sql);
 
 							if ($result != NULL) {					
 								while ($data = mysqli_fetch_assoc($result)) {
-									
-									echo "ID: " . $data['ID'] . '<br>';
-									echo "Nom:" . $data['Nom'] .'<br>';
-									echo "prix: " . $data['Prix_Achat'] . '<br>';	
+									?>
+									<div class="container" id="affichage">
+							  	<div class="card container" style="margin-top: 20px; max-width: 600px; padding-top: 10px;  ">
+								  	<img class="card-img-top" src="img/france1" alt="Card image"   height="450">
+								  	<div class="card-body">
+								    	<h4 class="card-title"><?php echo $data['ID'] . ". ". $data['Nom'];?></h4>
+								    	<h6> 	<?php 	echo "Disponible :";
+								    					if ($data['Prix_Achat'] > 0){ echo " -  à l'achat immediat  <br>";}
+														if ($data['Prix_Enchere'] > 0){ echo " -  à l'enchere  <br>";}
+														if ($data['Prix_min'] > 0){ echo " -  à l'achat par meilleur offre  ";}	 ?> </h6>
+								    	<p class="card-text"> <?php echo $data['Description'] . " au prix de ". $data['Prix_Achat'] . ". Cet article est proposé par : ". $data['Pseudo'] ; ?> </p>
+								    	<a href="affichage_achat.php?id=<?php echo $data['ID'] ?>" class="btn btn-primary"> Achetez-le </a>
+								  </div>
+								</div>
+							</div> <?php	
 								}							
 							}
 						}

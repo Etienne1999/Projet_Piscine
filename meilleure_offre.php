@@ -90,6 +90,7 @@ include ("database/db_connect.php");
 								?>
 								<form action="meilleure_offre.php?id=<?php echo $data['ID'] ?>" method="post">
 									<p> Voulez vous emmetre une offre : <input type="number" min="<?php echo $data['Prix_min'] ?>" max ="<?php echo $prix_max ?>" name="nombre" id="nombre" /></p>
+									<p><label>Notez bien que si vous faites une offre sur un article, vous êtes sous contrat légal pour l'acheter si le vendeur accepte l'offre. :  </label><input type="checkbox" name="devenir" id="devenir" required=""></p>
 									<input type="submit" class="btn btn-info btn-block is-invalid" value="Valider l'offre" id="button" /><br>
 								</form>
 								<?php 
