@@ -1,3 +1,12 @@
+<?php 
+if (session_status() == PHP_SESSION_NONE) {
+	session_start();
+}
+include ("database/db_connect.php");
+?>
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,40 +36,143 @@
 		
 	</header>
 	<!-- Conteneur -->
-	<div class="container-fluid">
+	<div class="container-fluid" id="imgac"> 
+		<div class="container" id="accueil" style="background-color: white;">
+		<div class="container"> <br> <h5 style="text-align: justify;"> Bienvenue sur notre site EBAY ECE ! Notre objectif est de faciliter les échanges d'antiquités et de biens familliaux entre particuliers. Nos utilisateurs vous proposent ainsi leurs antiquités au prix qu'ils estiment être juste (bien-sure, nous vérifions !). Plusieurs moyens sont disponibles pour se procurer les antiquités. Premièrement, l'achat immédiat : simple et efficace, vous achetez l'objet au prix indiqué sur l'annonce. Deuxièmement, les enchères : un prix minimal est fixé, vous avez jusqu'à la date limite pour faire une offre. Ce sont des enchères à l'aveugle, c'est-à-dire que vous ne voyez pas l'offre la plus haute actuellement (cela ajoute du piment, n'est-ce pas ?). Troisièmement, l'achat par meilleure offre : vous avez cinq tentatives pour vous mettre d'accord avec le vendeur sur un prix. Au-dela de cinq tentatives, vous n'avez plus possibilité de négocier ! <br> <br> Amusez-vous bien ! </h5> </div>
 
-		<div class="container">
-			<div class="carousel slide" data-ride="carousel" id="carousel-1">
+
+		<div class="container"  >
+			<br>
+			<div class="carousel slide" data-ride="carousel" id="carousel-1" style="">
 			    <div class="carousel-inner" role="listbox">
-			        <div class="carousel-item active"><img class="w-100 d-block" src="img/france1.jpg" alt="Slide Image" /></div>
-			        <div class="carousel-item"><img class="w-100 d-block" src="img/france2.jpg" alt="Slide Image" /></div>
-			        <div class="carousel-item"><img class="w-100 d-block" src="img/france4.jpg" alt="Slide Image" /></div>
-			        <div class="carousel-item"><img class="w-100 d-block" src="img/france5.jpg" alt="Slide Image" /></div>
-			        <div class="carousel-item"><img class="w-100 d-block" src="img/france6.jpg" alt="Slide Image" /></div>
-			        <div class="carousel-item"><img class="w-100 d-block" src="img/france7.jpg" alt="Slide Image" /></div>
+			        <div class="carousel-item active"><img class="w-100 d-block" src="img/mesencheres.jpg" alt="Slide Image" /></div>
+			        <?php
+			    	$sql = "SELECT produit.*, img_produit.URL FROM produit JOIN img_produit on img_produit.Produit= produit.ID WHERE  Prix_Enchere > 0";
+			    	$result = mysqli_query($db_handle, $sql);
+					if ($result != NULL)
+					{	
+						while ($data = mysqli_fetch_assoc($result))
+						{			    ?>
+			    
+			        <div class="carousel-item"><img class="w-100 d-block" src="<?php echo $data['URL']?>" alt="Slide Image" /></div>
+			        <?php }} ?>
 			    </div>
+
 			    <ol class="carousel-indicators">
 			        <li data-target="#carousel-1" data-slide-to="0" class="active"></li>
-			        <li data-target="#carousel-1" data-slide-to="1"></li>
-			        <li data-target="#carousel-1" data-slide-to="2"></li>
-			        <li data-target="#carousel-1" data-slide-to="3"></li>
-			        <li data-target="#carousel-1" data-slide-to="4"></li>
-			        <li data-target="#carousel-1" data-slide-to="5"></li>
+			        
+			        <?php
+			    	$sql2 = "SELECT * FROM produit WHERE Prix_Enchere > 0";
+			    	$result2 = mysqli_query($db_handle, $sql2);
+			    	$increment = 1;
+					if ($result2 != NULL) 
+					{	
+						while ($data = mysqli_fetch_assoc($result2))
+						{		    ?>
+			    
+			        	<li data-target="#carousel-1" data-slide-to="<?php echo $increment ?>"></li>
+			        	<?php  $increment ++;}} ?>
+			        
 			    </ol>
 			</div>
 		</div>
 
-		<div class="container">
+		<div class="container" style="margin-bottom: 60px;" >
 			<p><br>
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-				quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-				consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-				cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-				proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				Voici la liste de nos articles en vente en enchère : pour plus d'informations <a href="achat.php"> rendez-vous sur la page achat </a>
 			<br></p>
 		</div>
 
+
+
+
+		<!-- OFFRE ACHAT IMMEDIAT -->
+		<div class="container"   >
+			<br>
+			<div class="carousel slide" data-ride="carousel" id="carousel-4" style="">
+			    <div class="carousel-inner" role="listbox">
+			        <div class="carousel-item active"><img class="w-100 d-block" src="img/achat_immediat.jpg" alt="Slide Image" style="height: 500px;" /></div>
+			        <?php
+			    	$sql = " SELECT produit.*, img_produit.URL FROM produit JOIN img_produit on img_produit.Produit= produit.ID WHERE  Prix_Achat > 0";
+			    	$result = mysqli_query($db_handle, $sql);
+					if ($result != NULL)
+					{	echo "test1";
+						while ($data = mysqli_fetch_assoc($result))
+						{echo "test2";			    ?>
+			    
+			        <div class="carousel-item"><img class="w-100 d-block" src="<?php echo $data['URL']?>" alt="Slide Image" style="height: 500px " /></div>
+			        <?php }} ?>
+			    </div>
+
+			    <ol class="carousel-indicators">
+			        <li data-target="#carousel-4" data-slide-to="0" class="active"></li>
+			        
+			        <?php
+			    	$sql2 = "SELECT * FROM produit WHERE Prix_Achat > 0";
+			    	$result2 = mysqli_query($db_handle, $sql2);
+			    	$increment = 1;
+					if ($result2 != NULL) 
+					{	
+						while ($data = mysqli_fetch_assoc($result2))
+						{		    ?>
+			    
+			        	<li data-target="#carousel-4" data-slide-to="<?php echo $increment ?>"></li>
+			        	<?php  $increment ++;}} ?>
+			        
+			    </ol>
+			</div>
+		</div>
+
+		<div class="container" style="margin-bottom: 60px;">
+			<p><br>
+				Voici la liste de nos articles en vente en achat immédiat : pour plus d'informations <a href="achat.php"> rendez-vous sur la page achat </a>
+			<br></p>
+		</div>
+
+				<!-- OFFRE Meilleur offre -->
+		<div class="container"  >
+			<br>
+			<div class="carousel slide" data-ride="carousel" id="carousel-3" style="">
+			    <div class="carousel-inner" role="listbox">
+			        <div class="carousel-item active"><img class="w-100 d-block" src="img/achat_immediat.jpg" alt="Slide Image "style="height: 500px;"  /></div>
+			        <?php
+			    	$sql = "SELECT produit.*, img_produit.URL FROM produit JOIN img_produit on img_produit.Produit= produit.ID WHERE Prix_min > 0";
+			    	$result = mysqli_query($db_handle, $sql);
+					if ($result != NULL)
+					{	echo "test1";
+						while ($data = mysqli_fetch_assoc($result))
+						{echo "test2";			    ?>
+			    
+			        <div class="carousel-item"><img class="w-100 d-block" src="<?php echo $data['URL']?>" alt="Slide Image" style="height: 500px;"/></div>
+			        <?php }} ?>
+			    </div>
+
+			    <ol class="carousel-indicators">
+			        <li data-target="#carousel-3" data-slide-to="0" class="active"></li>
+			        
+			        <?php
+			    	$sql2 = "SELECT * FROM produit WHERE Prix_min > 0";
+			    	$result2 = mysqli_query($db_handle, $sql2);
+			    	$increment = 1;
+					if ($result2 != NULL) 
+					{	
+						while ($data = mysqli_fetch_assoc($result2))
+						{		    ?>
+			    
+			        	<li data-target="#carousel-3" data-slide-to="<?php echo $increment ?>"></li>
+			        	<?php  $increment ++;}} ?>
+			        
+			    </ol>
+			</div>
+		</div>
+
+		<div class="container" style="margin-bottom: 60px;">
+			<p><br>
+				Voici la liste de nos articles en vente en meilleure offre : pour plus d'informations <a href="achat.php"> rendez-vous sur la page achat </a>
+			<br></p>
+		</div><br><br>
+
+	</div>
 	</div>
 
 	<!-- Footer -->	

@@ -28,6 +28,7 @@
 	<?php include("nav.php") ?>
 	
 	<div class="container">
+		<br>
 		<div>
 			<?php 	
 			if ($db_found) 

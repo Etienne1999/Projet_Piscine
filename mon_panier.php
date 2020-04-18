@@ -36,7 +36,8 @@ include ("database/db_connect.php");
 		
 	</header>
 	<!-- Conteneur -->
-	<div class="container" style="margin-bottom: 50px">
+
+	<div class="container" style="margin-bottom: 50px" >
 		<?php
 		
 		if((isset($_SESSION['user_ID'])) AND (isset($_SESSION['panier'][1]))){
