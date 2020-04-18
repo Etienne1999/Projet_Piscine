@@ -26,15 +26,7 @@ if(isset($_POST['submit']))
 
 	//b) Création d'un nouveau produit
 		$sql = "INSERT INTO produit(Nom, Description, Categorie) VALUES('$nomObj', '$description', $categorie)";
-
-		//Test requete
-		$result = mysqli_query($db_handle, $sql);
-		if ($result) {
-			echo "Requete création nouveau produit ok!<br>";
-		}
-		else{
-			echo "Requete création nouveau produit pas ok..<br>";
-		}
+		mysqli_query($db_handle, $sql);
 
 	//c) Update infos de prix
 		
@@ -199,6 +191,7 @@ if(isset($_POST['submit']))
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
@@ -207,100 +200,135 @@ if(isset($_POST['submit']))
 	<link rel="stylesheet" type="text/css" href="vente.css">
 
 	<script type="text/javascript">
-		$(document).ready(function()
+	$(document).ready(function()
+	{
+
+	//Affichage accueil vente / formulaire vente
+		//on cache le formulaire d'ajout d'un objet à la vente
+		$("#affichageFormulaire").hide();
+
+		//quand on clique sur le bouton 'nouvelle vente' 1
+		$("#btnAccueil1").click(function()
 		{
-
-		//Affichage accueil vente / formulaire vente
-			//on cache le formulaire d'ajout d'un objet à la vente
-			$("#affichageFormulaire").hide();
-
-			//quand on clique sur le bouton 'nouvelle vente' 1
-			$("#btnAccueil1").click(function()
-			{
-				//on switch l'affichage 
-				$("#affichageAccueil").toggle();
-				$("#affichageFormulaire").toggle();
-			});
-			//quand on clique sur le bouton 'nouvelle vente' 2
-			$("#btnAccueil2").click(function()
-			{
-				//on switch l'affichage 
-				$("#affichageAccueil").toggle();
-				$("#affichageFormulaire").toggle();
-			});
-			//quand on clique sur le bouton submit du formulaire 
-			$("#btnForm").click(function()
-			{	
-				//on switch a nouveau pour retourner sur affichageAccueil
-				$("#affichageAccueil").toggle();
-				$("#affichageFormulaire").toggle();
-			});
-
-
-		//Affichage formulaire ACHAT IMMEDIAT
-			//on cache le formulaire de prix Achat Immediat
-			$("#achatIm").hide();
-			//Si on coche la case, on l'affiche
-			$("#case1").click(function()
-			{
-				$("#achatIm").toggle();
-			});
-
-		//Affichage formulaire MEILLEURE OFFRE
-			//on cache le formulaire de prix Achat Immediat
-			$("#meilleureOffre").hide();
-			//Si on coche la case, on l'affiche
-			$("#case2").click(function()
-			{
-				var isChecked = $("#case2").prop('checked');
-				if (isChecked) 
-				{
-					$("#meilleureOffre").show();
-					$("#enchere").hide();
-				}
-				else
-				{
-					$("#meilleureOffre").hide();
-				}
-			});
-
-		//Affichage formulaire ENCHERE
-			//on cache le formulaire de prix Achat Immediat
-			$("#enchere").hide();
-			//Si on coche la case, on l'affiche
-			$("#case3").click(function()
-			{
-				var isChecked = $("#case3").prop('checked');
-				if (isChecked) 
-				{
-					$("#enchere").show();
-					$("#meilleureOffre").hide();
-				}
-				else
-				{
-					$("#enchere").hide();
-				}
-			});
-
-		//RESET CHOIX
-		$("#resetChoix").click(function()
+			//on switch l'affichage 
+			$("#affichageAccueil").toggle();
+			$("#affichageFormulaire").toggle();
+		});
+		//quand on clique sur le bouton 'nouvelle vente' 2
+		$("#btnAccueil2").click(function()
 		{
-				//on décoche tout
-				$("#case1").prop( "checked", false );
-				$("#case2").prop( "checked", false );
-				$("#case3").prop( "checked", false );
+			//on switch l'affichage 
+			$("#affichageAccueil").toggle();
+			$("#affichageFormulaire").toggle();
+		});
+		//quand on clique sur le bouton submit du formulaire 
+		$("#btnForm").click(function()
+		{	
+			//on switch a nouveau pour retourner sur affichageAccueil
+			$("#affichageAccueil").toggle();
+			$("#affichageFormulaire").toggle();
+		});
 
-				//on cache les formulaires de prix
-				$("#achatIm").hide();
-				$("#meilleureOffre").hide();
+	//Image Preview
+	    // Multiple images preview in browser
+    	var imagesPreview = function(input, placeToInsertImagePreview) 
+    	{
+
+	        if (input.files) 
+	        {
+	            var filesAmount = input.files.length;
+
+	            for (i = 0; i < filesAmount; i++)
+	             {
+	                var reader = new FileReader();
+
+	                reader.onload = function(event) {
+	                    $($.parseHTML('<img class="img-thumbnail img-responsive">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+	                }
+	                reader.readAsDataURL(input.files[i]);
+	            }
+	        }
+    	};
+	    $('#photos').on('change', function() 
+	    {
+	        imagesPreview(this, 'div.gallery');
+	    });
+
+	//Affichage formulaire ACHAT IMMEDIAT
+		//on cache le formulaire de prix Achat Immediat
+		$("#achatIm").hide();
+		//Si on coche la case, on l'affiche
+		$("#case1").click(function()
+		{
+			$("#achatIm").toggle();
+		});
+
+	//Affichage formulaire MEILLEURE OFFRE
+		//on cache le formulaire de prix Achat Immediat
+		$("#meilleureOffre").hide();
+		//Si on coche la case, on l'affiche
+		$("#case2").click(function()
+		{
+			var isChecked = $("#case2").prop('checked');
+			if (isChecked) 
+			{
+				$("#meilleureOffre").show();
 				$("#enchere").hide();
+			}
+			else
+			{
+				$("#meilleureOffre").hide();
+			}
+		});
 
-				//on reset les données rentrées
-				$("#prixAchat").val('');
-				$("#prixMin").val('');
-				$("#prixEnchere").val('');
-				$("#dateEnchere").val('');
-			});
+	//Affichage formulaire ENCHERE
+		//on cache le formulaire de prix Achat Immediat
+		$("#enchere").hide();
+		//Si on coche la case, on l'affiche
+		$("#case3").click(function()
+		{
+			var isChecked = $("#case3").prop('checked');
+			if (isChecked) 
+			{
+				$("#enchere").show();
+				$("#meilleureOffre").hide();
+			}
+			else
+			{
+				$("#enchere").hide();
+			}
+		});
+
+	//RESET CHOIX FICHIERS
+		$("#resetChoixFichiers").click(function()
+		{
+			//Clear form
+			document.getElementById("photos").value = "";
+			document.getElementById("video").value = "";
+
+			//Clear div contenant les photos
+			$(".gallery").html("");
+		});
+
+	//RESET CHOIX TYPE VENTE
+		$("#resetChoixTypeVente").click(function()
+		{
+			//on décoche tout
+			$("#case1").prop( "checked", false );
+			$("#case2").prop( "checked", false );
+			$("#case3").prop( "checked", false );
+
+			//on cache les formulaires de prix
+			$("#achatIm").hide();
+			$("#meilleureOffre").hide();
+			$("#enchere").hide();
+
+			//on reset les données rentrées
+			$("#prixAchat").val('');
+			$("#prixMin").val('');
+			$("#prixEnchere").val('');
+			$("#dateEnchere").val('');
+		});
 	})
 </script>
 
@@ -375,12 +403,12 @@ if(isset($_POST['submit']))
 
 
 					<!-- Ajout photos et vidéo -->
-					<div class="col-lg-4 col-md-4 col-sm-12 border-right">
+						<div class="col-lg-4 col-md-4 col-sm-12 border-right">
 						<!--<form class="form ml-2 mr-1" action="vente.php" method="POST" enctype="multipart/form-data">-->
 							<div class="p-2 mb-2 border text-center">
 								<div class="custom-file">
 									<p><strong>Ajouter une ou plusieurs photos</strong></p>
-									<input type="hidden" name="MAX_FILE_SIZE" value="50000000"/>
+									<div class="gallery"></div>
 									<input type="file" name="files[]" class="btn btn-default" id="photos" multiple/>
 								</div>
 							</div>
@@ -388,6 +416,9 @@ if(isset($_POST['submit']))
 								<p>Ajouter une vidéo</p>
 								<input type="hidden" name="MAX_FILE_SIZE" value="50000000"/>
 								<input type="file" name="video" class="btn btn-default" id="video"/>
+							</div>
+							<div class="p-1 mt-2 border text-center">
+								<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoixFichiers">Supprimer les fichiers</button>
 							</div>
 						</div>
 
@@ -479,7 +510,7 @@ if(isset($_POST['submit']))
 											</div>
 
 											<!-- Bouton pour tout décocher -->
-											<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoix">Réinitialiser les choix</button>
+											<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoixTypeVente">Réinitialiser les choix</button>
 
 										</div>
 									</div>
