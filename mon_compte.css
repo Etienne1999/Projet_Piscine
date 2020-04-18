@@ -51,3 +51,19 @@
 	overflow-y: auto;
 	overflow-x: hidden;
 }
+
+.banniere {
+	background-image: url('img/banniere.jpg');
+	background-size: cover;
+	height: 250px;
+	width: auto;
+}
+
+.avatar {
+	height: 160px;
+	width: 160px;
+
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}

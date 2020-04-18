@@ -425,6 +425,19 @@
 		}
 	}
 
+	function get_banner($db_handle) {
+		$id = $_SESSION['user_ID'];
+		$sql = "SELECT Avatar, Banniere FROM utilisateur WHERE ID = '$id'";
+		$result = mysqli_query($db_handle, $sql);
+
+		while ($data = mysqli_fetch_assoc($result)) {
+			echo '<div class="col-12 banniere" style="background-image: url(' . $data['Banniere'] . ');">
+					<div class="col-md-4 col-3">
+						<img src="' . $data['Avatar'] . '" class="avatar mt-4">
+					</div>
+				</div>';
+		}
+	}
 
 ?>
 
@@ -467,12 +480,7 @@
 
 	<div class="container-fluid">
 		<div class="row no-gutters">
-			<div class="col-md-4" style="background-color: red">
-				<span>d</span>
-			</div>
-			<div class="col-md-8" style="background-color: blue">
-				<span>d</span>
-			</div>
+			<?php get_banner($db_handle); ?>
 		</div>
 	</div>
 	<div class="container">
