@@ -53,7 +53,19 @@ include ("database/db_connect.php");
 
 	<div class="container" style="margin-bottom: 50px" >
 		<?php
-		
+			$id = $_SESSION['user_ID'];
+    $sql = "SELECT Adresse, Carte_Paiement FROM utilisateur WHERE ID = '$id'";
+    $res = mysqli_query($db_handle, $sql);
+    $data = mysqli_fetch_assoc($res);
+    if ($data['Adresse'] == NULL) {
+    	echo '<div class="card" style="margin-top: 20px; border: 2px solid;">
+			<div class="card-body">Vous devez ajouter une adresse de livraison par defaut sur la page <a href="mon_compte.php">mon compte</a><br>
+		</div></div>';
+    }
+    if ($data['Carte_Paiement'] == NULL) {
+    	echo '<div class="card" style="margin-top: 20px; border: 2px solid;">
+			<div class="card-body">Vous devez ajouter un moyen de paiement par defaut sur la page <a href="mon_compte.php">mon compte</a><br></div></div>';
+    } 
 		if(isset($_SESSION['user_ID']) && !empty($_SESSION['panier'])){
 			foreach ($_SESSION['panier']as $pine) {
 				$sql = "SELECT DISTINCT produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE produit.ID like '$pine'  ";

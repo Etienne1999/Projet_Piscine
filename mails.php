@@ -36,9 +36,9 @@
 		//Read an HTML message body from an external file, convert referenced images to embedded,
 		//convert HTML into a basic plain-text alternative body
 		//$mail->msgHTML(file_get_contents('contents.html'), __DIR__);
-		$mail->Body = "Bonjour " . $_SESSION['user_Prenom'] . " " . $_SESSION['user_Nom'] . ",<br>Nous vous souhaitons la bienvenue sur ECE Ebay.<br>Vous pouvez vous connecter en saisissant votre nom d'utilisateur ou votre email ainsi que votre mot de passe.<br>Nom d'utilisateur : " . $_SESSION['user_Pseudo'] . "<br>A bientot sur ECE Ebay !";
+		$mail->Body = "Bonjour " . $_SESSION['user_Prenom'] . " " . $_SESSION['user_Nom'] . ",<br>Nous vous souhaitons la bienvenue sur ECE Ebay.<br>Vous pouvez vous connecter en saisissant votre nom d'utilisateur ou votre email ainsi que votre mot de passe.<br>Nom d'utilisateur : " . $_SESSION['user_Pseudo'] . "<br>N'oubliez pas de d'ajouter une adresse et un moyen de paiement sur la page http://piscine/mon_compte.php" . "<br>A bientot sur ECE Ebay !";
 		//Replace the plain text body with one created manually
-		$mail->AltBody = "Bonjour " . $_SESSION['user_Prenom'] . " " . $_SESSION['user_Nom'] . ",<br>Nous vous souhaitons la bienvenue sur ECE Ebay.<br>Vous pouvez vous connecter en saisissant votre nom d'utilisateur ou votre email ainsi que votre mot de passe.<br>Nom d'utilisateur : " . $_SESSION['user_Pseudo'] . "<br>A bientot sur ECE Ebay !";
+		$mail->AltBody = "Bonjour " . $_SESSION['user_Prenom'] . " " . $_SESSION['user_Nom'] . ",<br>Nous vous souhaitons la bienvenue sur ECE Ebay.<br>Vous pouvez vous connecter en saisissant votre nom d'utilisateur ou votre email ainsi que votre mot de passe.<br>Nom d'utilisateur : " . $_SESSION['user_Pseudo'] . "<br>N'oubliez pas de d'ajouter une adresse et un moyen de paiement sur la page http://piscine/mon_compte.php" .  . "<br>A bientot sur ECE Ebay !";
 
 		if (!$mail->send()) {
 		    echo 'Mailer Error: '. $mail->ErrorInfo;
