@@ -562,6 +562,7 @@ if(isset($_POST['submit']))
 										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.Produit = produit.ID WHERE produit.Vendeur = '$userID' AND produit.Vendu = '$vendu' AND img_produit.URL LIKE './img/0%'";
 										$result = mysqli_query($db_handle, $sql);
 
+									//Pas de ventes en cours
 										if (mysqli_num_rows($result) == 0) 
 										{
 											//afficher div comme quoi pas de ventes en cours
@@ -577,9 +578,16 @@ if(isset($_POST['submit']))
 												</div>
 											<?php 
 										}
-										//Si le vendeur a des ventes en cours
+
+									//Si le vendeur a des ventes en cours
 										else
 										{
+											?>
+												<div class="text-center">
+													<a href="offre.php" class="btn btn-outline-dark waves-effect" role="button">Voir toutes mes offres</a>
+												</div><br>
+											<?php
+
 											//afficher les ventes en cours
 											while ($data = mysqli_fetch_assoc($result))
 											{
@@ -619,6 +627,7 @@ if(isset($_POST['submit']))
 														                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
 														                    <span><u>Prix d'achat immédiat</u></span><br>
 														                    <span>".$data['Prix_Achat']."€</span>
+														                    <a href=\"offre.php\" class=\"btn btn-outline-dark waves-effect btn-sm\" role=\"button\">Voir mes offres</a>
 														                </div>";
 												          			}
 												          			else{
@@ -633,7 +642,7 @@ if(isset($_POST['submit']))
 												          				<div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
 														                    <span><u>Offre minimum</u></span><br>
 														                    <span>".$data['Prix_min']."€</span><br>
-														                    <a href=\"#\" class=\"btn btn-outline-dark waves-effect btn-sm\" role=\"button\">Voir mes offres</a>
+														                    <a href=\"offre.php\" class=\"btn btn-outline-dark waves-effect btn-sm\" role=\"button\">Voir mes offres</a>
 														                </div><hr>";
 												          			}
 												          			else{
@@ -778,8 +787,7 @@ if(isset($_POST['submit']))
 		</div>
 
 
-
-		<!-- Formulaire nouvel objet en vente -->
+	<!-- Formulaire nouvel objet en vente -->
 		<div id="affichageFormulaire">
 			<h3 class="text-center font-weight-bold pt-2 pb-4"><u>Nouvelle vente</u></h3>		
 			<!-- Début du formulaire -->
