@@ -22,7 +22,7 @@ if(isset($_POST['submit']))
 		$errorCount = 0;
 		//variable qui autorise la création d'un objet
 		$autorisationPhotos = 0;
-		$countPhotos = 0;
+		$compteurPhotos = 0;
 		$autorisationVideo = 0;
 
 
@@ -30,7 +30,7 @@ if(isset($_POST['submit']))
 		//on veut avoir autant de photos (countPhotos) que d'autorisations (autorisationPhotos)
 		foreach($_FILES['files']['tmp_name'] as $key => $tmp_name )
 		{
-			$countPhotos += 1;
+			$compteurPhotos += 1;
 			$file_name = $_FILES['files']['name'][$key];
 			
 		//On vérifie l'extension du fichier photo uploadé
@@ -78,7 +78,7 @@ if(isset($_POST['submit']))
 
 	//SI LES EXTENTIONS SONT OK :
 	//CREATION PRODUIT :
-		if (($autorisationPhotos == countPhotos) && ($autorisationVideo == 1)) 
+		if (($autorisationPhotos == $compteurPhotos) && ($autorisationVideo == 1)) 
 		{
 
 	//1. INFOS PRODUIT
