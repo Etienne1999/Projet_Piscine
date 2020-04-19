@@ -3,7 +3,7 @@
         session_start();
     }
 
-    include ("fonction_fin_enchere")
+    include ("fonction_fin_enchere");
  ?>
 
 <nav class="navbar sticky-top navbar-dark bg-dark navbar-expand-md navigation-clean-button">
@@ -44,7 +44,6 @@
                 <li class="nav-item"><a class="nav-link" href="mon_panier.php">Panier</a></li>
                 <!-- Affichage et lien dynamique en fonction du statut de connection -->
                 <?php if (!empty($_SESSION['user_ID'])){ echo '<li class="nav-item"><a class="nav-link" href="mon_compte.php">' . $_SESSION["user_Pseudo"] . '</a></li>'; }else{ echo '<li class="nav-item"><a class="nav-link" href="login.php">Se connecter</a></li>';} ?>
-
             </ul>
         </div>
     </div>
