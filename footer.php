@@ -36,6 +36,6 @@
         </div>
     </div>
     <div class="footer-copyright">
-        <p>© 2018 Copyright Text</p>
+        <p>© 2020 Copyright Daniel DIAS DA SILVA & Etienne GESLIN & Constantin KOZLOW</p>
     </div>
 </footer>
