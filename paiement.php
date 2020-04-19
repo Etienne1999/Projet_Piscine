@@ -1,3 +1,21 @@
+<?php
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    include("database/db_connect.php");
+
+    //Redirection vers login si pas d'utilisateur connecté
+    if (!isset($_SESSION['user_ID'])) 
+    {
+        header("Location: login.php");
+    }
+
+    if (isset($_SESSION['panier']) && empty($_SESSION['panier'])) {
+        header("Location: index.php");
+    }
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -23,21 +41,31 @@
         <section class="clean-block payment-form dark">
             <div class="container">
                 <div class="block-heading">
-                    <h2 class="text-info">Payment</h2>
+                    <h2 class="text-info">Paiement</h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
                 </div>
                 <form>
                     <div class="products">
-                        <h3 class="title">Checkout</h3>
-                        <div class="item"><span class="price">$200</span>
-                            <p class="item-name">Product 1</p>
-                            <p class="item-description">Lorem ipsum dolor sit amet</p>
-                        </div>
-                        <div class="item"><span class="price">$120</span>
-                            <p class="item-name">Product 2</p>
-                            <p class="item-description">Lorem ipsum dolor sit amet</p>
-                        </div>
-                        <div class="total"><span>Total</span><span class="price">$320</span></div>
+                        <h3 class="title">Détail commande</h3>
+
+                        <?php
+                            $montant_total = 0;
+                            foreach ($_SESSION['panier'] as $item) {
+                                $sql = "SELECT Nom, Prix_Achat, Description FROM produit WHERE ID = '$item'" ;
+                                $res = mysqli_query($db_handle, $sql);
+                                //var_dump($res);
+                                while ($info_item = mysqli_fetch_assoc($res)) {
+                                    echo '<div class="item"><span class="price">' . $info_item['Prix_Achat'] . '€</span>
+                                        <p class="item-name">' . $info_item['Nom'] . '</p>
+                                        <p class="item-description">' . $info_item['Description'] . '</p>
+                                    </div>';
+                                    $montant_total += $info_item['Prix_Achat'];
+                                }
+                                
+                            }
+
+                            echo '<div class="total"><span>Total</span><span class="price">' . $montant_total . '€</span></div>';
+                        ?>
                     </div>
                     <div class="card-details">
                         <h3 class="title">Credit Card Details</h3>
