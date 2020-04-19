@@ -3,6 +3,9 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 include ("database/db_connect.php");
+	
+	var_dump($_SESSION['panier']);
+
 ?>
 
 <!DOCTYPE html>
@@ -40,34 +43,29 @@ include ("database/db_connect.php");
 	<div class="container" style="margin-bottom: 50px" >
 		<?php
 		
-		if((isset($_SESSION['user_ID'])) AND (isset($_SESSION['panier'][1]))){
+		if(isset($_SESSION['user_ID'])){
 			foreach ($_SESSION['panier']as $pine) {
+				$sql = "SELECT DISTINCT produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE produit.ID like '$pine'  ";
+				$result = mysqli_query($db_handle, $sql);
+				if ($result != NULL) 
+				{	
+					while ($data = mysqli_fetch_assoc($result))
+						{     	?> 
+							<div class="card" style="margin-top: 20px; border: 2px solid;">
+								<div class="card-header"><?php echo  $data['ID'] . ". ". $data['Nom']; $produit = $data['ID'];?></div>
+								<div class="card-body"><?php echo $data['Description'] . " au prix de ". $data['Prix_Achat'] . " euros.<br> Cet article est proposé par : ". $data['Pseudo'] ; ?> </div>
 
-				if ($pine != 0)
-				{
-					
-					$sql = "SELECT DISTINCT produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE produit.ID like '$pine'  ";
-					$result = mysqli_query($db_handle, $sql);
-					if ($result != NULL) 
-					{	
-						while ($data = mysqli_fetch_assoc($result))
-							{     	?> 
-								<div class="card" style="margin-top: 20px; border: 2px solid;">
-									<div class="card-header"><?php echo  $data['ID'] . ". ". $data['Nom']; $produit = $data['ID'];?></div>
-									<div class="card-body"><?php echo $data['Description'] . " au prix de ". $data['Prix_Achat'] . " euros.<br> Cet article est proposé par : ". $data['Pseudo'] ; ?> </div>
-
-									
-								</div>
+								
+							</div>
 
 
-								<?php 
-							}
-							
-							
-
+							<?php 
 						}
+						
+						
+
 					}
-				}  
+				}
 				?>	<br><a class="btn btn-danger btn-block is-invalid" href="mon_panier.php?suppri=boom" style="margin-bottom : 10px" onclick="" > Vider le panier : Double Clic</a>
 					<a class="btn btn-success btn-block is-invalid" style="margin: 0 auto"  > Acceder au paiement </a></div>
 				<?php

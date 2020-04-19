@@ -84,8 +84,7 @@
 				{ ?>
 					 					
 				<?php
-					
-				if (!in_array($produit, $_SESSION['panier']))
+				if (!isset($_SESSION['panier']) || !in_array($produit, $_SESSION['panier']))
 				{
 					?><br><a href="affichage_achat.php?id=<?php echo $produit ?>&amp;ajout=ok" class="btn btn-primary btn-block is-invalid"><H3> Ajouter au panier </H3> </a>	
 					<?php if (isset($_GET['ajout']) AND $_GET['ajout']== "ok") {$_SESSION['panier'][] = $produit;}
