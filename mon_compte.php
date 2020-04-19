@@ -230,10 +230,10 @@
 				while ($data_cd = mysqli_fetch_assoc($detail)) {
 					echo "<b>" . $data_cd['Nom'] . "</b><br>";
 					echo 'Vendu par : ' . $data_cd['Pseudo'] . "<br>";
-					echo "EUR " . $data_cd['Montant'] . "<br>";
-					echo "Quantité : " . $data_cd['Quantite'] . "<br>";
+					//echo "EUR " . $data_cd['Montant'] . "<br>";
 					echo "<br>";
 				}
+				echo 'Livré le : ' . $data['Date_Livraison'];
 				echo 		'</div>
 						</div>
 					</div>';
