@@ -132,7 +132,10 @@
 		$mail->Username = 'piscine.ece.2020@gmail.com';
 		$mail->Password = 'Magic-System123';
 		$mail->setFrom('piscine.ece.2020@gmail.com', 'Ece Ebay');
-		$mail->addAddress($_SESSION['user_Email']);
+		if (isset($_GET['email']))
+			$mail->addAddress($_GET['email']);
+		else
+			$mail->addAddress($_SESSION['user_Email']);
 		$mail->Subject = "Votre commande ECE Ebay";
 		//Read an HTML message body from an external file, convert referenced images to embedded,
 		//convert HTML into a basic plain-text alternative body
