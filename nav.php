@@ -3,6 +3,7 @@
         session_start();
     }
 
+    include ("fonction_fin_enchere.php");
  ?>
 
 <nav class="navbar sticky-top navbar-dark bg-dark navbar-expand-md navigation-clean-button">

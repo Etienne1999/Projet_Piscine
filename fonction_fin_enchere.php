@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 	include ("database/db_connect.php");
 
-$sql = "SELECT ID, Date_fin_enchere FROM produit ";
+$sql = "SELECT ID, Date_fin_enchere, Vendu FROM produit ";
 $result = mysqli_query($db_handle, $sql);
 $date = date_create();
 $now = date('Y-m-d H:i:s');
@@ -13,12 +13,12 @@ if ($result != NULL)
 	$ench_fini = array();
 	while ($data = mysqli_fetch_assoc($result))
 	{
-		if (($now>$data['Date_fin_enchere']) AND ($data['Date_fin_enchere']!=NULL)) {
-			echo "Enchere fini : " . $data['ID'] . " " . $data['Date_fin_enchere']. "<br>";
+		if (($now>$data['Date_fin_enchere']) AND ($data['Date_fin_enchere']!=NULL) && $data['Vendu'] == 0) {
+			//echo "Enchere fini : " . $data['ID'] . " " . $data['Date_fin_enchere']. "<br>";
 			$ench_fini[] = $data['ID'];
 		}
-		if (($now<$data['Date_fin_enchere']) AND ²($data['Date_fin_enchere']!=NULL)) {
-			echo "Enchere en cours : " . $data['ID'] . " " . $data['Date_fin_enchere']. "<br>"; 
+		if (($now<$data['Date_fin_enchere']) AND ($data['Date_fin_enchere']!=NULL)) {
+			//echo "Enchere en cours : " . $data['ID'] . " " . $data['Date_fin_enchere']. "<br>"; 
 		}
 	}
 
@@ -80,6 +80,7 @@ if ($result != NULL)
 		$sql4 = "UPDATE `produit` SET `Vendu`= 1 WHERE ID = '$article'";
 		mysqli_query($db_handle, $sql4);
 
-		header('Location: mails.php?commande=' . $id_commande . "&mail=" . $email);
+		header('Location: mails.php?commande=' . $id_commande . "&email=" . $email);
 	}
+}
 ?>
