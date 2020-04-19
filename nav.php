@@ -3,7 +3,7 @@
         session_start();
     }
 
-    include ("fonction_fin_enchere.php");
+    include ("fonction_fin_enchere")
  ?>
 
 <nav class="navbar sticky-top navbar-dark bg-dark navbar-expand-md navigation-clean-button">
@@ -48,6 +48,4 @@
             </ul>
         </div>
     </div>
-
-    
 </nav>
