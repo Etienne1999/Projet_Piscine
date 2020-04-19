@@ -10,6 +10,10 @@
         header("Location: login.php");
     }
 
+    if (!isset($_SESSION['panier'])) {
+        header("Location: index.php");
+    }
+
     if (isset($_SESSION['panier']) && empty($_SESSION['panier'])) {
         header("Location: index.php");
     }
