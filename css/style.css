@@ -2,8 +2,8 @@
 .container-fluid
 {
 	font-family: var(--Ecriture-site);
-	margin: 0px;
-	padding: 0px;
+
+
 	background-color: orange;
 }
 

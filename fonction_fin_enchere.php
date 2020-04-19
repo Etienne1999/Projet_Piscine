@@ -82,6 +82,4 @@ if ($result != NULL)
 
 		header('Location: mails.php?commande=' . $id_commande . "&mail=" . $email);
 	}
-}
-
 ?>

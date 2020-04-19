@@ -514,7 +514,7 @@
 	<?php include("modal/modal_carte_credit.php") ?>
 	<?php include("modal/modal_carte_cadeau.php") ?>
 
-	<div class="container-fluid">
+	<div class="container-fluid" style="background-color: white;">
 		<div class="row no-gutters">
 			<?php get_banner($db_handle); ?>
 		</div>
