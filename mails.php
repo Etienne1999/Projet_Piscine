@@ -36,9 +36,9 @@
 		//Read an HTML message body from an external file, convert referenced images to embedded,
 		//convert HTML into a basic plain-text alternative body
 		//$mail->msgHTML(file_get_contents('contents.html'), __DIR__);
-		$mail->Body = "Bonjour " . $_SESSION['user_Prenom'] . " " . $_SESSION['user_Nom'] . ",<br>Nous vous souhaitons la bienvenue sur ECE Ebay.<br>Vous pouvez vous connecter en saisissant votre nom d'utilisateur ou votre email ainsi que votre mot de passe.<br>Nom d'utilisateur : " . $_SESSION['user_Pseudo'] . "<br>N'oubliez pas de d'ajouter une adresse et un moyen de paiement sur la page http://piscine/mon_compte.php" . "<br>A bientot sur ECE Ebay !";
+		$mail->Body = "Bonjour " . $_SESSION['user_Prenom'] . " " . $_SESSION['user_Nom'] . ",<br>Nous vous souhaitons la bienvenue sur ECE Ebay.<br>Vous pouvez vous connecter en saisissant votre nom d'utilisateur ou votre email ainsi que votre mot de passe.<br>Nom d'utilisateur : " . $_SESSION['user_Pseudo'] . "<br>N'oubliez pas de d'ajouter une adresse et un moyen de paiement sur la page http://piscine/mon_compte.php <br>A bientot sur ECE Ebay !";
 		//Replace the plain text body with one created manually
-		$mail->AltBody = "Bonjour " . $_SESSION['user_Prenom'] . " " . $_SESSION['user_Nom'] . ",<br>Nous vous souhaitons la bienvenue sur ECE Ebay.<br>Vous pouvez vous connecter en saisissant votre nom d'utilisateur ou votre email ainsi que votre mot de passe.<br>Nom d'utilisateur : " . $_SESSION['user_Pseudo'] . "<br>N'oubliez pas de d'ajouter une adresse et un moyen de paiement sur la page http://piscine/mon_compte.php" .  . "<br>A bientot sur ECE Ebay !";
+		$mail->AltBody = "Bonjour " . $_SESSION['user_Prenom'] . " " . $_SESSION['user_Nom'] . ",<br>Nous vous souhaitons la bienvenue sur ECE Ebay.<br>Vous pouvez vous connecter en saisissant votre nom d'utilisateur ou votre email ainsi que votre mot de passe.<br>Nom d'utilisateur : " . $_SESSION['user_Pseudo'] . "<br>N'oubliez pas de d'ajouter une adresse et un moyen de paiement sur la page http://piscine/mon_compte.php <br>A bientot sur ECE Ebay !";
 
 		if (!$mail->send()) {
 		    echo 'Mailer Error: '. $mail->ErrorInfo;
@@ -121,6 +121,67 @@
 				}
 			}
 		}
+	}
+	else if (isset($_GET['commande'])) {
+		$mail = new PHPMailer;
+		$mail->isSMTP();
+		$mail->Host = 'smtp.gmail.com';
+		$mail->Port = 587;
+		$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+		$mail->SMTPAuth = true;
+		$mail->Username = 'piscine.ece.2020@gmail.com';
+		$mail->Password = 'Magic-System123';
+		$mail->setFrom('piscine.ece.2020@gmail.com', 'Ece Ebay');
+		$mail->addAddress($_SESSION['user_Email']);
+		$mail->Subject = "Votre commande ECE Ebay";
+		//Read an HTML message body from an external file, convert referenced images to embedded,
+		//convert HTML into a basic plain-text alternative body
+		//$mail->msgHTML(file_get_contents('contents.html'), __DIR__);
+
+		$msg = "<b>Bonjour</b>, <br>Nous vous informons que votre commande a été expédiée. Votre colis est en cours d'acheminement et cette commande ne peut donc plus être modifiée. <br>";
+
+		$id_commande = $_GET['commande'];
+		$sql = "SELECT a.Ligne_1, a.Ligne_2, a.Ville, a.Code_Postal, a.Pays, a.Telephone, commande.Date_Livraison, commande.Montant_total, commande.ID, utilisateur.Nom FROM adresse as a, commande, utilisateur WHERE commande.ID = '$id_commande' AND commande.Adresse_Livraison = a.ID AND a.ID_User = utilisateur.ID";
+		$res = mysqli_query($db_handle, $sql);
+		$data = mysqli_fetch_assoc($res);
+		var_dump($data);
+
+		$msg .= "Votre commande sera livrée le " . $data['Date_Livraison'] . "<br>";
+		$msg .= "<u>A l'adresse suivante :</u><br><br>";
+		$msg .= $data['Nom'] . "<br>";
+		$msg .= $data['Ligne_1'] . "<br>";
+		if (!empty($data['Ligne_2']))
+			$msg .= $data['Ligne_2'] . "<br>";
+		$msg .= $data['Ville'] . "<br>";
+		$msg .= $data['Code_Postal'] . "<br>";
+		$msg .= $data['Pays'] . "<br>";
+		$msg .= $data['Telephone'] . "<br><br>";
+
+		$msg .= "<u>Votre commande contient :</u><br><br>";
+
+		$sql = "SELECT produit.Nom, produit.Description FROM commande_detail, produit WHERE commande_detail.Commande = '$id_commande' AND produit.ID = commande_detail.Objet";
+		$res = mysqli_query($db_handle, $sql);
+
+		while ($data_detail = mysqli_fetch_assoc($res)) {
+			$msg .= "<b>" . $data_detail['Nom'] . "</b>" . " : " . $data_detail['Description'] . '<br><br>';
+		}
+
+		$msg .= "Prix total de cette commande :" . $data['Montant_total'] . "€<br>";
+
+		//echo $msg;
+
+		$mail->Body = $msg;
+		//Replace the plain text body with one created manually
+		$mail->AltBody = $msg;
+
+		
+		if (!$mail->send()) {
+		    echo 'Mailer Error: '. $mail->ErrorInfo;
+		} else {
+		    echo 'Message sent!';
+		    header("Location: index.php");
+		}
+		
 	}
 	else {
 		header("Location: index.php");

@@ -87,6 +87,7 @@
 				$sql = "UPDATE `coupon_reduc` SET `Utilisations` = '$util' WHERE Code = '$code'";
 				mysqli_query($db_handle, $sql);
 			}
+			header('Location: mails.php?commande=' . $id_commande);
 
 		}
 		else {
