@@ -12,6 +12,15 @@ if (!isset($_SESSION['user_ID']))
     header("Location: login.php");
 }
 
+//Redirection vers devenir vendeur si l'utilisateur n'est pas vendeur
+if (isset($_SESSION['user_Role'])) 
+{
+    if ($_SESSION['user_Role'] != 1 || $_SESSION['user_Role'] != 3)
+    	header("Location: devenir_vendeur.php");
+}
+
+
+
 //-----------------------------------------------------------------------------------------------------
 //FORMULAIRE
 if(isset($_POST['submit']))
@@ -492,7 +501,7 @@ if(isset($_POST['submit']))
 					<h3 class="font-weight-bold text-center"><u>Mes ventes en cours</u></h3>
 					
 					<?php
-
+						/*
 						$venteEnCours = 
 
 						if ($db_found) {
@@ -505,7 +514,7 @@ if(isset($_POST['submit']))
 							}
 
 						}
-
+						*/
 					?>
 				</div>
 				
