@@ -525,7 +525,7 @@ if(isset($_POST['submit']))
 											?>
 												<div class="row">
 													<div class="col-sm-12">
-														<h6 class="mt-4">Vous n'avez aucune vente en cours en ce moment.</h6>
+														<h6 class="mt-1">Vous n'avez aucune vente en cours en ce moment.</h6>
 													</div>
 													<div class="col-sm-6 col-sm-offset-2">
 														<span>Vous souhaitez mettre un objet en vente ?</span>
@@ -544,7 +544,7 @@ if(isset($_POST['submit']))
 													<div class="card">
 														<div class="card flex-row flex-wrap">
 													        <div class="card-header border-0">
-													            <img src="<?php echo $data['URL']; ?>" alt="">
+													            <img src="<?php echo $data['URL']; ?>" class="img-thumbnail"  id="venteEnCours">
 													        </div>
 													        <div class="card-block px-2">
 													            <h4 class="card-title"><?php echo $data['Nom']; ?></h4>
@@ -604,7 +604,7 @@ if(isset($_POST['submit']))
 
 					<!-- Ventes terminées -->
 						<div class="col-sm-12">
-							<h3 class="font-weight-bold text-center"><u>Mes ventes terminées</u></h3>
+							<h3 class="font-weight-bold text-center mt-3"><u>Mes ventes terminées</u></h3>
 							
 							<?php		
 									if ($db_found) 
@@ -623,7 +623,7 @@ if(isset($_POST['submit']))
 											?>
 												<div class="row">
 													<div class="col-sm-12">
-														<h6 class="mt-4">Vous n'avez encore conclu aucune vente</h6>
+														<h6 class="mt-1">Vous n'avez encore conclu aucune vente</h6>
 													</div>
 													<div class="col-sm-6 col-sm-offset-2">
 														<span>Vous souhaitez mettre un objet en vente ?</span>
@@ -642,7 +642,7 @@ if(isset($_POST['submit']))
 													<div class="card">
 														<div class="card flex-row flex-wrap">
 													        <div class="card-header border-0">
-													            <img src="<?php echo $data['URL']; ?>" alt="">
+													            <img src="<?php echo $data['URL']; ?>" class="img-thumbnail">
 													        </div>
 													        <div class="card-block px-2">
 													            <h4 class="card-title"><?php echo $data['Nom']; ?></h4>
