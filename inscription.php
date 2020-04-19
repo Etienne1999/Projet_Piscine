@@ -77,12 +77,12 @@
 						mysqli_query($db_handle, $sql);
 
 						//On récupere l'ID et le role de l'utilisateur qui vient d'etre crée
-						$sql_ID_Role = "SELECT ID, ROLE FROM utilisateur WHERE Email = '$email'";
+						$sql_ID_Role = "SELECT ID, Role FROM utilisateur WHERE Email = '$email'";
 						$result = mysqli_query($db_handle, $sql_ID_Role);
 						//On ajoute les données utilisateur a la session puis on redigire l'utilisateur vers index.php
 						while ($data = mysqli_fetch_assoc($result)) {
 							$_SESSION['user_ID'] = $data['ID'];
-							$_SESSION['user_Role'] = $data['Role'];
+							$_SESSION['user_Role'] = $data['Role'];	
 						}
 						$_SESSION['user_Nom'] = $nom;
 						$_SESSION['user_Prenom'] = $prenom;
