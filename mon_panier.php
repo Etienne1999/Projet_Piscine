@@ -3,8 +3,19 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 include ("database/db_connect.php");
-	
-	var_dump($_SESSION['panier']);
+
+//Redirection vers login si pas d'utilisateur connecté
+    if (!isset($_SESSION['user_ID'])) 
+    {
+        header("Location: login.php");
+    }
+
+    //Refresh la page apres avoir vider le panier
+    if (isset($_GET['suppri']) && $_GET['suppri'] == 'boom'){
+    	header("Location: mon_panier.php");
+    }
+
+	var_dump($_SESSION);
 
 ?>
 
@@ -66,8 +77,8 @@ include ("database/db_connect.php");
 
 					}
 				}
-				?>	<br><a class="btn btn-danger btn-block is-invalid" href="mon_panier.php?suppri=boom" style="margin-bottom : 10px" onclick="" > Vider le panier : Double Clic</a>
-					<a class="btn btn-success btn-block is-invalid" style="margin: 0 auto"  > Acceder au paiement </a></div>
+				?>	<br><a class="btn btn-danger btn-block is-invalid" href="mon_panier.php?suppri=boom" style="margin-bottom : 10px" onclick="" > Vider le panier</a>
+					<a class="btn btn-success btn-block is-invalid" style="margin: 0 auto" href="paiement" > Acceder au paiement </a></div>
 				<?php
 				if 	(isset($_GET['suppri']) AND $_GET['suppri']== "boom")
 							{

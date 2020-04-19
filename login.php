@@ -33,7 +33,7 @@
 					$_SESSION['user_Pseudo'] = $data['Pseudo'];
 					$_SESSION['user_Email'] = $data['Email'];
 					$_SESSION['user_Role'] = $data['Role'];
-					$_SESSION['panier'];
+					$_SESSION['panier'] = array();
 
 					mysqli_close($db_handle);
 
