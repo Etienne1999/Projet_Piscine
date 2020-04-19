@@ -3,6 +3,17 @@
         session_start();
     }
     include ("database/db_connect.php");
+
+    //Redirection vers login si pas d'utilisateur connecté
+    if (!isset($_SESSION['user_ID'])) 
+    {
+        header("Location: login.php");
+    }
+
+	//Redirige vers mon panier apres ajout d'un objet dans le panier
+    if (isset($_GET['ajout']) && $_GET['ajout'] == 'ok'){
+    	header("Location: mon_panier.php");
+    }
 ?>
 
 <!DOCTYPE html>
@@ -19,8 +30,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<link rel="stylesheet" type="text/css" href="achat.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/achat.css">
 
 </head>
 <body>
@@ -113,8 +124,7 @@
 				{ ?>
 					 					
 				<?php
-					
-				if (!in_array($produit, $_SESSION['panier']))
+				if (!isset($_SESSION['panier']) || !in_array($produit, $_SESSION['panier']))
 				{
 					?><br><a href="affichage_achat.php?id=<?php echo $produit ?>&amp;ajout=ok" class="btn btn-primary btn-block is-invalid"><H3> Ajouter au panier </H3> </a>	
 					<?php if (isset($_GET['ajout']) AND $_GET['ajout']== "ok") {$_SESSION['panier'][] = $produit;}

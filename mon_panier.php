@@ -3,6 +3,20 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 include ("database/db_connect.php");
+
+//Redirection vers login si pas d'utilisateur connecté
+    if (!isset($_SESSION['user_ID'])) 
+    {
+        header("Location: login.php");
+    }
+
+    //Refresh la page apres avoir vider le panier
+    if (isset($_GET['suppri']) && $_GET['suppri'] == 'boom'){
+    	unset($_SESSION['panier']); 
+		$_SESSION['panier'] = array();	
+    	header("Location: mon_panier.php");
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +33,7 @@ include ("database/db_connect.php");
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script type="text/javascript">
 		
 	</script>
@@ -40,46 +54,34 @@ include ("database/db_connect.php");
 	<div class="container" style="margin-bottom: 50px" >
 		<?php
 		
-		if((isset($_SESSION['user_ID'])) AND (isset($_SESSION['panier'][1]))){
+		if(isset($_SESSION['user_ID']) && !empty($_SESSION['panier'])){
 			foreach ($_SESSION['panier']as $pine) {
+				$sql = "SELECT DISTINCT produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE produit.ID like '$pine'  ";
+				$result = mysqli_query($db_handle, $sql);
+				if ($result != NULL) 
+				{	
+					while ($data = mysqli_fetch_assoc($result))
+					{     	?> 
+						<div class="card" style="margin-top: 20px; border: 2px solid;">
+							<div class="card-header"><?php echo  $data['ID'] . ". ". $data['Nom']; $produit = $data['ID'];?></div>
+							<div class="card-body"><?php echo $data['Description'] . " au prix de ". $data['Prix_Achat'] . " euros.<br> Cet article est proposé par : ". $data['Pseudo'] ; ?> </div>
 
-				if ($pine != 0)
-				{
-					
-					$sql = "SELECT DISTINCT produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE produit.ID like '$pine'  ";
-					$result = mysqli_query($db_handle, $sql);
-					if ($result != NULL) 
-					{	
-						while ($data = mysqli_fetch_assoc($result))
-							{     	?> 
-								<div class="card" style="margin-top: 20px; border: 2px solid;">
-									<div class="card-header"><?php echo  $data['ID'] . ". ". $data['Nom']; $produit = $data['ID'];?></div>
-									<div class="card-body"><?php echo $data['Description'] . " au prix de ". $data['Prix_Achat'] . " euros.<br> Cet article est proposé par : ". $data['Pseudo'] ; ?> </div>
-
-									
-								</div>
-
-
-								<?php 
-							}
 							
-							
+						</div>
 
-						}
+
+						<?php 
 					}
-				}  
-				?>	<br><a class="btn btn-danger btn-block is-invalid" href="mon_panier.php?suppri=boom" style="margin-bottom : 10px" onclick="" > Vider le panier : Double Clic</a>
-					<a class="btn btn-success btn-block is-invalid" style="margin: 0 auto"  > Acceder au paiement </a></div>
-				<?php
-				if 	(isset($_GET['suppri']) AND $_GET['suppri']== "boom")
-							{
+						
+						
 
-								unset($_SESSION['panier']); 
-								$_SESSION['panier'][]=0;
-							}
-	
-		
-			} else  { ?> <div class="card-header" style="margin-bottom: 15px; margin-top: 15px"><?php echo  "vous n'avez pas d'article " ?></div> <?php } ?>
+				}
+			}
+				?>	<br><a class="btn btn-danger btn-block is-invalid" href="mon_panier.php?suppri=boom" style="margin-bottom : 10px" onclick="" > Vider le panier</a>
+				<a class="btn btn-success btn-block is-invalid" style="margin: 0 auto" href="commande.php" > Acceder au paiement </a></div>
+				<?php
+
+		} else  { ?> <div class="card-header" style="margin-bottom: 15px; margin-top: 15px"><?php echo  "vous n'avez pas d'article " ?></div> <?php } ?>
 			
 
 		<!-- Footer -->	

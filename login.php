@@ -33,7 +33,7 @@
 					$_SESSION['user_Pseudo'] = $data['Pseudo'];
 					$_SESSION['user_Email'] = $data['Email'];
 					$_SESSION['user_Role'] = $data['Role'];
-					$_SESSION['panier'][] = "0";
+					$_SESSION['panier'] = array();
 
 					mysqli_close($db_handle);
 
@@ -74,7 +74,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-	<link rel="stylesheet" type="text/css" href="login.css">
+	<link rel="stylesheet" type="text/css" href="css/login.css">
 
 </head>
 
