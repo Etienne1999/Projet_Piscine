@@ -18,7 +18,12 @@ if(isset($_POST['submit']))
 {	
 	if ($db_found) 
 	{
+		//compteyur d'erreurs
 		$errorCount = 0;
+		//Emplacement d'enregistrement des fichier
+		$valuefldr = './img';
+
+
 
 //1. INFOS PRODUIT
 	//a) Récupération des données hors fichiers
@@ -79,8 +84,7 @@ if(isset($_POST['submit']))
 
 
 //2. FICHIERS
-		///Emplacement d'enregistrement des fichier
-		$valuefldr = './img';
+		
 
 	//a) PHOTOS
 		//Pour chaque photo
@@ -513,10 +517,11 @@ if(isset($_POST['submit']))
 									{
 										//on récupère l'ID du vendeur en cours
 										$userID = $_SESSION['user_ID'];
+										$vendu = 0; //0 = false
 
 										//on récupère les infos des produits liés au vendeur connecté qui n'ont pas encore été vendus
 										//on compte le nombre de résultat 
-										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.Produit = produit.ID WHERE produit.Vendeur = '$userID'"; //A RAJOUTER QUAND BDD A JOUR : "AND produit.Statut = 'pas vendu'" !!!
+										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.Produit = produit.ID WHERE produit.Vendeur = '$userID' AND produit.Vendu = '$vendu' AND img_produit.URL LIKE './img/0%'";
 										$result = mysqli_query($db_handle, $sql);
 
 										if (mysqli_num_rows($result) == 0) 
@@ -610,16 +615,18 @@ if(isset($_POST['submit']))
 									if ($db_found) 
 									{
 										//on récupère l'ID du vendeur en cours
-										$userID = $_SESSION['user_ID'];										
+										$userID = $_SESSION['user_ID'];
+										$vendu = 1;	//1 = true
 
 										//on récupère les ID des produits du vendeur co qui ont déja été vendu
 										//on compte le nombre de résultat
-										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.produit = produit.ID WHERE produit.Vendeur = '$userID'"; //A RAJOUTER QUAND BDD A JOUR : "AND produit.Statut = 'vendu' " !!!!
+										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.produit = produit.ID WHERE produit.Vendeur = '$userID' AND produit.Vendu = '$vendu' AND img_produit.URL LIKE './img/0%'"; 
 										$result = mysqli_query($db_handle, $sql);
 
+									//Aucune vente terminé
 										if (mysqli_num_rows($result) == 0) 
 										{
-											//Affichage div aucune vente
+											
 											?>
 												<div class="row">
 													<div class="col-sm-12">
@@ -632,10 +639,10 @@ if(isset($_POST['submit']))
 												</div>
 											<?php 
 										}
-										//Si le vendeur a des ventes terminées (statut produit = vendu)
+
+									//A une ou plusieurs ventes terminées
 										else
 										{
-											//les afficher
 											while ($data = mysqli_fetch_assoc($result))
 											{
 												?>
@@ -655,7 +662,7 @@ if(isset($_POST['submit']))
 													            </p>
 													          	<div class="row">
 													          		<?php 
-													          		//On affiche si le type de vente est autorisée par le produit
+													          		//On affiche le type de vente est autorisée par le produit
 													          			if ($data['Prix_Achat'] != 0) {
 													          				echo "
 															                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
