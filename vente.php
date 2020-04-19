@@ -15,7 +15,7 @@ if (!isset($_SESSION['user_ID']))
 //Redirection vers devenir vendeur si l'utilisateur n'est pas vendeur
 if (isset($_SESSION['user_Role'])) 
 {
-    if ($_SESSION['user_Role'] != 1 || $_SESSION['user_Role'] != 3)
+    if ($_SESSION['user_Role'] != 1 && $_SESSION['user_Role'] != 3)
     	header("Location: devenir_vendeur.php");
 }
 
