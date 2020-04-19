@@ -166,7 +166,7 @@
 			$msg .= "<b>" . $data_detail['Nom'] . "</b>" . " : " . $data_detail['Description'] . '<br><br>';
 		}
 
-		$msg .= "Prix total de cette commande :" . $data['Montant_total'] . "€<br>";
+		$msg .= "Prix total de cette commande :" . $data['Montant_total'] . "EUR<br>";
 
 		//echo $msg;
 

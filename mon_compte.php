@@ -169,6 +169,10 @@
 			if (mysqli_num_rows($check_result) == 0){
 				$sql_edit_info = "UPDATE `utilisateur` SET `Nom`= '$info_nom',`Prenom`= '$info_prenom',`Password`= '$info_password',`Email`= '$info_email' WHERE id = '$id'";
 				$res = mysqli_query($db_handle, $sql_edit_info);
+				$_SESSION['user_Nom'] = $info_nom;
+				$_SESSION['user_Prenom'] = $info_prenom;
+				$_SESSION['user_Email'] = $info_password;
+				$_SESSION['user_Role'] = $info_email;
 				//var_dump($res);
 			}
 		}

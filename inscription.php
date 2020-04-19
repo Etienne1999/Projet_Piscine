@@ -4,6 +4,12 @@
 		session_start();
 	}
 
+	//Redirection vers login si utilisateur connecté
+    if (isset($_SESSION['user_ID'])) 
+    {
+        header("Location: index.php");
+    }
+
 	$nom = isset($_POST["nom"])? $_POST["nom"] : "";
 	$prenom = isset($_POST["prenom"])? $_POST["prenom"] : "";
 	$username = isset($_POST["username"])? $_POST["username"] : "";

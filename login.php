@@ -5,6 +5,13 @@
 	}
 	include("database/db_connect.php");
 
+	//Redirection vers login si utilisateur connecté
+    if (isset($_SESSION['user_ID'])) 
+    {
+        header("Location: index.php");
+    }
+
+
 	$login = isset($_POST["login"])? $_POST["login"] : "";
 	$password = isset($_POST["password"])? $_POST["password"] : "";
 
