@@ -11,8 +11,3 @@ text-area:focus{
 #vidPreview {
 	height: 180px;
 }
-
-#venteEnCours {
-	width: 100%;
-	max-width: 200px;
-}
