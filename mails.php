@@ -47,8 +47,7 @@
 		    header("Location: index.php");
 		}
 	}
-
-	if (isset($_POST['btn_add_cadeau'])) {
+	else if (isset($_POST['btn_add_cadeau'])) {
 
 		$num_carte = isset($_POST["num_carte"])? $_POST["num_carte"] : "";
 		$montant = isset($_POST["montant"])? $_POST["montant"] : "";
@@ -122,6 +121,9 @@
 				}
 			}
 		}
+	}
+	else {
+		header("Location: index.php");
 	}
 
 
