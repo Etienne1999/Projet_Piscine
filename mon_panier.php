@@ -16,7 +16,6 @@ include ("database/db_connect.php");
 		$_SESSION['panier'] = array();	
     	header("Location: mon_panier.php");
     }
-	var_dump($_SESSION);
 
 ?>
 
