@@ -1,15 +1,31 @@
 <?php 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
-include ("database/db_connect.php");
+	if (session_status() == PHP_SESSION_NONE) {
+		session_start();
+	}
+	include ("database/db_connect.php");
 
-//Redirection vers index si l'utilisateur est deja vendeur
-if (isset($_SESSION['user_Role'])) 
-{
-    if ($_SESSION['user_Role'] == 1 || $_SESSION['user_Role'] == 3)
-    	header("Location: index.php");
-}
+	//Redirection vers index si l'utilisateur est deja vendeur
+	if (isset($_SESSION['user_Role'])) 
+	{
+	    if ($_SESSION['user_Role'] == 1 || $_SESSION['user_Role'] == 3)
+	    	header("Location: index.php");
+	}
+ 
+	if (isset($_POST["devenir"])) 
+	{
+		$id = $_SESSION['user_ID'];
+		$sql = "SELECT Role FROM utilisateur WHERE ID = $id";
+		$result = mysqli_query($db_handle, $sql);
+		if ($result != NULL) {	
+			while ($data = mysqli_fetch_assoc($result))
+			{
+				$sql_changement= "UPDATE utilisateur SET Role = 3 WHERE ID = $id";
+				$result_changement = mysqli_query($db_handle, $sql_changement);
+				$_SESSION['user_Role'] = 3;
+				header("Location: vente.php");
+			}
+		}
+	}
 
 ?>
 
@@ -588,23 +604,6 @@ if (isset($_SESSION['user_Role']))
 				</form>
 			</div>
 		</div>
-		<?php  
-		if (isset($_POST["devenir"])) 
-		{
-			$id = $_SESSION['user_ID'];
-			$sql = "SELECT Role FROM utilisateur WHERE ID = $id";
-			$result = mysqli_query($db_handle, $sql);
-			if ($result != NULL) {	
-				while ($data = mysqli_fetch_assoc($result))
-				{
-					$sql_changement= "UPDATE utilisateur SET Role = 3 WHERE ID = $id";
-					$result_changement = mysqli_query($db_handle, $sql_changement);
-					$_SESSION['user_Role'] = 3;
-					?> <input class="btn btn-success btn-block is-invalid container" type="submit" value="Felicitation, vous etes un vendeur !" /> <?php 
-				}
-			}
-		}
-		?>
 		<!-- Footer -->	
 		<?php include("footer.php") ?>
 	</body>
