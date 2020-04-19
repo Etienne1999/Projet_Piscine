@@ -213,6 +213,7 @@ if(isset($_POST['submit']))
 
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<link rel="stylesheet" type="text/css" href="css/vente.css">
+	<link rel="stylesheet" type="text/css" href="css/bs.css">
 
 	<script type="text/javascript">
 	$(document).ready(function()
