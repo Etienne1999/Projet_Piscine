@@ -141,15 +141,18 @@
 					{	
 						// TESTER La recherche
 						if ($check_vendeur != '') {
-							$sql ="SELECT  produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE utilisateur.ID = produit.Vendeur AND utilisateur.Pseudo LIKE '%$check_vendeur%'";
+							$sql =" SELECT produit.* , utilisateur.Pseudo, img_produit.URL FROM produit 
+							LEFT JOIN utilisateur on utilisateur.ID = produit.Vendeur 
+							LEFT JOIN img_produit on img_produit.Produit=produit.ID  
+							WHERE utilisateur.ID = produit.Vendeur AND utilisateur.Pseudo LIKE '%$check_vendeur%' ";
+							
 							$result = mysqli_query($db_handle, $sql);
-
 							if ($result != NULL) {					
 								while ($data = mysqli_fetch_assoc($result)) {
 									?>
 									<div class="container" id="affichage">
 							  	<div class="card container" style="margin-top: 20px; max-width: 600px; padding-top: 10px;  ">
-								  	<img class="card-img-top" src="img/france1" alt="Card image"   height="450">
+								  	<img class="card-img-top" src="<?php echo $data['URL']?>" alt="Card image"   height="450">
 								  	<div class="card-body">
 								    	<h4 class="card-title"><?php echo $data['ID'] . ". ". $data['Nom'];?></h4>
 								    	<h6> 	<?php 	echo "Disponible :";
@@ -167,7 +170,9 @@
 						
 						// Tester les checkbox
 						else{
-							$sql = "SELECT  produit.* , utilisateur.Pseudo FROM produit JOIN utilisateur on utilisateur.ID = produit.Vendeur WHERE produit.ID != 0  ";
+							$sql = " SELECT produit.* , utilisateur.Pseudo, img_produit.URL FROM produit 
+							LEFT JOIN utilisateur on utilisateur.ID = produit.Vendeur 
+							LEFT JOIN img_produit on img_produit.Produit=produit.ID  WHERE produit.ID != 0   ";
 							$test = 0;
 							$test2 = 0;
 
@@ -301,7 +306,7 @@
 						 ?>								
 							<div class="container" id="affichage">
 							  	<div class="card container" style="margin-top: 20px; max-width: 600px; padding-top: 10px;  ">
-								  	<img class="card-img-top" src="img/france1" alt="Card image"   height="450">
+								  	<img class="card-img-top" src="<?php echo $data['URL']?>" alt="Card image"   height="450">
 								  	<div class="card-body">
 								    	<h4 class="card-title"><?php echo $data['ID'] . ". ". $data['Nom'];?></h4>
 								    	<h6> 	<?php 	echo "Disponible :";
