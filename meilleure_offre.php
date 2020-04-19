@@ -50,26 +50,57 @@ include ("database/db_connect.php");
 				if ($result != NULL) {	
 					while ($data = mysqli_fetch_assoc($result))
 					 { //Affichage   	?>
+					 <br>
 					<div class="container card">
 						<h3 class="card-title" style="margin : 0 auto;margin-top: 10px; margin-bottom: 10px;"> ACHAT PAR MEILLEURE OFFRE :</h3>
-						<div class="carousel slide" data-ride="carousel" id="carousel-1">
-					    <div class="carousel-inner" role="listbox">
-					        <div class="carousel-item active"><img class="w-100 d-block" src="img/france1.jpg" alt="Slide Image" /></div>
-					        <div class="carousel-item"><img class="w-100 d-block" src="img/france2.jpg" alt="Slide Image" /></div>
-					        <div class="carousel-item"><img class="w-100 d-block" src="img/france4.jpg" alt="Slide Image" /></div>
-					        <div class="carousel-item"><img class="w-100 d-block" src="img/france5.jpg" alt="Slide Image" /></div>
-					        <div class="carousel-item"><img class="w-100 d-block" src="img/france6.jpg" alt="Slide Image" /></div>
-					        <div class="carousel-item"><img class="w-100 d-block" src="img/france7.jpg" alt="Slide Image" /></div>
-					    </div>
-					    <ol class="carousel-indicators">
-					        <li data-target="#carousel-1" data-slide-to="0" class="active"></li>
-					        <li data-target="#carousel-1" data-slide-to="1"></li>
-					        <li data-target="#carousel-1" data-slide-to="2"></li>
-					        <li data-target="#carousel-1" data-slide-to="3"></li>
-					        <li data-target="#carousel-1" data-slide-to="4"></li>
-					        <li data-target="#carousel-1" data-slide-to="5"></li>
-					    </ol>
-						</div>
+						<div class="container"  >
+								<br>
+								<div class="carousel slide" data-ride="carousel" id="carousel-affich" style="">
+								    <div class="carousel-inner" role="listbox">
+								        <div class="carousel-item active"><img class="w-100 d-block" src="img/mesencheres.jpg" alt="Slide Image" style="height: 600px;"/></div>
+								        <?php
+								        $test_video = 0;
+								    	$sql_ = "SELECT produit.*, img_produit.URL FROM produit JOIN img_produit on img_produit.Produit= produit.ID WHERE  produit.ID ='$id'";
+								    	$result_ = mysqli_query($db_handle, $sql_);
+										if ($result_ != NULL)
+										{	
+											while ($data_ = mysqli_fetch_assoc($result_))
+											{			    ?>
+								    
+								        <div class="carousel-item"><img class="w-100 d-block" src="<?php echo $data_['URL']?>" alt="Slide Image" style="height: 600px;" /></div>
+								        <?php 
+								        if (($test_video==0 )AND (isset($data_['Video']))) { ?> <div class="carousel-item"><video class="w-100 d-block" src="<?php echo $data_['Video']?>" alt="Slide Image" style="height: 600px;" /></div>
+								        <?php $test_video++;}
+								    	}} 
+
+
+								        ?>
+								    </div>
+
+								    <ol class="carousel-indicators">
+								        <li data-target="#carousel-affich" data-slide-to="0" class="active"></li>
+								        
+								        <?php
+								        $test_video2 = 0;
+								    	$sql2 = "SELECT * FROM produit WHERE Produit.ID = '$id'";
+								    	$result2 = mysqli_query($db_handle, $sql2);
+								    	$increment = 1;
+										if ($result2 != NULL) 
+										{	
+											while ($data_ = mysqli_fetch_assoc($result2))
+											{		    ?>
+								    
+								        	<li data-target="#carousel-affich" data-slide-to="<?php echo $increment ?>"></li>
+								        	<?php  $increment ++;
+								        	if (($test_video==0 )AND (isset($data_['Video']))) { ?> 
+								        		<li data-target="#carousel-affich" data-slide-to="<?php echo $increment ?>"></li>
+								        	<?php $test_video++;   $increment ++;}
+								    	}} 
+								        ?>
+								        
+								    </ol>
+								</div>
+							</div>
 						<div class="card" style="margin-top: 10px; margin-bottom: 10px; padding: 10px">
 								<h4 class="card-title"><?php echo " Achat à l'enchère de : " . $data['Nom']; $produit = $data['ID'];?></h4>
 								<p class="card-text"> <?php echo $data['Description'] . " au prix de ". $data['Prix_min'] ." euros". ". Cet article est proposé par : ". $data['Pseudo']; ?> </p>

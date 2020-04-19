@@ -23,6 +23,10 @@
 	max-height: 500px;
 }
 
+#carousel-affich img{
+	max-width: auto;
+	max-height: 500px;
+}
 
 #accueil
 {
