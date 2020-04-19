@@ -3,6 +3,17 @@
         session_start();
     }
     include ("database/db_connect.php");
+
+    //Redirection vers login si pas d'utilisateur connecté
+    if (!isset($_SESSION['user_ID'])) 
+    {
+        header("Location: login.php");
+    }
+
+	//Redirige vers mon panier apres ajout d'un objet dans le panier
+    if (isset($_GET['ajout']) && $_GET['ajout'] == 'ok'){
+    	header("Location: mon_panier.php");
+    }
 ?>
 
 <!DOCTYPE html>
