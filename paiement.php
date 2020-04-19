@@ -7,7 +7,73 @@
 	
 	if (isset($_POST['payer'])) {
 		var_dump($_POST);
+		$erreur = array();
 
+		$id = $_SESSION['user_ID'];
+		if ((int)$_POST['payer'] > 0) {
+			$num_carte = $_POST['num_carte'];
+
+			$sql = "SELECT DATEDIFF(Date_exp, NOW()) as diff, CVV, Plafond FROM carte_bancaire WHERE Numero_Carte = '$num_carte' AND ID_User = '$id'";
+			$res = mysqli_query($db_handle, $sql);
+			//Check si la carte existe pour cet utilisateur
+			if (mysqli_num_rows($res) == 1) {
+				$data = mysqli_fetch_assoc($res);
+				var_dump($data);
+				//Check date d'expiration de la carte
+				if ((int)$data['diff'] < 0) {
+					$erreur .= "Erreur : Carte de paiement expirée !";
+				}
+				//Check le plafon de la carte
+				if ((int)$_POST['payer'] > (int)$data['Plafond']) {
+					$erreur .= "Erreur : Le plafond a été atteint. Impossible de proceder au paiement !";	
+				}
+				//Check le cryptogramme
+				if ((int)$_POST['cvv'] != (int)$data['CVV']) {
+					$erreur .= "Erreur : Le cryptogramme de sécurité ne correspond pas !";	
+				}
+			}
+			else {
+				$erreur .= "Erreur : Carte de paiement introuvable !";
+			}
+		}
+		if (empty($erreur)) {
+			//date actuelle pour la commande
+			$date=date_create();
+			$date_commande = date_format($date,"Y/m/d H:i:s");
+
+			//Ajoute 5 jours pour la livraison
+			date_modify($date,"+5 days");
+			$date_livraison = date_format($date,"Y/m/d");
+			$montant = $_POST['payer'];
+
+			//On recupere l'adresse principale de l'utilisateur pour l'adresse de livraison
+			$sql = "SELECT Adresse FROM utilisateur WHERE ID = '$id'";
+			$res = mysqli_query($db_handle, $sql);
+			$data = mysqli_fetch_assoc($res);
+			$adresse = $data['Adresse'];
+
+			//Ajoute la commande dans la bdd
+			$sql = "INSERT INTO `commande`(`Acheteur`, `Adresse_Livraison`, `Montant_total`, `Date_Commande`, `Date_Livraison`) VALUES ('$id', '$adresse', '$montant', '$date_commande', '$date_livraison')";
+			mysqli_query($db_handle, $sql);
+
+			$sql = "SELECT ID FROM commande WHERE Date_Commande = '$date_commande'";
+			$res = mysqli_query($db_handle, $sql);
+			$data = mysqli_fetch_assoc($res);
+			$id_commande = $data['ID'];
+			echo $id_commande;
+
+			foreach ($_SESSION['panier'] as $article) {
+				//Ajoute les detail de commande
+				$sql1 = "INSERT INTO `commande_detail`(`Commande`, `Objet`) VALUES ('$id_commande', '$article')";
+				mysqli_query($db_handle, $sql1);
+				//Update le statut de produit
+				$sql2 = "UPDATE `produit` SET `Vendu`= 1 WHERE ID = '$article'";
+				mysqli_query($db_handle, $sql2);
+			}
+
+			unset($_SESSION['panier']);
+			var_dump($_SESSION);
+		}
 	}
 	else {
 		header("Location: index.php");
