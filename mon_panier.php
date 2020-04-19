@@ -94,7 +94,7 @@ include ("database/db_connect.php");
 				<a class="btn btn-success btn-block is-invalid" style="margin: 0 auto" href="commande.php" > Acceder au paiement </a></div>
 				<?php
 
-		} else  { ?> <div class="card-header" style="margin-bottom: 15px; margin-top: 15px"><?php echo  "vous n'avez pas d'article " ?></div> <?php } ?>
+		} else  { ?> <div class="card-header" style="margin-bottom: 15px; margin-top: 15px; border: 2px solid; border-radius: 5px;"><?php echo  "Vous n'avez pas d'article " ?></div> <?php } ?>
 			
 
 		<!-- Footer -->	
