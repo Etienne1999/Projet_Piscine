@@ -144,7 +144,7 @@
 							$sql =" SELECT produit.* , utilisateur.Pseudo, img_produit.URL FROM produit 
 							LEFT JOIN utilisateur on utilisateur.ID = produit.Vendeur 
 							LEFT JOIN img_produit on img_produit.Produit=produit.ID  
-							WHERE utilisateur.ID = produit.Vendeur AND utilisateur.Pseudo LIKE '%$check_vendeur%' ";
+							WHERE utilisateur.ID = produit.Vendeur AND utilisateur.Pseudo LIKE '%$check_vendeur%' AND Vendu = 0";
 							
 							$result = mysqli_query($db_handle, $sql);
 							if ($result != NULL) {					
@@ -172,7 +172,7 @@
 						else{
 							$sql = " SELECT produit.* , utilisateur.Pseudo, img_produit.URL FROM produit 
 							LEFT JOIN utilisateur on utilisateur.ID = produit.Vendeur 
-							LEFT JOIN img_produit on img_produit.Produit=produit.ID  WHERE produit.ID != 0   ";
+							LEFT JOIN img_produit on img_produit.Produit=produit.ID  WHERE produit.ID != 0  AND Vendu = 0   ";
 							$test = 0;
 							$test2 = 0;
 

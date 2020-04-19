@@ -113,11 +113,11 @@
                                                 $reduc_restant = $data['Utilisations'];
                                             }
                                             if ($data['Type'] == 1) {
-                                                $montant_total = $montant_total * (1 - $data['Montant'] / 100);
+                                                
                                                 echo '<div class="item"><span class="price">' . ($montant_total * $data['Montant'] / 100 * -1) . '€</span>
                                                         <p class="item-name">' . $code_reduc . '</p>
                                                         <p class="item-description">Reduction de ' . ($data['Montant'] * -1) . '%</p>
-                                                    </div>';
+                                                    </div>';$montant_total = $montant_total * (1 - $data['Montant'] / 100);
                                             }
                                             else {
                                                 $montant_total = $montant_total - $data['Montant'];

@@ -48,7 +48,7 @@ include ("database/db_connect.php");
 			    <div class="carousel-inner" role="listbox">
 			        <div class="carousel-item active"><img class="w-100 d-block" src="img/mesencheres.jpg" alt="Slide Image" /></div>
 			        <?php
-			    	$sql = "SELECT produit.*, img_produit.URL FROM produit JOIN img_produit on img_produit.Produit= produit.ID WHERE  Prix_Enchere > 0";
+			    	$sql = "SELECT produit.*, img_produit.URL FROM produit JOIN img_produit on img_produit.Produit= produit.ID WHERE  Prix_Enchere > 0 AND Vendu = 0";
 			    	$result = mysqli_query($db_handle, $sql);
 					if ($result != NULL)
 					{	
@@ -63,7 +63,7 @@ include ("database/db_connect.php");
 			        <li data-target="#carousel-1" data-slide-to="0" class="active"></li>
 			        
 			        <?php
-			    	$sql2 = "SELECT * FROM produit WHERE Prix_Enchere > 0";
+			    	$sql2 = "SELECT * FROM produit WHERE Prix_Enchere > 0 AND Vendu = 0";
 			    	$result2 = mysqli_query($db_handle, $sql2);
 			    	$increment = 1;
 					if ($result2 != NULL) 
@@ -94,7 +94,7 @@ include ("database/db_connect.php");
 			    <div class="carousel-inner" role="listbox">
 			        <div class="carousel-item active"><img class="w-100 d-block" src="img/achat_immediat.jpg" alt="Slide Image" style="height: 500px;" /></div>
 			        <?php
-			    	$sql = " SELECT produit.*, img_produit.URL FROM produit JOIN img_produit on img_produit.Produit= produit.ID WHERE  Prix_Achat > 0";
+			    	$sql = " SELECT produit.*, img_produit.URL FROM produit JOIN img_produit on img_produit.Produit= produit.ID WHERE  Prix_Achat > 0 AND Vendu = 0";
 			    	$result = mysqli_query($db_handle, $sql);
 					if ($result != NULL)
 					{	echo "test1";
@@ -109,7 +109,7 @@ include ("database/db_connect.php");
 			        <li data-target="#carousel-4" data-slide-to="0" class="active"></li>
 			        
 			        <?php
-			    	$sql2 = "SELECT * FROM produit WHERE Prix_Achat > 0";
+			    	$sql2 = "SELECT * FROM produit WHERE Prix_Achat > 0 AND Vendu = 0";
 			    	$result2 = mysqli_query($db_handle, $sql2);
 			    	$increment = 1;
 					if ($result2 != NULL) 
@@ -137,7 +137,7 @@ include ("database/db_connect.php");
 			    <div class="carousel-inner" role="listbox">
 			        <div class="carousel-item active"><img class="w-100 d-block" src="img/achat_immediat.jpg" alt="Slide Image "style="height: 500px;"  /></div>
 			        <?php
-			    	$sql = "SELECT produit.*, img_produit.URL FROM produit JOIN img_produit on img_produit.Produit= produit.ID WHERE Prix_min > 0";
+			    	$sql = "SELECT produit.*, img_produit.URL FROM produit JOIN img_produit on img_produit.Produit= produit.ID WHERE Prix_min > 0 AND Vendu = 0";
 			    	$result = mysqli_query($db_handle, $sql);
 					if ($result != NULL)
 					{	echo "test1";
@@ -152,7 +152,7 @@ include ("database/db_connect.php");
 			        <li data-target="#carousel-3" data-slide-to="0" class="active"></li>
 			        
 			        <?php
-			    	$sql2 = "SELECT * FROM produit WHERE Prix_min > 0";
+			    	$sql2 = "SELECT * FROM produit WHERE Prix_min > 0 AND Vendu = 0";
 			    	$result2 = mysqli_query($db_handle, $sql2);
 			    	$increment = 1;
 					if ($result2 != NULL) 
