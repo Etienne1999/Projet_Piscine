@@ -227,6 +227,20 @@ if(isset($_POST['submit']))
 			$("#affichageAccueil").toggle();
 			$("#affichageFormulaire").toggle();
 		});
+		//quand on clique sur le bouton 'nouvelle vente' 3
+		$("#btnAccueil3").click(function()
+		{
+			//on switch l'affichage 
+			$("#affichageAccueil").toggle();
+			$("#affichageFormulaire").toggle();
+		});
+		//quand on clique sur le bouton 'nouvelle vente' 4
+		$("#btnAccueil4").click(function()
+		{
+			//on switch l'affichage 
+			$("#affichageAccueil").toggle();
+			$("#affichageFormulaire").toggle();
+		});
 		//quand on clique sur le bouton submit du formulaire 
 		//Enlevé, ça se met a jour automatiquement
 		$("#btnForm").click(function()
@@ -492,7 +506,7 @@ if(isset($_POST['submit']))
 
 					<!-- Ventes en cours -->
 						<div class="col-sm-12">
-							<h3 class="font-weight-bold text-center"><u>Mes ventes en cours</u></h3>
+							<h3 class="font-weight-bold text-center mb-4"><u>Mes ventes en cours</u></h3>
 
 							<?php		
 									if ($db_found) 
@@ -500,19 +514,86 @@ if(isset($_POST['submit']))
 										//on récupère l'ID du vendeur en cours
 										$userID = $_SESSION['user_ID'];
 
-										//on récupère les ID des produits liés au vendeur connecté qui n'ont pas encore été vendus
+										//on récupère les infos des produits liés au vendeur connecté qui n'ont pas encore été vendus
 										//on compte le nombre de résultat 
-										$sql = "SELECT ID FROM produit WHERE Vendeur = '$userID'"; //A RAJOUTER QUAND BDD A JOUR : "AND Statut = 'pas vendu'" !!!
+										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.Produit = produit.ID WHERE produit.Vendeur = '$userID'"; //A RAJOUTER QUAND BDD A JOUR : "AND produit.Statut = 'pas vendu'" !!!
 										$result = mysqli_query($db_handle, $sql);
 
 										if (mysqli_num_rows($result) == 0) 
 										{
 											//afficher div comme quoi pas de ventes en cours
+											?>
+												<div class="row">
+													<div class="col-sm-12">
+														<h6 class="mt-4">Vous n'avez aucune vente en cours en ce moment.</h6>
+													</div>
+													<div class="col-sm-6 col-sm-offset-2">
+														<span>Vous souhaitez mettre un objet en vente ?</span>
+														<button type="button" class="btn btn-sm btn-link" id="btnAccueil3">Cliquez ici</button>
+													</div>
+												</div>
+											<?php 
 										}
 										//Si le vendeur a des ventes en cours
 										else
 										{
 											//afficher les ventes en cours
+											while ($data = mysqli_fetch_assoc($result))
+											{
+												?>
+													<div class="card">
+														<div class="card flex-row flex-wrap">
+													        <div class="card-header border-0">
+													            <img src="<?php echo $data['URL']; ?>" alt="">
+													        </div>
+													        <div class="card-block px-2">
+													            <h4 class="card-title"><?php echo $data['Nom']; ?></h4>
+													            <p class="card-text">
+													            	<?php  
+													            		if ($data['Categorie'] == 1) { echo "Ferraille ou trésor"; }
+													            		if ($data['Categorie'] == 2) { echo "Bon pour le musée"; }
+													            		if ($data['Categorie'] == 3) { echo "Accessoir VIP"; }
+													            	?>													            	
+													            </p>
+													          	<div class="row">
+													          		<?php 
+													          		//On affiche si le type de vente est autorisée par le produit
+													          			if ($data['Prix_Achat'] != 0) {
+													          				echo "
+															                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+															                    <p>Prix d'achat immédiat = ".$data['Prix_Achat']."€</p>
+															                </div>";
+													          			}
+													          			if ($data['Prix_min'] != 0) {
+													          				echo "
+															                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+													                    		<p>Prix mininum pour proposer une offre = ".$data['Prix_min']."€ </p>
+													                		</div>";
+													          			}
+													          			if ($data['Prix_Enchere'] != 0) {
+													          				echo "
+															                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+													                    		<p>Prix de départ de l'enchère = ".$data['Prix_Enchere']."€ </p>
+													                		</div>
+															                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+													                    		<p>Date de fin de l'enchère : ".$data['Date_fin_enchere']."</p>
+													               			</div>";
+													          			}
+													                ?>
+													            </div>
+													        </div>
+													        <div class="w-100"> <?php echo $data['Nom']  ;?> </div>
+													        <div class="card-footer w-100 text-muted">
+													            <p>
+													            	<strong><?php echo "Description : ";?></strong>
+													            	<?php echo $data['Description']  ;?>
+													            </p>
+													        </div>
+													    </div>														
+													</div>
+													<br>
+												<?php 
+											}
 										}
 									}
 								?>
@@ -533,17 +614,84 @@ if(isset($_POST['submit']))
 
 										//on récupère les ID des produits du vendeur co qui ont déja été vendu
 										//on compte le nombre de résultat
-										$sql = "SELECT ID FROM produit WHERE Vendeur = '$userID'"; //A RAJOUTER QUAND BDD A JOUR : "AND Statut = 'vendu' " !!!!
+										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.produit = produit.ID WHERE produit.Vendeur = '$userID'"; //A RAJOUTER QUAND BDD A JOUR : "AND produit.Statut = 'vendu' " !!!!
 										$result = mysqli_query($db_handle, $sql);
 
 										if (mysqli_num_rows($result) == 0) 
 										{
-											//afficher div comme quoi pas de ventes terminée
+											//Affichage div aucune vente
+											?>
+												<div class="row">
+													<div class="col-sm-12">
+														<h6 class="mt-4">Vous n'avez encore conclu aucune vente</h6>
+													</div>
+													<div class="col-sm-6 col-sm-offset-2">
+														<span>Vous souhaitez mettre un objet en vente ?</span>
+														<button type="button" class="btn btn-sm btn-link" id="btnAccueil4">Cliquez ici</button>
+													</div>
+												</div>
+											<?php 
 										}
 										//Si le vendeur a des ventes terminées (statut produit = vendu)
 										else
 										{
 											//les afficher
+											while ($data = mysqli_fetch_assoc($result))
+											{
+												?>
+													<div class="card">
+														<div class="card flex-row flex-wrap">
+													        <div class="card-header border-0">
+													            <img src="<?php echo $data['URL']; ?>" alt="">
+													        </div>
+													        <div class="card-block px-2">
+													            <h4 class="card-title"><?php echo $data['Nom']; ?></h4>
+													            <p class="card-text">
+													            	<?php  
+													            		if ($data['Categorie'] == 1) { echo "Ferraille ou trésor"; }
+													            		if ($data['Categorie'] == 2) { echo "Bon pour le musée"; }
+													            		if ($data['Categorie'] == 3) { echo "Accessoir VIP"; }
+													            	?>													            	
+													            </p>
+													          	<div class="row">
+													          		<?php 
+													          		//On affiche si le type de vente est autorisée par le produit
+													          			if ($data['Prix_Achat'] != 0) {
+													          				echo "
+															                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+															                    <p>Prix d'achat immédiat = ".$data['Prix_Achat']."€</p>
+															                </div>";
+													          			}
+													          			if ($data['Prix_min'] != 0) {
+													          				echo "
+															                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+													                    		<p>Prix mininum pour proposer une offre = ".$data['Prix_min']."€ </p>
+													                		</div>";
+													          			}
+													          			if ($data['Prix_Enchere'] != 0) {
+													          				echo "
+															                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+													                    		<p>Prix de départ de l'enchère = ".$data['Prix_Enchere']."€ </p>
+													                		</div>
+															                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+													                    		<p>Date de fin de l'enchère : ".$data['Date_fin_enchere']."</p>
+													               			</div>";
+													          			}
+													                ?>
+													            </div>
+													        </div>
+													        <div class="w-100"> <?php echo $data['Nom']  ;?> </div>
+													        <div class="card-footer w-100 text-muted">
+													            <p>
+													            	<strong><?php echo "Description : ";?></strong>
+													            	<?php echo $data['Description']  ;?>
+													            </p>
+													        </div>
+													    </div>														
+													</div>
+													<br>
+												<?php  
+											}
 										}
 									}
 								?>
