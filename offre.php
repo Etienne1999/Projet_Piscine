@@ -68,7 +68,7 @@ include ("database/db_connect.php");
 				//Il y a des offres en cours
 					else
 					{
-						echo '
+						?>
 							<div class="row">
 								<div class="col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
 									<table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
@@ -84,42 +84,37 @@ include ("database/db_connect.php");
 									    	</tr>
 									  	</thead>
 									  	<tbody>
-				  		';
+							<?php
 
 						//afficher les offres en cours
 						while ($data = mysqli_fetch_assoc($result))
 						{
-							echo "			<tr>
+							?>			
+											<tr>
 										      	<td>".$data['produit.Nom']."</td>
 										      	<td>".$data['produit.Categorie']."</td>
 										      	<td>".$data['produit.Prix_min']."</td>
 										      	<td>".$data['offre_achat.Offre']."</td>
 										      	<td>".$data['offre_achat.Contre_Offre']."</td>
-										      	<td>".$data['offre_achat.Tentative']."</td>";
+										      	<td>".$data['offre_achat.Tentative']."</td>
+					      	<?php
 
-					  		//si c'est à lui (acheteur) de répondre avec une offre
+				  		//si c'est à lui (acheteur) de répondre avec une offre
+					      	//On affiche les boutons
 							if ($data['offre_achat.Statut'] == 1) 
 							{	
-								echo "			<td>
-													"?> 
-													<form class="form" action="offre.php" method="POST">
-														<div class="form-group">
-															<label class="radio-inline btn btn-success"><input type="radio" name="choix" value="1">Accepter l'offre</label>
-															<label class="radio-inline btn btn-warning"><input type="radio" name="choix" value="2">Proposer une nouvelle offre</label>
-															<label class="radio-inline btn btn-danger"><input type="radio" name="choix" value="3">Refuser l'offre</label>
-														</div>
-														<input type="submit" name="submit">
-													</form>
-
-													<?php "
+								?>			
+												<td>
 										      		<button type=\"button\" class=\"btn btn-sm btn-success\">Accepter l'offre</button>
 										      		<button type=\"button\" class=\"btn btn-sm btn-success\">Proposer une nouvelle offre</button>
 										      		<button type=\"button\" class=\"btn btn-sm btn-danger\">Refuser l'offre</button>
 										      	</td>
-									      	</tr>";
+									      	</tr>
+						      	<?php
 							}
 
-							//Si c'est à l'autre (vendeur) de répondre
+						//Si c'est à l'autre (vendeur) de répondre
+							//Les boutons sont disabled
 							else
 							{
 								echo "			<td>En attente de la réponse du vendeur</td>
