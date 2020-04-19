@@ -68,13 +68,13 @@ include ("database/db_connect.php");
 				//Il y a des offres en cours
 					else
 					{
-						?>
+						echo '
 							<div class="row">
 								<div class="col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
 									<table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
 									  	<thead>
 									    	<tr>
-									      		<th class="th-sm">Nom de l'objet</th>
+									      		<th class="th-sm">Nom de l\'objet</th>
 									      		<th class="th-sm">Catégorie</th>
 										      	<th class="th-sm">Prix minimum pour une offre</th>
 										      	<th class="th-sm">Dernière offre faite</th>
@@ -84,7 +84,7 @@ include ("database/db_connect.php");
 									    	</tr>
 									  	</thead>
 									  	<tbody>
-				  		<?php
+				  		';
 
 						//afficher les offres en cours
 						while ($data = mysqli_fetch_assoc($result))
