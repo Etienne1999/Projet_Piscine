@@ -79,7 +79,7 @@ include ("database/db_connect.php");
 				}
 			}
 				?>	<br><a class="btn btn-danger btn-block is-invalid" href="mon_panier.php?suppri=boom" style="margin-bottom : 10px" onclick="" > Vider le panier</a>
-				<a class="btn btn-success btn-block is-invalid" style="margin: 0 auto" href="paiement" > Acceder au paiement </a></div>
+				<a class="btn btn-success btn-block is-invalid" style="margin: 0 auto" href="commande.php" > Acceder au paiement </a></div>
 				<?php
 
 		} else  { ?> <div class="card-header" style="margin-bottom: 15px; margin-top: 15px"><?php echo  "vous n'avez pas d'article " ?></div> <?php } ?>
