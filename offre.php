@@ -43,13 +43,14 @@ include ("database/db_connect.php");
 			{
 				//role du user connecté
 				$role = $_SESSION['user_Role'];
-				$userID = $_SESSION['user_ID']
+				$userID = $_SESSION['user_ID'];
 
 			//1. AFFICHAGE ACHETEUR
+				//role = 2 correspond a membre
 				if ($role == 2)
 				{
 					//requete sql pour chercher les offres auxquelles il participe
-					$sql = "SELECT offre_achat.* , produit.* FROM produit INNER JOIN offre_achat ON offre_achat.Produit = produit.ID WHERE offre_achat.Acheteur = '$userID' AND produit.Vendu = 0";
+					$sql = "SELECT offre_achat.* , produit.* FROM produit INNER JOIN offre_achat ON offre_achat.Produit = produit.ID WHERE offre_achat.Acheteur = '$userID' AND produit.Vendu = 0 AND offre_achat.Statut < 2";
 					$result = mysqli_query($db_handle, $sql);
 
 				//Pas d'offres en cours en cours
@@ -58,7 +59,7 @@ include ("database/db_connect.php");
 						?>
 							<div class="row">
 								<div class="col-sm-12">
-									<h6 class="mt-1">Vous n'avez fait aucune offre en ce moment.</h6>
+									<h6 class="mt-1 text-center">Vous n'avez fait aucune offre en ce moment.</h6>
 								</div>
 							</div>
 						<?php 
@@ -67,25 +68,71 @@ include ("database/db_connect.php");
 				//Il y a des offres en cours
 					else
 					{
+						?>
+							<div class="row">
+								<div class="col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
+									<table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+									  	<thead>
+									    	<tr>
+									      		<th class="th-sm">Nom de l'objet</th>
+									      		<th class="th-sm">Catégorie</th>
+										      	<th class="th-sm">Prix minimum pour une offre</th>
+										      	<th class="th-sm">Dernière offre faite</th>
+										      	<th class="th-sm">Contre offre faite par le vendeur</th>
+										      	<th class="th-sm">Tentatives restantes</th>
+									      		<th class="th-sm">Choix</th>
+									    	</tr>
+									  	</thead>
+									  	<tbody>
+				  		<?php
+
 						//afficher les offres en cours
 						while ($data = mysqli_fetch_assoc($result))
 						{
-							//si c'est à lui de répondre avec une offre
-							if (condition) {
-								# code...
+							echo "			<tr>
+										      	<td>".$data['produit.Nom']."</td>
+										      	<td>".$data['produit.Categorie']."</td>
+										      	<td>".$data['produit.Prix_min']."</td>
+										      	<td>".$data['offre_achat.Offre']."</td>
+										      	<td>".$data['offre_achat.Contre_Offre']."</td>
+										      	<td>".$data['offre_achat.Tentative']."</td>";
+
+					  		//si c'est à lui (acheteur) de répondre avec une offre
+							if ($data['offre_achat.Statut'] == 1) 
+							{	
+								echo "			<td>
+													"?> 
+													<form class="form" action="offre.php" method="POST">
+														<div class="form-group">
+															<label class="radio-inline btn btn-success"><input type="radio" name="choix" value="1">Accepter l'offre</label>
+															<label class="radio-inline btn btn-warning"><input type="radio" name="choix" value="2">Proposer une nouvelle offre</label>
+															<label class="radio-inline btn btn-danger"><input type="radio" name="choix" value="3">Refuser l'offre</label>
+														</div>
+														<input type="submit" name="submit">
+													</form>
+
+													<?php "
+										      		<button type=\"button\" class=\"btn btn-sm btn-success\">Accepter l'offre</button>
+										      		<button type=\"button\" class=\"btn btn-sm btn-success\">Proposer une nouvelle offre</button>
+										      		<button type=\"button\" class=\"btn btn-sm btn-danger\">Refuser l'offre</button>
+										      	</td>
+									      	</tr>";
 							}
 
-							//Si c'est à l'autre de répondre
-							else if (condition) {
-								# code...
-							}
-
-							//Si l'
+							//Si c'est à l'autre (vendeur) de répondre
 							else
 							{
-
-							}
+								echo "			<td>En attente de la réponse du vendeur</td>
+									      	</tr>";
+							}			
 						}
+
+						?>
+									  	</tbody>
+								  	</table>
+								</div>
+							</div>
+						<?php	
 					}
 				}
 
@@ -93,7 +140,7 @@ include ("database/db_connect.php");
 				else 
 				{
 					//requête sql pour chercher les offres qu'il a reçu
-					$sql = "SELECT ";
+					$sql = "";
 					$result = mysqli_query($db_handle, $sql);
 
 				//Pas d'objets en meilleure offre en cours
@@ -102,7 +149,7 @@ include ("database/db_connect.php");
 						?>
 							<div class="row">
 								<div class="col-sm-12">
-									<h6 class="mt-1">Vous ne vendez aucun objet disponible en meilleure offre en ce moment.</h6>
+									<h6 class="mt-1 text-center">Vous ne vendez aucun objet disponible en meilleure offre en ce moment.</h6>
 								</div>
 							</div>
 						<?php
@@ -111,7 +158,29 @@ include ("database/db_connect.php");
 				//Il y a des offres en cours
 					else
 					{
+						//afficher les offres en cours
+						while ($data = mysqli_fetch_assoc($result))
+						{
+							//si c'est à lui (vendeur) de répondre avec une offre
+							if ($data['offre_achat.Statut'] == 0) 
+							{	
+								//Si c'était la dernière offre possible de l'acheteur
+								if ($data['offre_achat.Tentative'] == 5) 
+								{
+									
+								}
+								else
+								{
 
+								}
+							}	
+
+							//Si c'est à l'autre (acheteur) de répondre
+							else
+							{
+								
+							}
+						}
 					}
 				}	
 			}
