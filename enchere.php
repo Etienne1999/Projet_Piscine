@@ -58,7 +58,7 @@ include ("database/db_connect.php");
 								<br>
 								<div class="carousel slide" data-ride="carousel" id="carousel-affich" style="">
 								    <div class="carousel-inner" role="listbox">
-								        <div class="carousel-item active"><img class="w-100 d-block" src="img/mesencheres.jpg" alt="Slide Image" style="height: 600px;"/></div>
+								        <div class="carousel-item active"><img class="w-100 d-block" src="img/monachat.jpg" alt="Slide Image" style="height: 600px;"/></div>
 								        <?php
 								        $test_video = 0;
 								    	$sql_ = "SELECT produit.*, img_produit.URL FROM produit JOIN img_produit on img_produit.Produit= produit.ID WHERE  produit.ID ='$id'";
