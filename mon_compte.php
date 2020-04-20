@@ -433,7 +433,7 @@
 
 	function get_enchere($db_handle) {
 		$id = $_SESSION['user_ID'];
-		$sql = "SELECT DISTINCT enchere.Objet, produit.Nom FROM enchere, produit WHERE Acheteur = '$id' AND produit.ID = enchere.Objet";
+		$sql = "SELECT DISTINCT enchere.Objet, produit.Nom FROM enchere, produit WHERE Acheteur = '$id' AND produit.ID = enchere.Objet AND produit.Vendu = 0";
 		$result = mysqli_query($db_handle, $sql);
 
 		if (mysqli_num_rows($result)) {
@@ -450,7 +450,7 @@
 
 	function get_meilleur_offre($db_handle) {
 		$id = $_SESSION['user_ID'];
-		$sql = "SELECT offre_achat.Produit, produit.Nom, offre_achat.Tentative, offre_achat.Statut FROM offre_achat, produit WHERE offre_achat.Produit = produit.ID AND offre_achat.Acheteur = '2'";
+		$sql = "SELECT offre_achat.Produit, produit.Nom, offre_achat.Tentative, offre_achat.Statut FROM offre_achat, produit WHERE offre_achat.Produit = produit.ID AND offre_achat.Acheteur = '$id' AND produit.Vendu = 0";
 		$result = mysqli_query($db_handle, $sql);
 
 		if (mysqli_num_rows($result)) {
