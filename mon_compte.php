@@ -433,12 +433,14 @@
 
 	function get_enchere($db_handle) {
 		$id = $_SESSION['user_ID'];
-		$sql = "SELECT * FROM enchere WHERE Acheteur = '$id'";
+		$sql = "SELECT DISTINCT enchere.Objet, produit.Nom FROM enchere, produit WHERE Acheteur = '$id' AND produit.ID = enchere.Objet";
 		$result = mysqli_query($db_handle, $sql);
 
 		if (mysqli_num_rows($result)) {
-			
-			echo "a faire";
+			while ($data = mysqli_fetch_assoc($result)) {
+				//var_dump($data);
+				echo '<a href="http://piscine/enchere.php?id=' . $data['Objet'] . '" style="color: white;">' . $data['Nom'] . '</a><br>';
+			}
 
 		}
 		else {
@@ -448,13 +450,22 @@
 
 	function get_meilleur_offre($db_handle) {
 		$id = $_SESSION['user_ID'];
-		$sql = "SELECT * FROM offre_achat WHERE Acheteur = '$id'";
+		$sql = "SELECT offre_achat.Produit, produit.Nom, offre_achat.Tentative, offre_achat.Statut FROM offre_achat, produit WHERE offre_achat.Produit = produit.ID AND offre_achat.Acheteur = '2'";
 		$result = mysqli_query($db_handle, $sql);
 
 		if (mysqli_num_rows($result)) {
-			
-			echo "a faire";
+			while ($data = mysqli_fetch_assoc($result)) {
+				if(!($data['Tentative'] == 5 && $data['Statut'] == 3) && $data['Statut'] != 2) {
+					if ($data['Statut'] == 0)
+						$msg_statut = 'En attente de contre offre';
+					if ($data['Statut'] == 1)
+						$msg_statut = 'Vous avez recu une contre offre';
+					if ($data['Statut'] == 3)
+						$msg_statut = 'En attente d\'offre';
 
+					echo '<a href="http://piscine/meilleure_offre.php?id=' . $data['Produit'] . '" style="color: white;">-' . $data['Nom'] . '</a> Tentative : ' . $data['Tentative'] . ' |Statut : ' . $msg_statut . '<br>';
+				}
+			}
 		}
 		else {
 			echo "Vous n'avez aucune offre d'achat en cours.";
@@ -574,7 +585,7 @@
 
 		<div class="row d-flex justify-content-center">
 			<div class="col-md-5 border shadow m-2 cat">
-				<h4>Mes Enchères</h4>
+				<h4>Mes Enchères en cours</h4>
 				<div>
 					<?php get_enchere($db_handle); ?>
 				</div>

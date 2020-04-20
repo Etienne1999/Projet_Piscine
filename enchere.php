@@ -105,7 +105,7 @@ include ("database/db_connect.php");
 							</div>
 					<div class="card" style="margin-top: 10px; margin-bottom: 10px; padding: 10px">
 						<h4 class="card-title"><?php echo " Achat à l'enchère de : " . $data['Nom']; $produit = $data['ID'];?></h4>
-						<p class="card-text"> <?php echo $data['Description'] . " au prix de ". $data['Prix_Enchere'] . ". Cet article est proposé par : ". $data['Pseudo'] . " jusqu'au " . $date; ?> </p>
+						<p class="card-text"> <?php echo $data['Description'] . " au prix de ". $data['Prix_Enchere'] . ". Cet article est proposé par : ". $data['Pseudo'] . " jusqu'au " . $data['Date_fin_enchere']; ?> </p>
 
 
 								<?php // Test si l'article est en enchere uniquement ou en achat immédiat egalement : differe l'affichage 
