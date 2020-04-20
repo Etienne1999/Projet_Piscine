@@ -191,7 +191,45 @@ include ("database/db_connect.php");
 					      		$sql = "UPDATE offre_achat JOIN produit ON offre_achat.produit = produit.ID SET offre_achat.Statut = 2, produit.Vendu = 1 WHERE offre_achat.ID = '$ID_offre'";
 					      		mysqli_query($db_handle, $sql);
 
-					      		//Passer la commande
+				      		//COMMANDE
+					      		//on récupère l'ID de l'acheteur 
+					      		$acheteur = $_POST['offre_achatAcheteur'];
+					      		//on récupère la dernière offre
+					      		$prix_final = $_POST['offre_achatContre_Offre'];
+
+					      		//On recupere l'adresse principale de l'utilisateur pour l'adresse de livraison
+								$sql = "SELECT Adresse, Email FROM utilisateur WHERE ID = '$acheteur'";
+								$res = mysqli_query($db_handle, $sql);
+								$data = mysqli_fetch_assoc($res);
+								$adresse = $data['Adresse'];
+								$email = $data['Email'];
+
+								//date actuelle pour la commande
+								$date=date_create();
+								$date_commande = date_format($date,"Y/m/d H:i:s");
+
+								//Ajoute 5 jours pour la livraison
+								date_modify($date,"+5 days");
+								$date_livraison = date_format($date,"Y/m/d");
+
+								//Ajoute la commande dans la bdd
+								$sql1 = "INSERT INTO `commande`(`Acheteur`, `Adresse_Livraison`, `Montant_total`, `Date_Commande`, `Date_Livraison`) VALUES ('$acheteur', '$adresse', '$prix_final', '$date_commande', '$date_livraison')";
+								$res = mysqli_query($db_handle, $sql1);
+
+								//Recupere l'id de la commande
+								$sql2 = "SELECT ID FROM commande WHERE Date_Commande = '$date_commande'";
+								$res = mysqli_query($db_handle, $sql2);
+								$data = mysqli_fetch_assoc($res);
+								$id_commande = $data['ID'];
+
+								//Ajoute le detail de la commande
+								$sql3 = "INSERT INTO `commande_detail`(`Commande`, `Objet`) VALUES ('$id_commande', '$article')";
+								mysqli_query($db_handle, $sql3);
+								//Update le statut de produit
+								$sql4 = "UPDATE `produit` SET `Vendu`= 1 WHERE ID = '$article'";
+								mysqli_query($db_handle, $sql4);
+
+								header('Location: mails.php?commande=' . $id_commande . "&email=" . $email);
 
 					      		//on recharge la page pour l'affichage
 					      		?><script>$window.location.reload();</script> <?php
