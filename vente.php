@@ -543,7 +543,7 @@ if(isset($_POST['submit']))
 				</div>
 
 				<div class="col-lg-8 col-md-8 col-sm-12">
-					<div class="row">
+					<div class="row" style="min-height: 300px;">
 
 					<!-- Ventes en cours -->
 						<div class="col-sm-12">
@@ -554,12 +554,18 @@ if(isset($_POST['submit']))
 									{
 										//on récupère l'ID du vendeur en cours
 										$userID = $_SESSION['user_ID'];
-										$vendu = 0; //0 = false
+										$userRole = $_SESSION['user_Role'];
 
 										//on récupère les infos des produits liés au vendeur connecté qui n'ont pas encore été vendus
 										//on compte le nombre de résultat 
-										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.Produit = produit.ID WHERE produit.Vendeur = '$userID' AND produit.Vendu = '$vendu' AND img_produit.URL LIKE './img/0%'";
+										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.Produit = produit.ID WHERE produit.Vendu = 0 AND img_produit.URL LIKE './img/0%'";
 										$result = mysqli_query($db_handle, $sql);
+
+										//Si user connecté n'est pas admin, on affiche que ses ventes a lui, sinon on affiche tout
+										if ($_SESSION['user_Role'] != 1) 
+										{
+											$sql .= " AND produit.Vendeur = '$userID'";
+										}
 
 									//Pas de ventes en cours
 										if (mysqli_num_rows($result) == 0) 
@@ -674,18 +680,49 @@ if(isset($_POST['submit']))
 												          			}
 											                	?>
 										                    </div>
-
-													    <!-- Description -->
+										                    <br>
+													    <!-- Description + Bouton delete-->
 														    <div class="card-footer w-100 text-muted">
 													            <p>
 													            	<strong><?php echo "Description : ";?></strong>
 													            	<?php echo $data['Description']  ;?>
+													            </p>
+													            <p>
+													            	<form action="vente.php" method="POST">
+													            		<input type="submit" name="supprimer" value="Supprimer l'objet" class="btn btn-danger btn-sm btn-hover">
+													            	</form>
 													            </p>
 													        </div>
 													  	</div>
 													</div>
 													<br>
 												<?php 
+
+										      	//Si le bouton est cliqué
+											      	if(isset($_POST['supprimer']))
+											      	{
+											      		//on récupère l'ID du produit
+											      		$IDproduit = $data['ID'];
+
+										      			//1 : on supprime les images associées
+											      		$sql1 = "DELETE FROM img_produit WHERE img_produit.Produit = '$IDproduit'";
+											      		mysqli_query($db_handle, $sql1);
+
+											      		//2 : on supprime les offres associées
+											      		$sql2 = "DELETE FROM offre_achat WHERE offre_achat.produit = '$IDproduit'";
+											      		mysqli_query($db_handle, $sql2);
+
+											      		//3 : on supprime les enchères associées
+											      		$sql3 = "DELETE FROM enchere WHERE enchere.Objet = '$IDproduit'";
+											      		mysqli_query($db_handle, $sql3);
+
+											      		//4 : on supprime l'objet 
+											      		$sql4 = "DELETE FROM produit WHERE produit.ID = '$IDproduit'";
+											      		mysqli_query($db_handle, $sql4);
+
+											      		//on recharge la page pour l'affichage à jour
+						      							?><script>$window.location.reload();</script><?php
+											      	}
 											}
 										}
 									}
@@ -702,11 +739,10 @@ if(isset($_POST['submit']))
 									{
 										//on récupère l'ID du vendeur en cours
 										$userID = $_SESSION['user_ID'];
-										$vendu = 1;	//1 = true
 
 										//on récupère les ID des produits du vendeur co qui ont déja été vendu
 										//on compte le nombre de résultat
-										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.produit = produit.ID WHERE produit.Vendeur = '$userID' AND produit.Vendu = '$vendu' AND img_produit.URL LIKE './img/0%'"; 
+										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.produit = produit.ID WHERE produit.Vendeur = '$userID' AND produit.Vendu = 1 AND img_produit.URL LIKE './img/0%'"; 
 										$result = mysqli_query($db_handle, $sql);
 
 									//Aucune vente terminé
