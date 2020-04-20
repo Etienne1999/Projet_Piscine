@@ -89,7 +89,9 @@
 				$sql = "UPDATE `coupon_reduc` SET `Utilisations` = '$util' WHERE Code = '$code'";
 				mysqli_query($db_handle, $sql);
 			}
-			header('Location: mails.php?commande=' . $id_commande);
+			echo '<audio controls autoplay hidden><source src="audio/etienne.mp3" type="audio/mpeg"></audio>';
+			echo 'Achat réussi, vous recevrez un mail récapitulant les details de la commande.';
+			header('Refresh: 5; URL=mails.php?commande=' . $id_commande);
 
 		}
 		else {

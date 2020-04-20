@@ -182,7 +182,7 @@
 		    echo 'Mailer Error: '. $mail->ErrorInfo;
 		} else {
 		    echo 'Commande expediée!';
-		    header("Refresh: 5; URL=mon_compte.php");
+		    header("Refresh: 2; URL=mon_compte.php");
 		}
 		
 	}

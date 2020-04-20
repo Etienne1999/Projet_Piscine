@@ -33,7 +33,6 @@ include ("database/db_connect.php");
 	<!-- Navbar -->
 	<?php include("nav.php") ?>
 
-
 	<!-- Header -->
 	<header>
 		
