@@ -12,8 +12,10 @@
 		$id = $_SESSION['user_ID'];
 		if ((int)$_POST['payer'] > 0) {
 			$num_carte = $_POST['num_carte'];
+			$annee = $_POST['annee'];
+			$mois = $_POST['mois'];
 
-			$sql = "SELECT DATEDIFF(Date_exp, NOW()) as diff, CVV, Plafond FROM carte_bancaire WHERE Numero_Carte = '$num_carte' AND ID_User = '$id'";
+			$sql = "SELECT DATEDIFF(Date_exp, NOW()) as diff, CVV, Plafond FROM carte_bancaire WHERE Numero_Carte = '$num_carte' AND YEAR(Date_exp) = '$annee' AND MONTH(Date_exp) = '$mois' AND ID_User = '$id'";
 			$res = mysqli_query($db_handle, $sql);
 			//Check si la carte existe pour cet utilisateur
 			if (mysqli_num_rows($res) == 1) {
@@ -24,7 +26,7 @@
 					$erreur[] = "Erreur : Carte de paiement expirée !";
 				}
 				//Check le plafon de la carte
-				if ((int)$_POST['payer'] > (int)$data['Plafond']) {
+				if ($data['Plafond'] != NULL && (int)$_POST['payer'] > (int)$data['Plafond']) {
 					$erreur[] = "Erreur : Le plafond a été atteint. Impossible de proceder au paiement !";	
 				}
 				//Check le cryptogramme
@@ -93,9 +95,10 @@
 		else {
 			foreach ($erreur as $tmp) {
 				echo $tmp . '<br>';
-				sleep(30);
-				header("Location: commande.php");
 			}
+			header('Refresh: 10; URL=commande.php');
+			//sleep(15);
+			//header("Location: commande.php");
 		}
 	}
 	else {
