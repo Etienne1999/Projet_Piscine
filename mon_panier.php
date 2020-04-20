@@ -95,7 +95,7 @@ include ("database/db_connect.php");
 				<?php
 
 		} else  { ?> <div class="card-header" style="margin-bottom: 15px; margin-top: 15px; border: 2px solid; border-radius: 5px;"><?php echo  "Vous n'avez pas d'article " ?></div> <?php } ?>
-			
+	</div>		
 
 		<!-- Footer -->	
 		<?php include("footer.php") ?>
