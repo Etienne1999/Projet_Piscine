@@ -83,7 +83,7 @@ include ("database/db_connect.php");
 						<div class="row">
 							<div class="col-sm-12 col-md-12 col-lg-12 m-4 table-responsive" style="min-height: 500px;">
 								<h1 class="text-center m-4"><strong>Mes offres reçues</strong></h1>
-								<table class="table table-bordered table-hover table-dark table-striped" cellspacing="0" width="100%">
+								<table class="table table-bordered table-hover table-dark table-striped">
 								  	<thead>
 								    	<tr>
 								      		<th class="th-sm">Nom de l'objet</th>
