@@ -160,14 +160,26 @@ include ("database/db_connect.php");
 				      	//Si la contre offre est acceptée
 					      	if(isset($_POST['choixA_ID']) )
 					      	{
-					      		$sql = "";
+					      		//on passe le statut de l'offre à 2 (vendu) + produit.Vendu = 1
+
+
+
+						      		//+ PASSER COMMANDE ?????
+
+
+
+					      		$sql = "UPDATE offre_achat JOIN produit ON offre_achat.produit = produit.ID SET offre_achat.Statut = 2, produit.Vendu = 1 WHERE offre_achat.ID = '$ID_offreAchat'";
 					      		mysqli_query($db_handle, $sql);
 					      	}
 
 				      	//Sinon, c'est qu'il a proposé une nouvelle offre
 					      	else
 					      	{
-					      		$sql = "";
+					      		//on récupère le prix de l'offre
+						      	$prixOffre = $_POST['prixOffre_ID'];
+
+						      	//Update offre + Statut
+					      		$sql = "UPDATE offre_achat SET offre_achat.Offre = '$prixOffre', offre_achat.Statut = 0";
 						      	mysqli_query($db_handle, $sql);
 					      	}
 						}

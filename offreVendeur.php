@@ -133,13 +133,29 @@ include ("database/db_connect.php");
 					      	//Si l'offre est acceptée
 						      	if(isset($_POST['choixA_ID']) )
 						      	{
-						      		$sql = "UPDATE offre_achat SET ";
+						      		//on passe le statut à 2 comme vendu + produit.Vendu = 1
+
+
+
+						      		//+ PASSER COMMANDE ?????
+
+
+
+						      		$sql = "UPDATE offre_achat JOIN produit ON offre_achat.produit = produit.ID SET offre_achat.Statut = 2, produit.Vendu = 1 WHERE offre_achat.ID = '$ID_offreAchat'";
 						      		mysqli_query($db_handle, $sql);
 						      	}
 
 					      	//Sinon, c'est qu'elle est refusée, statut = 3 ???
 						      	else
 						      	{
+						      		//on passe le statut à 3 comme quoi les offres n'ont pas abouties
+						      		// OU
+						      		//on supprime l'offre, mais l'acheteur ne saura pas ou est passé son offre
+
+
+						      		// + ?????????
+
+
 						      		$sql = "";
 						      		mysqli_query($db_handle, $sql);
 						      	}
@@ -195,14 +211,32 @@ include ("database/db_connect.php");
 					      	//Si l'offre est acceptée
 						      	if(isset($_POST['choixA_ID']) )
 						      	{
-						      		$sql = "";
+
+
+					      		//Version condensée
+						      		//on update le statut de l'offre = 2 (offre = 'vendue') et le statut du produit = 1 (vendu)
+						      		$sql = "UPDATE produit JOIN offre_achat ON produit.ID = offre_achat.produit SET offre_achat.Statut = 2 , produit.Vendu = 1 WHERE offre_achat.ID = '$ID_offreAchat'";
+						      		//"UPDATE offre_achat, produit SET offre_achat.Statut = 2 , produit.Vendu = 1 FROM produit INNER JOIN offre_achat ON produit.ID = offre_achat.produit WHERE offre_achat.ID = '$ID_offreAchat'";
 						      		mysqli_query($db_handle, $sql);
+
+
+					      		//Version séparé
+						      		//on update le statut de l'offre = 2 (offre = 'vendue')
+						      		$sql1 = "UPDATE offre_achat SET offre_achat.Statut = 2 WHERE offre_achat.ID = '$ID_offreAchat'";
+						      		mysqli_query($db_handle, $sql1);
+						      		//on update le statut du produit = 1 (vendu)
+						      		$sql2 = "UPDATE produit SET produit.Vendu = 1 FROM produit INNER JOIN offre_achat ON produit.ID = offre_achat.produit WHERE offre_achat.ID = '$ID_offreAchat'";
+						      		mysqli_query($db_handle, $sql2);
 						      	}
 
 					      	//Sinon, c'est qu'il a proposé une nouvelle contre offre
 						      	else
 						      	{
-						      		$sql = "";
+						      		//on récupère le prix de la contre offre
+						      		$prixContreOffre = $_POST['prixContreOffre_ID'];
+
+						      		//Update tentatives + contre offre + Statut
+						      		$sql = "UPDATE offre_achat SET offre_achat.Tentative = offre_achat.Tentative + 1, offre_achat.Contre_Offre = '$prixContreOffre', offre_achat.Statut = 1";
 						      		mysqli_query($db_handle, $sql);
 						      	}
 							}
