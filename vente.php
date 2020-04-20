@@ -261,7 +261,8 @@ if(isset($_POST['submit']))
 	<script type="text/javascript">
 	$(document).ready(function()
 	{
-
+		$(window).scrollTop(0);
+			
 	//Affichage accueil vente / formulaire vente
 		//on cache le formulaire d'ajout d'un objet à la vente
 		$("#affichageFormulaire").hide();
@@ -539,26 +540,34 @@ if(isset($_POST['submit']))
 			<div class="row pt-2">
 
 				<!-- Nouvelle vente -->
-				<div class="col-lg-4 col-md-4 col-sm-12 border-right">
-					<h3 class="font-weight-bold text-center"><u>Nouvelle vente</u></h3>
-					<!-- Boutons nouvelle vente -->
-					<div class="text-center pt-4 pb-4">
-						<button type="button" class="btn btn-outline-light rounded-circle" id="btnAccueil1">
-							<strong>+</strong>
-						</button>
-						<button type="button" class="btn btn-light rounded ml-2" id="btnAccueil2">
-							<h4>Vendre</h4>
-							<h6>un nouvel objet</h6>
-						</button>
+				<div class="col-lg-12 col-md-12 col-sm-12">
+					<div class="row">
+						<div class="col-sm-6 offset-sm-3 borderDiv p-2">
+							<h2 class="font-weight-bold text-center"><u>Nouvelle vente</u></h2>
+							<!-- Boutons nouvelle vente -->
+							<div class="text-center pt-4 pb-4">
+								<button type="button" class="btn btn-outline-dark rounded-circle" id="btnAccueil1">
+									<strong>+</strong>
+								</button>
+								<button type="button" class="btn btn-outline-dark rounded ml-2" id="btnAccueil2">
+									<h4>Vendre</h4>
+									<h6>un nouvel objet</h6>
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
+				<br>
+				<br>
 
-				<div class="col-lg-8 col-md-8 col-sm-12">
-					<div class="row" style="min-height: 300px;">
+				<div class="col-lg-8 col-md-8 col-sm-12 offset-md-2 offset-lg-2 mt-4 mb-4">
+					<div class="row">
 
 					<!-- Ventes en cours -->
 						<div class="col-sm-12">
-							<h3 class="font-weight-bold text-center mb-4"><u>Mes ventes en cours</u></h3>
+						<div class="row">
+						<div class="col-sm-8 offset-sm-2 borderDiv p-2">
+							<h2 class="font-weight-bold text-center mb-4"><u>Mes ventes en cours</u></h2>
 
 							<?php		
 									if ($db_found) 
@@ -570,13 +579,20 @@ if(isset($_POST['submit']))
 										//on récupère les infos des produits liés au vendeur connecté qui n'ont pas encore été vendus
 										//on compte le nombre de résultat 
 										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.Produit = produit.ID WHERE produit.Vendu = 0 AND img_produit.URL LIKE './img/0%'";
-										$result = mysqli_query($db_handle, $sql);
 
 										//Si user connecté n'est pas admin, on affiche que ses ventes a lui, sinon on affiche tout
 										if ($_SESSION['user_Role'] != 1) 
 										{
 											$sql .= " AND produit.Vendeur = '$userID'";
 										}
+										else
+										{
+											?>
+											<div class="text-center mb-3"><span><small><strong>Version admin</strong> - <i>Toutes les ventes sont affichées avec le pseudo du vendeur</i></small></span></div>
+											<?php
+										}
+
+										$result = mysqli_query($db_handle, $sql);
 
 									//Pas de ventes en cours
 										if (mysqli_num_rows($result) == 0) 
@@ -601,13 +617,15 @@ if(isset($_POST['submit']))
 											?>
 												<div class="text-center">
 													<a href="offreVendeur.php" class="btn btn-outline-dark waves-effect" role="button">Voir toutes mes offres</a>
-												</div><br>
+												</div>
 											<?php
 
 											//afficher les ventes en cours
 											while ($data = mysqli_fetch_assoc($result))
 											{
 												?>
+													<hr class="cardDiv">
+													<br>
 													<!-- Card -->
 													<div class="card card-cascade wider reverse">
 													  	<!-- Product image -->
@@ -689,6 +707,20 @@ if(isset($_POST['submit']))
 														                    <span>---</span>
 														                </div>";
 												          			}
+
+											          			//Si admin connecté, on affiche le vendeur de chaque vente
+												          			if ($_SESSION['user_Role'] = 1) 
+												          			{
+												          				$IDproduit = $data['ID'];
+												          				$sql = "SELECT utilisateur.Pseudo FROM utilisateur INNER JOIN produit ON produit.Vendeur = utilisateur.ID WHERE produit.ID = '$IDproduit'";
+												          				$resultat = mysqli_query($db_handle, $sql);
+												          				$donnees = mysqli_fetch_assoc($resultat);
+
+												          				echo "
+												          				<div class=\"col-sm-6 col-lg-6 col-md-6 col-xs-12 offset-sm-3 offset-md-3 offset-lg-3\">
+													                		<span class=\"text-center\"><small>Vendeur : ".$donnees['Pseudo']."</small></span>
+													                	</div>";
+												          			}
 											                	?>
 										                    </div>
 										                    <br>
@@ -739,10 +771,14 @@ if(isset($_POST['submit']))
 									}
 								?>
 						</div>
-
+						</div>
+						</div>
+						<br>
 					<!-- Ventes terminées -->
-						<div class="col-sm-12">
-							<h3 class="font-weight-bold text-center mt-3"><u>Mes ventes terminées</u></h3>
+						<div class="col-sm-12 mt-4">
+						<div class="row">
+						<div class="col-sm-8 offset-sm-2 borderDiv p-2">
+							<h2 class="font-weight-bold text-center mt-3"><u>Mes ventes terminées</u></h2>
 							
 							<?php		
 									if ($db_found) 
@@ -819,7 +855,8 @@ if(isset($_POST['submit']))
 										}
 									}
 								?>
-
+						</div>
+						</div>
 						</div>
 					</div>
 				</div>	
@@ -837,7 +874,7 @@ if(isset($_POST['submit']))
 
 					<!-- Ajout photos et vidéo -->
 						<div class="col-lg-4 col-md-4 col-sm-12 border-right">
-							<div class="p-2 mb-2 border text-center">
+							<div class="p-2 mb-2 borderDiv text-center">
 								<div class="custom-file">
 									<p><strong>Ajouter une ou plusieurs photos</strong></p>
 									<div id="imgPreview" class="noborder img-thumbnail">
@@ -846,14 +883,14 @@ if(isset($_POST['submit']))
 									<input type="file" name="files[]" class="btn btn-default" id="photos" required="true" multiple/>
 								</div>
 							</div>
-							<div class="p-1 mt-2 border text-center">
+							<div class="p-1 mt-2 borderDiv text-center">
 								<p>Ajouter une vidéo</p>
 								<video class="img-thumbnail img-responsive" src="" id="vidPreview" controls></video><br>
 								<input type="hidden" name="MAX_FILE_SIZE" value="20000000"/>
 								<input type="file" name="video" class="btn btn-default" id="video"/>
 							</div>
 							<div class="p-1 mt-2 text-center">
-								<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoixFichiers">Supprimer les fichiers</button>
+								<button type="button" class="btn btn-outline-dark btn-sm" style="background-color: white" id="resetChoixFichiers">Supprimer les fichiers</button>
 							</div>
 						</div>
 
@@ -944,7 +981,7 @@ if(isset($_POST['submit']))
 											</div>
 
 										<!-- Bouton pour tout décocher -->
-											<button type="button" class="btn btn-outline-dark btn-sm" id="resetChoixTypeVente">Réinitialiser les choix</button>
+											<button type="button" class="btn btn-outline-dark btn-sm" style="background-color: white;" id="resetChoixTypeVente">Réinitialiser les choix</button>
 
 										</div>
 									</div>

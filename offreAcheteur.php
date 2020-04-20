@@ -24,6 +24,7 @@ include ("database/db_connect.php");
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="css/bs.css">
 
 </head>
 
@@ -38,7 +39,7 @@ include ("database/db_connect.php");
 	</header>
 
 	<!-- Conteneur -->
-	<div class="container-fluid">
+	<div class="container-fluid" style="overflow-x: scroll;">
 		<?php
 			if ($db_found) 
 			{
@@ -72,6 +73,35 @@ include ("database/db_connect.php");
 								<h6 class="mt-1 text-center">Vous n'avez fait aucune offre en ce moment.</h6>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-sm-12 col-md-12 col-lg-12 m-4 table-responsive" style="min-height: 300px;">
+								<h1 class="text-center m-4"><strong>Mes offres reçues</strong></h1>
+								<table class="table table-bordered table-hover table-dark table-striped">
+								  	<thead>
+								    	<tr>
+								      		<th class="th-sm">Nom de l'objet</th>
+								      		<th class="th-sm">Catégorie</th>
+									      	<th class="th-sm">Offre minimum</th>
+									      	<th class="th-sm">Ma dernière contre offre</th>
+									      	<th class="th-sm">Dernière offre reçue</th>
+									      	<th class="th-sm">Négociation N° /5</th>
+								      		<th class="th-sm">Choix</th>
+								    	</tr>
+								  	</thead>
+								  	<tbody>
+								  		<tr>
+								  			<td> --- </td>
+								  			<td> --- </td>
+								  			<td> --- </td>
+								  			<td> --- </td>
+								  			<td> --- </td>
+								  			<td> --- </td>
+								  			<td> --- </td>
+								  		</tr>
+							  		</tbody>
+							  	</table>
+							</div>
+						</div>
 					<?php 
 				}
 
@@ -85,13 +115,13 @@ include ("database/db_connect.php");
 								<table class="table table-bordered table-hover table-dark table-striped" cellspacing="0" width="100%">
 								  	<thead>
 								    	<tr>
-								      		<th class="th-sm">Nom de l\'objet</th>
-								      		<th class="th-sm">Catégorie</th>
-									      	<th class="th-sm">Offre minimum</th>
-									      	<th class="th-sm">Ma dernière offre</th>
-									      	<th class="th-sm">Dernière contre offre reçue</th>
-									      	<th class="th-sm">Négociations restantes</th>
-								      		<th class="th-sm">Choix</th>
+								      		<th class="th-sm text-center">Nom de l'objet</th>
+								      		<th class="th-sm text-center">Catégorie</th>
+									      	<th class="th-sm text-center">Offre minimum</th>
+									      	<th class="th-sm text-center">Ma dernière offre</th>
+									      	<th class="th-sm text-center">Dernière contre offre reçue</th>
+									      	<th class="th-sm text-center">Négociation n° (/5)</th>
+								      		<th class="th-sm text-center">Choix</th>
 								    	</tr>
 								  	</thead>
 								  	<tbody>
@@ -115,13 +145,25 @@ include ("database/db_connect.php");
 						//name et id du submit button
 						$submit_ID = "submit".$ID_offreAchat;
 
+						//pour affichage propre de la catégorie
+						$cat = "";
+						if ($data['produitCategorie'] == 1) {
+							$cat = "Ferraille ou Trésor";
+						}
+						if ($data['produitCategorie'] == 2) {
+							$cat = "Bon pour le Musée";
+						}
+						if ($data['produitCategorie'] == 3) {
+							$cat = "Accessoire VIP";
+						}
+
 						echo "		
 										<tr>
 									      	<td>".$data['produitNom']."</td>
-									      	<td>".$data['produitCategorie']."</td>
-									      	<td>".$data['produitPrix_min']."</td>
-									      	<td>".$data['offre_achatOffre']."</td>
-									      	<td>".$data['offre_achatContre_Offre']."</td>
+									      	<td>".$cat."</td>
+									      	<td>".$data['produitPrix_min']."€</td>
+									      	<td>".$data['offre_achatOffre']."€</td>
+									      	<td>".$data['offre_achatContre_Offre']."€</td>
 									      	<td>".$data['offre_achatTentative']."</td>
 				      	";
 
@@ -232,7 +274,7 @@ include ("database/db_connect.php");
 								header('Location: mails.php?commande=' . $id_commande . "&email=" . $email);
 
 					      		//on recharge la page pour l'affichage
-					      		?><script>$window.location.reload();</script> <?php
+					      		?><script>window.location.reload();</script> <?php
 					      	}
 
 				      	//Sinon, c'est qu'il a proposé une nouvelle offre
@@ -248,7 +290,7 @@ include ("database/db_connect.php");
 						      	mysqli_query($db_handle, $sql);
 
 						      	//on recharge la page pour l'affichage
-					      		?><script>$window.location.reload();</script> <?php
+					      		?><script>window.location.reload();</script> <?php
 					      	}
 						}
 

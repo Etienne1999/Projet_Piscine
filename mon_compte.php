@@ -463,7 +463,8 @@
 					if ($data['Statut'] == 3)
 						$msg_statut = 'En attente d\'offre';
 
-					echo '<a href="http://piscine/meilleure_offre.php?id=' . $data['Produit'] . '" style="color: white;">-' . $data['Nom'] . '</a> Tentative : ' . $data['Tentative'] . ' |Statut : ' . $msg_statut . '<br>';
+					echo '<a href="offreAcheteur.php" style="color: white;">-' . $data['Nom'] . '</a> Tentative : ' . $data['Tentative'] . ' |Statut : ' . $msg_statut . '<br>';
+					//echo '<a href="http://piscine/meilleure_offre.php?id=' . $data['Produit'] . '" style="color: white;">-' . $data['Nom'] . '</a> Tentative : ' . $data['Tentative'] . ' |Statut : ' . $msg_statut . '<br>';
 				}
 			}
 		}
