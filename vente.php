@@ -380,7 +380,7 @@ if(isset($_POST['submit']))
 		});
 
 	//Affichage formulaire MEILLEURE OFFRE
-		//on cache le formulaire de prix Achat Immediat
+		//on cache le formulaire de prix meilleure offre
 		$("#meilleureOffre").hide();
 		//Si on coche la case, on l'affiche
 		$("#case2").click(function()
@@ -418,7 +418,7 @@ if(isset($_POST['submit']))
 		});
 
 	//Affichage formulaire ENCHERE
-		//on cache le formulaire de prix Achat Immediat
+		//on cache le formulaire de prix + date enchère
 		$("#enchere").hide();
 		//Si on coche la case, on l'affiche
 		$("#case3").click(function()
@@ -584,7 +584,7 @@ if(isset($_POST['submit']))
 										{
 											?>
 												<div class="text-center">
-													<a href="offre.php" class="btn btn-outline-dark waves-effect" role="button">Voir toutes mes offres</a>
+													<a href="offreVendeur.php" class="btn btn-outline-dark waves-effect" role="button">Voir toutes mes offres</a>
 												</div><br>
 											<?php
 
