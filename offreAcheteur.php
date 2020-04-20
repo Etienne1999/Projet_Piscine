@@ -235,16 +235,17 @@ include ("database/db_connect.php");
 
 				      		//COMMANDE
 					      		//on récupère l'ID de l'acheteur 
-					      		$acheteur = $_POST['offre_achatAcheteur'];
+					      		$acheteur = $data['offre_achatAcheteur'];
 					      		//on récupère la dernière offre
-					      		$prix_final = $_POST['offre_achatContre_Offre'];
+					      		$prix_final = $data['offre_achatContre_Offre'];
 
 					      		//On recupere l'adresse principale de l'utilisateur pour l'adresse de livraison
-								$sql = "SELECT Adresse, Email FROM utilisateur WHERE ID = '$acheteur'";
+								$sql = "SELECT utilisateur.Adresse, utilisateur.Email, offre_achat.Produit FROM utilisateur, produit, offre_achat WHERE utilisateur.ID = '$acheteur' AND offre_achat.ID = '$ID_offre'";
 								$res = mysqli_query($db_handle, $sql);
 								$data = mysqli_fetch_assoc($res);
 								$adresse = $data['Adresse'];
 								$email = $data['Email'];
+								$article = $data['Produit'];
 
 								//date actuelle pour la commande
 								$date=date_create();
@@ -267,9 +268,6 @@ include ("database/db_connect.php");
 								//Ajoute le detail de la commande
 								$sql3 = "INSERT INTO `commande_detail`(`Commande`, `Objet`) VALUES ('$id_commande', '$article')";
 								mysqli_query($db_handle, $sql3);
-								//Update le statut de produit
-								$sql4 = "UPDATE `produit` SET `Vendu`= 1 WHERE ID = '$article'";
-								mysqli_query($db_handle, $sql4);
 
 								header('Location: mails.php?commande=' . $id_commande . "&email=" . $email);
 
