@@ -227,19 +227,19 @@ include ("database/db_connect.php");
 						      		//on passe le statut à 2 comme vendu + produit.Vendu = 1
 						      		$sql = "UPDATE offre_achat JOIN produit ON offre_achat.produit = produit.ID SET offre_achat.Statut = 2, produit.Vendu = 1 WHERE offre_achat.ID = '$ID_offre'";
 						      		mysqli_query($db_handle, $sql);
-
 					      		//COMMANDE
 						      		//on récupère l'ID de l'acheteur 
-						      		$acheteur = $_POST['offre_achatAcheteur'];
+						      		$acheteur = $data['offre_achatAcheteur'];
 						      		//on récupère la dernière offre
-						      		$prix_final = $_POST['offre_achatOffre'];
+						      		$prix_final = $data['offre_achatOffre'];
 
 						      		//On recupere l'adresse principale de l'utilisateur pour l'adresse de livraison
-									$sql = "SELECT Adresse, Email FROM utilisateur WHERE ID = '$acheteur'";
+									$sql = "SELECT utilisateur.Adresse, utilisateur.Email, offre_achat.Produit FROM utilisateur, produit, offre_achat WHERE utilisateur.ID = '$acheteur' AND offre_achat.ID = '$ID_offre'";
 									$res = mysqli_query($db_handle, $sql);
 									$data = mysqli_fetch_assoc($res);
 									$adresse = $data['Adresse'];
 									$email = $data['Email'];
+									$article = $data['Produit'];
 
 									//date actuelle pour la commande
 									$date=date_create();
@@ -262,14 +262,11 @@ include ("database/db_connect.php");
 									//Ajoute le detail de la commande
 									$sql3 = "INSERT INTO `commande_detail`(`Commande`, `Objet`) VALUES ('$id_commande', '$article')";
 									mysqli_query($db_handle, $sql3);
-									//Update le statut de produit
-									$sql4 = "UPDATE `produit` SET `Vendu`= 1 WHERE ID = '$article'";
-									mysqli_query($db_handle, $sql4);
 
 									header('Location: mails.php?commande=' . $id_commande . "&email=" . $email);
 
 						      		//on recharge la page pour l'affichage
-						      		?><script>$window.location.reload();</script> <?php
+						      		?><script>window.location.reload();</script> <?php
 						      	}
 
 					      	//Sinon, c'est qu'elle est refusée, statut = 3 (négociations terminées, pas abouties)
@@ -359,16 +356,17 @@ include ("database/db_connect.php");
 
 					      		//COMMANDE
 						      		//on récupère l'ID de l'acheteur 
-						      		$acheteur = $_POST['offre_achatAcheteur'];
+						      		$acheteur = $data['offre_achatAcheteur'];
 						      		//on récupère la dernière offre
-						      		$prix_final = $_POST['offre_achatOffre'];
+						      		$prix_final = $data['offre_achatOffre'];
 
 						      		//On recupere l'adresse principale de l'utilisateur pour l'adresse de livraison
-									$sql = "SELECT Adresse, Email FROM utilisateur WHERE ID = '$acheteur'";
+									$sql = "SELECT utilisateur.Adresse, utilisateur.Email, offre_achat.Produit FROM utilisateur, produit, offre_achat WHERE utilisateur.ID = '$acheteur' AND offre_achat.ID = '$ID_offre'";
 									$res = mysqli_query($db_handle, $sql);
 									$data = mysqli_fetch_assoc($res);
 									$adresse = $data['Adresse'];
 									$email = $data['Email'];
+									$article = $data['Produit'];
 
 									//date actuelle pour la commande
 									$date=date_create();
@@ -391,9 +389,6 @@ include ("database/db_connect.php");
 									//Ajoute le detail de la commande
 									$sql3 = "INSERT INTO `commande_detail`(`Commande`, `Objet`) VALUES ('$id_commande', '$article')";
 									mysqli_query($db_handle, $sql3);
-									//Update le statut de produit
-									$sql4 = "UPDATE `produit` SET `Vendu`= 1 WHERE ID = '$article'";
-									mysqli_query($db_handle, $sql4);
 
 									header('Location: mails.php?commande=' . $id_commande . "&email=" . $email);
 
