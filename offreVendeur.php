@@ -42,8 +42,7 @@ include ("database/db_connect.php");
 		<?php
 			if ($db_found) 
 			{
-				//role du user connecté
-				$role = $_SESSION['user_Role'];
+				//ID du user connecté
 				$userID = $_SESSION['user_ID'];
 
 				//requête sql pour chercher les offres qu'il a reçu
@@ -56,7 +55,7 @@ include ("database/db_connect.php");
 					?>
 						<div class="row">
 							<div class="col-sm-12">
-								<h6 class="mt-1 text-center">Vous ne vendez aucun objet disponible en meilleure offre en ce moment.</h6>
+								<h6 class="mt-1 text-center">Vous n'avez reçu encore aucune offre pour vos objets disponibles en meilleure offre.</h6>
 							</div>
 						</div>
 					<?php
