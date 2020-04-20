@@ -116,8 +116,8 @@
 				if (!$mail->send()) {
 				    echo 'Mailer Error: '. $mail->ErrorInfo;
 				} else {
-				    echo 'Message sent!';
-				    header("Location: mon_compte.php");
+				    echo 'Cheque cadeau envoyé !';
+		    		header("Refresh: 5; URL=mon_compte.php");
 				}
 			}
 		}
@@ -147,7 +147,7 @@
 		$sql = "SELECT a.Ligne_1, a.Ligne_2, a.Ville, a.Code_Postal, a.Pays, a.Telephone, commande.Date_Livraison, commande.Montant_total, commande.ID, utilisateur.Nom FROM adresse as a, commande, utilisateur WHERE commande.ID = '$id_commande' AND commande.Adresse_Livraison = a.ID AND a.ID_User = utilisateur.ID";
 		$res = mysqli_query($db_handle, $sql);
 		$data = mysqli_fetch_assoc($res);
-		var_dump($data);
+		//var_dump($data);
 
 		$msg .= "Votre commande sera livrée le " . $data['Date_Livraison'] . "<br>";
 		$msg .= "<u>A l'adresse suivante :</u><br><br>";
@@ -181,8 +181,8 @@
 		if (!$mail->send()) {
 		    echo 'Mailer Error: '. $mail->ErrorInfo;
 		} else {
-		    echo 'Message sent!';
-		    header("Location: index.php");
+		    echo 'Commande expediée!';
+		    header("Refresh: 5; URL=mon_compte.php");
 		}
 		
 	}
