@@ -27,87 +27,140 @@ if(isset($_POST['submit']))
 {	
 	if ($db_found) 
 	{
+		//compteur erreurs
 		$errorCount = 0;
-
-//1. INFOS PRODUIT
-	//a) Récupération des données hors fichiers
-		$nomObj = isset($_POST['nomObj'])? $_POST['nomObj'] : "";
-		$categorie = isset($_POST['categorie'])? $_POST['categorie'] : "";
-		$prixAchat = isset($_POST['prixAchat'])? $_POST['prixAchat'] : "";
-		$prixMin = isset($_POST['prixMin'])? $_POST['prixMin'] : "";
-		$prixEnchere = isset($_POST['prixEnchere'])? $_POST['prixEnchere'] : "";
-		$dateEnchere = isset($_POST['dateEnchere'])? $_POST['dateEnchere'] : "";
-		$description = isset($_POST['description'])? $_POST['description'] : "";
-
-	//b) Création d'un nouveau produit
-		$id = $_SESSION['user_ID'];
-		$sql = "INSERT INTO produit(Nom, Description, Categorie, Vendeur) VALUES('$nomObj', '$description', $categorie, '$id')";
-		$test = mysqli_query($db_handle, $sql);
-
-	//c) Update infos de prix
-		
-	//Test prix achat
-		//Si pas coché, on met le prix à zero
-		if ($prixAchat == "") 
-		{
-			$sql = "UPDATE produit SET Prix_Achat = '0' WHERE Nom = '$nomObj' ";
-			mysqli_query($db_handle, $sql);
-		}
-		//Sinon on update
-		else
-		{
-			$sql = "UPDATE produit SET Prix_Achat = $prixAchat WHERE Nom = '$nomObj' ";
-			mysqli_query($db_handle, $sql);
-		}
-	//Test meilleure offre
-		//Si pas coché, on met le prix à zero
-		if ($prixMin == "") 
-		{
-			$sql = "UPDATE produit SET Prix_min = '0' WHERE Nom = '$nomObj'";
-			mysqli_query($db_handle, $sql);
-		}
-		//Sinon on update
-		else
-		{
-			$sql = "UPDATE produit SET Prix_min = $prixMin WHERE Nom = '$nomObj'";
-			mysqli_query($db_handle, $sql);
-		}
-	//Test enchère
-		//Si pas coché, on met le prix à zero (pas besoin pour la date)
-		if ($prixEnchere == "") 
-		{
-			$sql = "UPDATE produit SET Prix_Enchere = '0' WHERE Nom = '$nomObj'";
-			mysqli_query($db_handle, $sql);
-		}
-		//Sinon on update le prix et la date
-		else
-		{
-			$sql = "UPDATE produit SET Prix_Enchere = $prixEnchere, Date_fin_enchere = '$dateEnchere' WHERE Nom = '$nomObj'";
-			mysqli_query($db_handle, $sql);
-		}
+		//variable qui autorise la création d'un objet
+		$autorisationPhotos = 0;
+		$compteurPhotos = 0;
+		$autorisationVideo = 0;
 
 
-//2. FICHIERS
-		///Emplacement d'enregistrement des fichier
-		$valuefldr = './img';
-
-	//a) PHOTOS
-		//Pour chaque photo
+	//CHECK EXTENSIONS PHOTO
+		//on veut avoir autant de photos (countPhotos) que d'autorisations (autorisationPhotos)
 		foreach($_FILES['files']['tmp_name'] as $key => $tmp_name )
 		{
-			$file_name = $key.$_FILES['files']['name'][$key];
-			$file_size = $_FILES['files']['size'][$key];
-			$file_tmp = $_FILES['files']['tmp_name'][$key];
-			$file_type = $_FILES['files']['type'][$key]; 
-			$desired_dir = $valuefldr;
+			$compteurPhotos += 1;
+			$file_name = $_FILES['files']['name'][$key];
 			
-			//On vérifie l'extension du fichier uploadé
+		//On vérifie l'extension du fichier photo uploadé
 			$infos_file = pathinfo($file_name);
 			$extension_fichier = $infos_file['extension'];
 			$extensions_autorisees = array('jpg', 'jpeg', 'gif', 'png');
-
 			if (in_array($extension_fichier, $extensions_autorisees))
 			{
+				$autorisationPhotos += 1;			
+			}
+			else
+			{
+				?>
+					<script>
+				 		alert("Format de la photo <?php echo $file_name; ?> non pris en charge. Les formats autorisés sont : jpg, jpeg, gif, png");
+					</script>
+			   	<?php
+			}
+
+		}
+
+	//CHECK EXTENSION VIDEO
+		if(is_uploaded_file($_FILES['video']['tmp_name']))
+		{	
+			$video_name = $_FILES['video']['name'];
+
+            //On vérifie l'extension du fichier vidéo uploadé
+			$infosvideo = pathinfo($video_name);
+			$extension_fichier = $infosvideo['extension'];
+			$extensions_autorisees = array('mp3', 'mp4');
+			if (in_array($extension_fichier, $extensions_autorisees))
+			{
+				$autorisationVideo += 1;
+			}
+			else
+			{
+				?>
+					<script>
+				 		alert("Le fichier vidéo choisi n'est pas au bon format. Les formats vidéo autorisés sont : mp3, mp4");
+					</script>
+			   	<?php
+			}
+		}
+
+
+	//SI LES EXTENTIONS SONT OK :
+	//CREATION PRODUIT :
+		if (($autorisationPhotos == $compteurPhotos) && ($autorisationVideo == 1)) 
+		{
+
+	//1. INFOS PRODUIT
+		//a) Récupération des données hors fichiers
+			$nomObj = isset($_POST['nomObj'])? $_POST['nomObj'] : "";
+			$categorie = isset($_POST['categorie'])? $_POST['categorie'] : "";
+			$prixAchat = isset($_POST['prixAchat'])? $_POST['prixAchat'] : "";
+			$prixMin = isset($_POST['prixMin'])? $_POST['prixMin'] : "";
+			$prixEnchere = isset($_POST['prixEnchere'])? $_POST['prixEnchere'] : "";
+			$dateEnchere = isset($_POST['dateEnchere'])? $_POST['dateEnchere'] : "";
+			$description = isset($_POST['description'])? $_POST['description'] : "";
+
+		//b) Création d'un nouveau produit
+			$id = $_SESSION['user_ID'];
+			$sql = "INSERT INTO produit(Nom, Description, Categorie, Vendeur) VALUES('$nomObj', '$description', $categorie, '$id')";
+			$test = mysqli_query($db_handle, $sql);
+
+		//c) Update infos de prix
+			
+		//Test prix achat
+			//Si pas coché, on met le prix à zero
+			if ($prixAchat == "") 
+			{
+				$sql = "UPDATE produit SET Prix_Achat = '0' WHERE Nom = '$nomObj' ";
+				mysqli_query($db_handle, $sql);
+			}
+			//Sinon on update
+			else
+			{
+				$sql = "UPDATE produit SET Prix_Achat = $prixAchat WHERE Nom = '$nomObj' ";
+				mysqli_query($db_handle, $sql);
+			}
+		//Test meilleure offre
+			//Si pas coché, on met le prix à zero
+			if ($prixMin == "") 
+			{
+				$sql = "UPDATE produit SET Prix_min = '0' WHERE Nom = '$nomObj'";
+				mysqli_query($db_handle, $sql);
+			}
+			//Sinon on update
+			else
+			{
+				$sql = "UPDATE produit SET Prix_min = $prixMin WHERE Nom = '$nomObj'";
+				mysqli_query($db_handle, $sql);
+			}
+		//Test enchère
+			//Si pas coché, on met le prix à zero (pas besoin pour la date)
+			if ($prixEnchere == "") 
+			{
+				$sql = "UPDATE produit SET Prix_Enchere = '0' WHERE Nom = '$nomObj'";
+				mysqli_query($db_handle, $sql);
+			}
+			//Sinon on update le prix et la date
+			else
+			{
+				$sql = "UPDATE produit SET Prix_Enchere = $prixEnchere, Date_fin_enchere = '$dateEnchere' WHERE Nom = '$nomObj'";
+				mysqli_query($db_handle, $sql);
+			}
+
+	//2. FICHIERS
+			//Emplacement d'enregistrement des fichiers
+			$valuefldr = './img';
+
+		//a) PHOTOS
+			//Pour chaque photo
+			foreach($_FILES['files']['tmp_name'] as $key => $tmp_name )
+			{
+				$file_name = $key.$_FILES['files']['name'][$key];
+				$file_size = $_FILES['files']['size'][$key];
+				$file_tmp = $_FILES['files']['tmp_name'][$key];
+				$file_type = $_FILES['files']['type'][$key]; 
+				$desired_dir = $valuefldr;
+				
 				$cheminFichier = "$desired_dir/".$file_name;
 				//On upload la photo dans le bon directory et on check si c'est bien fait
 				if(move_uploaded_file($file_tmp,"$desired_dir/".$file_name))
@@ -120,39 +173,27 @@ if(isset($_POST['submit']))
 				{
 					?>
 						<script>
-					 		alert("Erreur de téléchargement d'une des photos");
+					 		alert("Erreur de téléchargement de la photo <?php echo $file_name; ?>");
 						</script>
 			   		<?php
 			   		$errorCount += 1;
 				}
-			}
-			else
-			{
-				?>
-					<script>
-				 		alert("Format d'une des photos non pris en charge. Les formats autorisés sont : jpg, jpeg, gif, png");
-					</script>
-			   	<?php
-			   	$errorCount += 1;
-			}
-		} 
+			} 
 
-	//b) VIDEO
-		//check si une video a été upload
-		if(is_uploaded_file($_FILES['video']['tmp_name']))
-		{	
-			$video_name = $_FILES['video']['name'];
-			$video_tmp = $_FILES['video']['tmp_name'];
-			$video_size = $_FILES['video']['size'];
-			$desired_dir = $valuefldr;
+		//b) VIDEO
+			//check si une video a été upload
+			if(is_uploaded_file($_FILES['video']['tmp_name']))
+			{	
+				$video_name = $_FILES['video']['name'];
+				$video_tmp = $_FILES['video']['tmp_name'];
+				$video_size = $_FILES['video']['size'];
+				$desired_dir = $valuefldr;
 
-            //On vérifie l'extension du fichier uploadé
-			$infosvideo = pathinfo($video_name);
-			$extension_fichier = $infosvideo['extension'];
-			$extensions_autorisees = array('mp3', 'mp4');
+	            //On vérifie l'extension du fichier uploadé
+				$infosvideo = pathinfo($video_name);
+				$extension_fichier = $infosvideo['extension'];
+				$extensions_autorisees = array('mp3', 'mp4');
 
-			if (in_array($extension_fichier, $extensions_autorisees))
-			{
 				$cheminVideo = "$desired_dir/".$video_name;
             	//On upload la vidéo dans le bon directory et on check si c'est bien fait
 				if(move_uploaded_file($video_tmp,"$desired_dir/".$video_name))
@@ -170,23 +211,24 @@ if(isset($_POST['submit']))
 			   		<?php
 			   		$errorCount += 1;
 				}
+				
 			}
-			else
+			if ($errorCount == 0) 
 			{
 				?>
 					<script>
-				 		alert("Le fichier choisi n'est pas au bon format. Les formats vidéos autorisés sont : mp3, mp4");
+				 		alert("Votre objet a été mis en vente avec succès !");
 					</script>
-			   	<?php
-			   	$errorCount += 1;
+	   			<?php
 			}
 		}
-		//Alerte mise en vente
-		if ($errorCount == 0) 
+
+	//EXTENSIONS NON VALIDES
+		else
 		{
 			?>
 				<script>
-			 		alert("Votre objet a été mis en vente avec succès !");
+			 		alert("Erreur lors de la mise en vente ... Veuillez contacter l'administrateur du site pour plus d'informations.");
 				</script>
 	   		<?php
 		}
@@ -233,6 +275,20 @@ if(isset($_POST['submit']))
 		});
 		//quand on clique sur le bouton 'nouvelle vente' 2
 		$("#btnAccueil2").click(function()
+		{
+			//on switch l'affichage 
+			$("#affichageAccueil").toggle();
+			$("#affichageFormulaire").toggle();
+		});
+		//quand on clique sur le bouton 'nouvelle vente' 3
+		$("#btnAccueil3").click(function()
+		{
+			//on switch l'affichage 
+			$("#affichageAccueil").toggle();
+			$("#affichageFormulaire").toggle();
+		});
+		//quand on clique sur le bouton 'nouvelle vente' 4
+		$("#btnAccueil4").click(function()
 		{
 			//on switch l'affichage 
 			$("#affichageAccueil").toggle();
@@ -335,7 +391,7 @@ if(isset($_POST['submit']))
 		});
 
 	//Affichage formulaire MEILLEURE OFFRE
-		//on cache le formulaire de prix Achat Immediat
+		//on cache le formulaire de prix meilleure offre
 		$("#meilleureOffre").hide();
 		//Si on coche la case, on l'affiche
 		$("#case2").click(function()
@@ -373,7 +429,7 @@ if(isset($_POST['submit']))
 		});
 
 	//Affichage formulaire ENCHERE
-		//on cache le formulaire de prix Achat Immediat
+		//on cache le formulaire de prix + date enchère
 		$("#enchere").hide();
 		//Si on coche la case, on l'affiche
 		$("#case3").click(function()
@@ -478,14 +534,13 @@ if(isset($_POST['submit']))
 	<!-- Conteneur -->
 	<div class="container-fluid">
 
-		<!-- Page d'accueil vente -->
+	<!-- Page d'accueil vente -->
 		<div id="affichageAccueil">
 			<div class="row pt-2">
 
-				<!-- Bouton nouvelle vente -->
+				<!-- Nouvelle vente -->
 				<div class="col-lg-4 col-md-4 col-sm-12 border-right">
 					<h3 class="font-weight-bold text-center"><u>Nouvelle vente</u></h3>
-
 					<!-- Boutons nouvelle vente -->
 					<div class="text-center pt-4 pb-4">
 						<button type="button" class="btn btn-outline-light rounded-circle" id="btnAccueil1">
@@ -498,40 +553,286 @@ if(isset($_POST['submit']))
 					</div>
 				</div>
 
-				<!-- Affichage ventes en cours -->
 				<div class="col-lg-8 col-md-8 col-sm-12">
-					<h3 class="font-weight-bold text-center"><u>Mes ventes en cours</u></h3>
-					
-					<?php
-						/*
-						$venteEnCours = 
+					<div class="row" style="min-height: 300px;">
 
-						if ($db_found) {
-							//tester si vendeur a des ventes en cours
-							if (venteEnCours != NULL) {
-								//afficher les ventes en cours
-							}
-							else{
-								//afficher comme quoi pas de ventes en cours
-							}
+					<!-- Ventes en cours -->
+						<div class="col-sm-12">
+							<h3 class="font-weight-bold text-center mb-4"><u>Mes ventes en cours</u></h3>
 
-						}
-						*/
-					?>
-				</div>
-				
+							<?php		
+									if ($db_found) 
+									{
+										//on récupère l'ID du vendeur en cours
+										$userID = $_SESSION['user_ID'];
+										$userRole = $_SESSION['user_Role'];
+
+										//on récupère les infos des produits liés au vendeur connecté qui n'ont pas encore été vendus
+										//on compte le nombre de résultat 
+										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.Produit = produit.ID WHERE produit.Vendu = 0 AND img_produit.URL LIKE './img/0%'";
+										$result = mysqli_query($db_handle, $sql);
+
+										//Si user connecté n'est pas admin, on affiche que ses ventes a lui, sinon on affiche tout
+										if ($_SESSION['user_Role'] != 1) 
+										{
+											$sql .= " AND produit.Vendeur = '$userID'";
+										}
+
+									//Pas de ventes en cours
+										if (mysqli_num_rows($result) == 0) 
+										{
+											//afficher div comme quoi pas de ventes en cours
+											?>
+												<div class="row">
+													<div class="col-sm-12">
+														<h6 class="mt-1">Vous n'avez aucune vente en cours en ce moment.</h6>
+													</div>
+													<div class="col-sm-6 col-sm-offset-2">
+														<span>Vous souhaitez mettre un objet en vente ?</span>
+														<button type="button" class="btn btn-sm btn-link" id="btnAccueil3">Cliquez ici</button>
+													</div>
+												</div>
+											<?php 
+										}
+
+									//Si le vendeur a des ventes en cours
+										else
+										{
+											?>
+												<div class="text-center">
+													<a href="offreVendeur.php" class="btn btn-outline-dark waves-effect" role="button">Voir toutes mes offres</a>
+												</div><br>
+											<?php
+
+											//afficher les ventes en cours
+											while ($data = mysqli_fetch_assoc($result))
+											{
+												?>
+													<!-- Card -->
+													<div class="card card-cascade wider reverse">
+													  	<!-- Product image -->
+													  	<div class="view view-cascade overlay">
+													    	<img class="card-img-top" src="<?php echo $data['URL']; ?>">
+													    	<a href="#!">
+													      		<div class="mask rgba-white-slight"></div>
+													    	</a>
+													  	</div>
+
+														<!-- Card content -->
+														<div class="card-body card-body-cascade text-center">
+
+														    <!-- Nom Objet -->
+														    <h3 class="card-title border"><strong><?php echo $data['Nom']; ?></strong></h3>
+														    <!-- Catégorie -->
+														    <h6 class="indigo-text">
+														    	<i><small>
+														    	<?php  
+												            		if ($data['Categorie'] == 1) { echo "Ferraille ou trésor"; }
+												            		if ($data['Categorie'] == 2) { echo "Bon pour le musée"; }
+												            		if ($data['Categorie'] == 3) { echo "Accessoir VIP"; }
+											            		?>
+											            		</small></i>
+														    </h6>
+
+														    <!-- Prix -->
+														    <div class="row card-text">
+										                        <?php 
+												          		//On affiche si le type de vente est autorisée par le produit
+												          			if ($data['Prix_Achat'] != 0) {
+												          				echo "
+														                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+														                    <span><u>Prix d'achat immédiat</u></span><br>
+														                    <span>".$data['Prix_Achat']."€</span>
+														                </div>";
+												          			}
+												          			else{
+												          				echo "
+														                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+														                    <span><u>Prix d'achat immédiat</u></span><br>
+														                    <span>---</span>
+														                </div>";
+												          			}
+												          			if ($data['Prix_min'] != 0) {
+												          				echo "
+												          				<div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+														                    <span><u>Offre minimum</u></span><br>
+														                    <span>".$data['Prix_min']."€</span><br>
+														                    <a href=\"offreVendeur.php\" class=\"btn btn-outline-dark waves-effect btn-sm\" role=\"button\">Voir mes offres</a>
+														                </div><hr>";
+												          			}
+												          			else{
+												          				echo "
+												          				<div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+														                    <span><u>Offre minimum</u></span><br>
+														                    <span>---</span>
+														                </div><hr>";
+												          			}
+												          			if ($data['Prix_Enchere'] != 0) {
+												          				echo "
+												          				<div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+														                    <span><u>Prix de départ de l'enchère</u></span><br>
+														                    <span>".$data['Prix_Enchere']."€</span>
+														                </div>
+														                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+														                    <span><u>Date de fin de l'enchère</u></span><br>
+														                    <span>".$data['Date_fin_enchere']."</span>
+														                </div>";
+												          			}
+												          			else{
+												          				echo "
+												          				<div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+														                    <span><u>Prix de départ de l'enchère</u></span><br>
+														                    <span>---</span>
+														                </div>
+														                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
+														                    <span><u>Date de fin de l'enchère</u></span><br>
+														                    <span>---</span>
+														                </div>";
+												          			}
+											                	?>
+										                    </div>
+										                    <br>
+													    <!-- Description + Bouton delete-->
+														    <div class="card-footer w-100 text-muted">
+													            <p>
+													            	<strong><?php echo "Description : ";?></strong>
+													            	<?php echo $data['Description']  ;?>
+													            </p>
+													            <p>
+													            	<form action="vente.php" method="POST">
+													            		<input type="submit" name="supprimer" value="Supprimer l'objet" class="btn btn-danger btn-sm btn-hover">
+													            	</form>
+													            </p>
+													        </div>
+													  	</div>
+													</div>
+													<br>
+												<?php 
+
+										      	//Si le bouton est cliqué
+											      	if(isset($_POST['supprimer']))
+											      	{
+											      		//on récupère l'ID du produit
+											      		$IDproduit = $data['ID'];
+
+										      			//1 : on supprime les images associées
+											      		$sql1 = "DELETE FROM img_produit WHERE img_produit.Produit = '$IDproduit'";
+											      		mysqli_query($db_handle, $sql1);
+
+											      		//2 : on supprime les offres associées
+											      		$sql2 = "DELETE FROM offre_achat WHERE offre_achat.produit = '$IDproduit'";
+											      		mysqli_query($db_handle, $sql2);
+
+											      		//3 : on supprime les enchères associées
+											      		$sql3 = "DELETE FROM enchere WHERE enchere.Objet = '$IDproduit'";
+											      		mysqli_query($db_handle, $sql3);
+
+											      		//4 : on supprime l'objet 
+											      		$sql4 = "DELETE FROM produit WHERE produit.ID = '$IDproduit'";
+											      		mysqli_query($db_handle, $sql4);
+
+											      		//on recharge la page pour l'affichage à jour
+						      							?><script>$window.location.reload();</script><?php
+											      	}
+											}
+										}
+									}
+								?>
+						</div>
+
+					<!-- Ventes terminées -->
+						<div class="col-sm-12">
+							<h3 class="font-weight-bold text-center mt-3"><u>Mes ventes terminées</u></h3>
+							
+							<?php		
+									if ($db_found) 
+									{
+										//on récupère l'ID du vendeur en cours
+										$userID = $_SESSION['user_ID'];
+
+										//on récupère les ID des produits du vendeur co qui ont déja été vendu
+										//on compte le nombre de résultat
+										$sql = "SELECT produit.* , img_produit.URL FROM produit INNER JOIN img_produit ON img_produit.produit = produit.ID WHERE produit.Vendeur = '$userID' AND produit.Vendu = 1 AND img_produit.URL LIKE './img/0%'"; 
+										$result = mysqli_query($db_handle, $sql);
+
+									//Aucune vente terminé
+										if (mysqli_num_rows($result) == 0) 
+										{
+											
+											?>
+												<div class="row">
+													<div class="col-sm-12">
+														<h6 class="mt-1">Vous n'avez encore conclu aucune vente</h6>
+													</div>
+													<div class="col-sm-6 col-sm-offset-2">
+														<span>Vous souhaitez mettre un objet en vente ?</span>
+														<button type="button" class="btn btn-sm btn-link" id="btnAccueil4">Cliquez ici</button>
+													</div>
+												</div>
+											<?php 
+										}
+
+									//A une ou plusieurs ventes terminées
+										else
+										{
+											while ($data = mysqli_fetch_assoc($result))
+											{
+												?>
+													<!-- Card -->
+													<div class="card card-cascade wider reverse">
+													  	<!-- Product image -->
+													  	<div class="view view-cascade overlay">
+													    	<img class="card-img-top" src="<?php echo $data['URL']; ?>">
+													    	<a href="#!">
+													      		<div class="mask rgba-white-slight"></div>
+													    	</a>
+													  	</div>
+
+														<!-- Card content -->
+														<div class="card-body card-body-cascade text-center">
+
+														    <!-- Nom Objet -->
+														    <h3 class="card-title border"><strong><?php echo $data['Nom']; ?></strong></h3>
+														    <!-- Catégorie -->
+														    <h6 class="indigo-text">
+														    	<i><small>
+														    	<?php  
+												            		if ($data['Categorie'] == 1) { echo "Ferraille ou trésor"; }
+												            		if ($data['Categorie'] == 2) { echo "Bon pour le musée"; }
+												            		if ($data['Categorie'] == 3) { echo "Accessoir VIP"; }
+											            		?>
+											            		</small></i>
+														    </h6>
+
+													    <!-- Description -->
+														    <div class="card-footer w-100 text-muted">
+													            <p>
+													            	<strong><?php echo "Description : ";?></strong>
+													            	<?php echo $data['Description']  ;?>
+													            </p>
+													        </div>
+													  	</div>
+													</div>
+													<br>
+												<?php   
+											}
+										}
+									}
+								?>
+
+						</div>
+					</div>
+				</div>	
 			</div>
 		</div>
 
 
-
-		<!-- Formulaire nouvel objet en vente -->
+	<!-- Formulaire nouvel objet en vente -->
 		<div id="affichageFormulaire">
 			<h3 class="text-center font-weight-bold pt-2 pb-4"><u>Nouvelle vente</u></h3>		
 			<!-- Début du formulaire -->
 			<form class="form" action="vente.php" method="POST" enctype="multipart/form-data" id="formulaire" name="formVente">
-																					<!-- onsubmit="return checkform()" -->	
-				<div class="row ml-1 mr-1">
+				<div class="row pl-1 pr-1">
 
 
 					<!-- Ajout photos et vidéo -->
@@ -561,8 +862,8 @@ if(isset($_POST['submit']))
 						<div class="col-lg-8 col-md-8 col-sm-12">
 							<!-- Nom de l'objet -->
 								<div class="form-group">
-									<div class="row">
-										<div class="col-sm-12 col-md-4 col-lg-4">
+									<div class="row" id="containerLabel">
+										<div class="col-sm-12 col-md-4 col-lg-4" id="label">
 											<label class="control-label"><strong>Nom de l'objet </strong></label>
 										</div>
 										<div class="col-sm-12 col-md-6 col-lg-6 col-xs-6">
