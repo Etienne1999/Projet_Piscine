@@ -42,12 +42,25 @@ include ("database/db_connect.php");
 		<?php
 			if ($db_found) 
 			{
-				//role du user connecté
-				$role = $_SESSION['user_Role'];
+				//ID du user connecté
 				$userID = $_SESSION['user_ID'];
 
+			//Données nécessaires
+				//produit.Nom
+		      	//produit.Categorie
+		      	//produit.Prix_min
+		      	//produit.Vendu
+		      	//produit.Vendeur
+		      	//offre_achat.ID
+		      	//offre_achat.produit
+		      	//offre_achat.Acheteur
+		      	//offre_achat.Contre_Offre
+		      	//offre_achat.Offre
+		      	//offre_achat.Tentative
+		      	//offre_achat.Statut
+
 				//requete sql pour chercher les offres auxquelles il participe
-				$sql = "SELECT offre_achat.* , produit.* FROM produit INNER JOIN offre_achat ON offre_achat.Produit = produit.ID WHERE offre_achat.Acheteur = '$userID' AND produit.Vendu = 0 AND offre_achat.Statut < 2";
+				$sql = "SELECT produit.Nom AS produitNom, produit.Categorie AS produitCategorie, produit.Prix_min AS produitPrix_min, produit.Vendu AS produitVendu, produit.Vendeur AS produitVendeur, offre_achat.ID AS offre_achatID, offre_achat.produit AS offre_achatProduit, offre_achat.Acheteur AS offre_achatAcheteur, offre_achat.Contre_Offre AS offre_achatContre_Offre, offre_achat.Offre AS offre_achatOffre, offre_achat.Tentative AS offre_achatTentative, offre_achat.Statut AS offre_achatStatut FROM produit INNER JOIN offre_achat ON offre_achat.produit = produit.ID WHERE offre_achat.Acheteur = '$userID' AND produit.Vendu = 0 AND (offre_achat.Statut = 0 OR offre_achat.Statut = 1 OR offre_achat.Statut = 3)";
 				$result = mysqli_query($db_handle, $sql);
 
 			//Pas d'offres en cours en cours
@@ -73,9 +86,9 @@ include ("database/db_connect.php");
 								    	<tr>
 								      		<th class="th-sm">Nom de l\'objet</th>
 								      		<th class="th-sm">Catégorie</th>
-									      	<th class="th-sm">Prix minimum pour une offre</th>
-									      	<th class="th-sm">Dernière offre faite</th>
-									      	<th class="th-sm">Contre offre faite par le vendeur</th>
+									      	<th class="th-sm">Offre minimum</th>
+									      	<th class="th-sm">Ma dernière offre</th>
+									      	<th class="th-sm">Dernière contre offre reçue</th>
 									      	<th class="th-sm">Négociations restantes</th>
 								      		<th class="th-sm">Choix</th>
 								    	</tr>
@@ -87,7 +100,7 @@ include ("database/db_connect.php");
 					while ($data = mysqli_fetch_assoc($result))
 					{
 						//ID de l'offre pointée
-						$ID_offreAchat = $data['offre_achat.ID'];
+						$ID_offreAchat = $data['offre_achatID'];
 						//name de l'input "accepter la contre offre" (Choix Accepté)
 						$choixA_ID = "choixA".$ID_offreAchat;
 						//name de l'input "refuser la contre offre" (Choix Refusé)
@@ -98,30 +111,32 @@ include ("database/db_connect.php");
 						$accepteContreOffre_ID = "accepteContreOffre".$ID_offreAchat;
 						//id de l'input "refuser la contre offre"
 						$refuseContreOffre_ID = "refuseContreOffre".$ID_offreAchat;
+						//name et id du submit button
+						$submit_ID = "submit".$ID_offreAchat;
 
 						echo "		
 										<tr>
-									      	<td>".$data['produit.Nom']."</td>
-									      	<td>".$data['produit.Categorie']."</td>
-									      	<td>".$data['produit.Prix_min']."</td>
-									      	<td>".$data['offre_achat.Offre']."</td>
-									      	<td>".$data['offre_achat.Contre_Offre']."</td>
-									      	<td>".$data['offre_achat.Tentative']."</td>
+									      	<td>".$data['produitNom']."</td>
+									      	<td>".$data['produitCategorie']."</td>
+									      	<td>".$data['produitPrix_min']."</td>
+									      	<td>".$data['offre_achatOffre']."</td>
+									      	<td>".$data['offre_achatContre_Offre']."</td>
+									      	<td>".$data['offre_achatTentative']."</td>
 				      	";
 
 			  		//si c'est à lui (acheteur) de répondre avec une offre
 				      	//On affiche les boutons
-						if ($data['offre_achat.Statut'] == 1) 
+						if ($data['offre_achatStatut'] == 1) 
 						{	
 							?>			
 											<td>
-									      		<form class="form" action="offre.php" method="POST">
+									      		<form class="form" action="offreAcheteur.php" method="POST">
 										            <div class="form-group">
 										                <label class="radio-inline btn btn-success"><input type="radio" name="<?php echo $choixA_ID;?>" id="<?php echo $accepteContreOffre_ID; ?>">Accepter l'offre</label>
 										                <label class="radio-inline btn btn-danger"><input type="radio" name="<?php echo $choixR_ID; ?>" id="<?php echo $refuseContreOffre_ID; ?>">Refuser l'offre</label>
 										                <input type="number" id="<?php echo $prixOffre_ID; ?>" name="<?php echo $prixOffre_ID; ?>" placeholder="Nouvelle offre" required="">
 										            </div>
-										            <input type="submit" value="Valider mes choix" class="btn btn-default">
+										            <input type="submit" value="Valider mon choix" class="btn btn-default" name="<?php echo $submit_ID; ?>" id="<?php echo $submit_ID; ?>">
 										        </form>
 									      	</td>
 								      	</tr>
@@ -134,9 +149,14 @@ include ("database/db_connect.php");
 						                    $('#<?php echo $prixOffre_ID; ?>').hide();
 						                    $('#<?php echo $prixOffre_ID; ?>').prop("required", false);
 
+						                    //on cache le boutton submit
+						                    $('#<?php echo $submit_ID; ?>').hide();
+
 						                    //si offre refusé, on affiche l'input prixOffre et on la rend obligatoire
 						                    $('#<?php echo $refuseContreOffre_ID; ?>').click(function()
 						                    {
+						                    	$('#<?php echo $submit_ID; ?>').show();
+
 						                        $('#<?php echo $prixOffre_ID; ?>').show();
 						                        $('#<?php echo $prixOffre_ID; ?>').prop("required", true);  
 
@@ -147,6 +167,8 @@ include ("database/db_connect.php");
 						                    //Si offre acceptée, on cache input prixOffre et on la rend non-obligatoire
 						                    $('#<?php echo $accepteContreOffre_ID; ?>').click(function()
 						                    {
+						                    	$('#<?php echo $submit_ID; ?>').show();
+
 						                        $('#<?php echo $prixOffre_ID; ?>').hide();
 						                        $('#<?php echo $prixOffre_ID; ?>').prop("required", false);
 
@@ -173,7 +195,7 @@ include ("database/db_connect.php");
 					      	}
 
 				      	//Sinon, c'est qu'il a proposé une nouvelle offre
-					      	else
+					      	else if ((isset($_POST['choixR_ID'])) && (isset($_POST['prixOffre_ID'])))
 					      	{
 					      		//on récupère le prix de l'offre
 						      	$prixOffre = $_POST['prixOffre_ID'];
@@ -186,20 +208,26 @@ include ("database/db_connect.php");
 
 					//Si c'est à l'autre (vendeur) de répondre
 						//Les boutons sont disabled
-						else
+						else if ($data['offre_achatStatut'] == 0)
 						{
 							?>
 											<td>
-									      		<form class="form">
-										            <div class="form-group">
-										                <label class="radio-inline btn btn-success disabled"><input type="radio" name="<?php echo $choixA_ID; ?>">Accepter l'offre</label>
-										                <label class="radio-inline btn btn-danger disabled"><input type="radio" name="<?php echo $choixR_ID; ?>">Refuser l'offre</label>
-										            </div>
-										            <button class="btn btn-default disabled">En attente d'une réponse du vendeur</button>
-										        </form>
+									            <button class="btn btn-default disabled">En attente d'une réponse du vendeur</button>
 									      	</td>
 								      	</tr>
 							<?php
+						}
+
+					//Sinon, c'est que les négo sont terminées et que ça a pas aboutie
+						//if ($data['offre_achatStatut'] == 3)  (c'est implicite car dernier choix possible)
+						else 
+						{
+							?>
+											<td>
+									            <button class="btn btn-default disabled">Vous avez atteint le nombre maximal de propositions d'offre pour cet objet</button>
+									      	</td>
+								      	</tr>
+							<?php	
 						}			
 					}
 

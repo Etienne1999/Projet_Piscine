@@ -542,7 +542,6 @@ if(isset($_POST['submit']))
 					</div>
 				</div>
 
-				
 				<div class="col-lg-8 col-md-8 col-sm-12">
 					<div class="row">
 
@@ -627,7 +626,6 @@ if(isset($_POST['submit']))
 														                <div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
 														                    <span><u>Prix d'achat immédiat</u></span><br>
 														                    <span>".$data['Prix_Achat']."€</span>
-														                    <a href=\"offre.php\" class=\"btn btn-outline-dark waves-effect btn-sm\" role=\"button\">Voir mes offres</a>
 														                </div>";
 												          			}
 												          			else{
@@ -642,7 +640,7 @@ if(isset($_POST['submit']))
 												          				<div class=\"col-sm-6 col-xs-12 col-md-6 col-lg-6 text-center\">
 														                    <span><u>Offre minimum</u></span><br>
 														                    <span>".$data['Prix_min']."€</span><br>
-														                    <a href=\"offre.php\" class=\"btn btn-outline-dark waves-effect btn-sm\" role=\"button\">Voir mes offres</a>
+														                    <a href=\"offreVendeur.php\" class=\"btn btn-outline-dark waves-effect btn-sm\" role=\"button\">Voir mes offres</a>
 														                </div><hr>";
 												          			}
 												          			else{

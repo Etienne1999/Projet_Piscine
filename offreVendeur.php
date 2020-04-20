@@ -38,15 +38,30 @@ include ("database/db_connect.php");
 	</header>
 
 	<!-- Conteneur -->
-	<div class="container-fluid">
+	<div class="container-fluid" style="overflow-x: scroll; ">
 		<?php
 			if ($db_found) 
 			{
 				//ID du user connecté
 				$userID = $_SESSION['user_ID'];
 
+			//Données nécessaires
+				//produit.Nom
+		      	//produit.Categorie
+		      	//produit.Prix_min
+		      	//produit.Vendu
+		      	//produit.Vendeur
+		      	//offre_achat.ID
+		      	//offre_achat.produit
+		      	//offre_achat.Acheteur
+		      	//offre_achat.Contre_Offre
+		      	//offre_achat.Offre
+		      	//offre_achat.Tentative
+		      	//offre_achat.Statut
+
 				//requête sql pour chercher les offres qu'il a reçu
-				$sql = "SELECT offre_achat.* , produit.* FROM produit INNER JOIN offre_achat ON offre_achat.Produit = produit.ID WHERE produit.Vendeur = '$userID' AND produit.Vendu = 0 AND offre_achat.Statut < 2";
+				$sql = "SELECT produit.Nom AS produitNom, produit.Categorie AS produitCategorie, produit.Prix_min AS produitPrix_min, produit.Vendu AS produitVendu, produit.Vendeur AS produitVendeur, offre_achat.ID AS offre_achatID, offre_achat.produit AS offre_achatProduit, offre_achat.Acheteur AS offre_achatAcheteur, offre_achat.Contre_Offre AS offre_achatContre_Offre, offre_achat.Offre AS offre_achatOffre, offre_achat.Tentative AS offre_achatTentative, offre_achat.Statut AS offre_achatStatut FROM produit INNER JOIN offre_achat ON offre_achat.produit = produit.ID WHERE produit.Vendeur = '$userID' AND produit.Vendu = 0 AND offre_achat.Statut < 2";
+
 				$result = mysqli_query($db_handle, $sql);
 
 			//Pas d'objets en meilleure offre en cours
@@ -66,16 +81,17 @@ include ("database/db_connect.php");
 				{
 					?>	
 						<div class="row">
-							<div class="col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
-								<table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+							<div class="col-sm-12 col-md-12 col-lg-12 m-4 table-responsive" style="min-height: 500px;">
+								<h1 class="text-center m-4"><strong>Mes offres reçues</strong></h1>
+								<table class="table table-bordered table-hover table-dark table-striped" cellspacing="0" width="100%">
 								  	<thead>
 								    	<tr>
-								      		<th class="th-sm">Nom de l\'objet</th>
+								      		<th class="th-sm">Nom de l'objet</th>
 								      		<th class="th-sm">Catégorie</th>
-									      	<th class="th-sm">Prix minimum pour une offre</th>
+									      	<th class="th-sm">Offre minimum</th>
 									      	<th class="th-sm">Ma dernière contre offre</th>
-									      	<th class="th-sm">Dernière offre faite par l'acheteur</th>
-									      	<th class="th-sm">Négociations restantes</th>
+									      	<th class="th-sm">Dernière offre reçue</th>
+									      	<th class="th-sm">Négociation N° /5</th>
 								      		<th class="th-sm">Choix</th>
 								    	</tr>
 								  	</thead>
@@ -86,7 +102,7 @@ include ("database/db_connect.php");
 					while ($data = mysqli_fetch_assoc($result))
 					{
 						//ID de l'offre pointée
-						$ID_offreAchat = $data['offre_achat.ID'];
+						$ID_offreAchat = $data['offre_achatID'];
 						//name de l'input "accepter l'offre" (Choix Accepté)
 						$choixA_ID = "choixA".$ID_offreAchat;
 						//name de l'input "refuser l'offre" (Choix Refusé)
@@ -97,87 +113,123 @@ include ("database/db_connect.php");
 						$accepteOffre_ID = "accepteOffre".$ID_offreAchat;
 						//id de l'input "refuser l'offre"
 						$refuseOffre_ID = "refuseOffre".$ID_offreAchat;
+						//name et id du submit button
+						$submit_ID = "submit".$ID_offreAchat;
 
 
 						echo "		
 										<tr>
-									      	<td>".$data['produit.Nom']."</td>
-									      	<td>".$data['produit.Categorie']."</td>
-									      	<td>".$data['produit.Prix_min']."</td>
-									      	<td>".$data['offre_achat.Contre_Offre']."</td>
-									      	<td>".$data['offre_achat.Offre']."</td>
-									      	<td>".$data['offre_achat.Tentative']."</td>
+									      	<td>".$data['produitNom']."</td>
+									      	<td>".$data['produitCategorie']."</td>
+									      	<td>".$data['produitPrix_min']."</td>
+									      	<td>".$data['offre_achatContre_Offre']."</td>
+									      	<td>".$data['offre_achatOffre']."</td>
+									      	<td>".$data['offre_achatTentative']."</td>
 				      		";
 
 					//si c'est à lui (vendeur) de répondre avec une offre
 				      	//les boutons sont actifs
-						if ($data['offre_achat.Statut'] == 0) 
+						if ($data['offre_achatStatut'] == 0) 
 						{	
 							//Si c'était la dernière offre possible de l'acheteur
-							if ($data['offre_achat.Tentative'] == 5) 
+							if ($data['offre_achatTentative'] == 5) 
 							{
 								//On accepte ou on refuse mais pas de contre offre possible
 								?>			
 											<td>
-									      		<form class="form" action="offre.php" method="POST">
+									      		<form class="form" action="offreVendeur.php" method="POST">
 										            <div class="form-group">
-										                <label class="radio-inline btn btn-success"><input type="radio" name="<?php echo $choixA_ID; ?>" id="<?php echo $accepteOffre_ID; ?>">Accepter l'offre</label>
-										                <label class="radio-inline btn btn-danger"><input type="radio" name="<?php echo $choixR_ID; ?>" id="<?php echo $refuseOffre_ID; ?>">Refuser l'offre</label>
+										                <label class="radio-inline btn btn-success"><input type="radio" name="choixA" id="<?php echo $accepteOffre_ID; ?>">Accepter l'offre</label>
+										                <label class="radio-inline btn btn-danger"><input type="radio" name="choixR" id="<?php echo $refuseOffre_ID; ?>">Refuser l'offre</label>
 										            </div>
-										            <input type="submit" value="Valider mes choix" class="btn btn-default">
+										            <input type="text" name="offre_achatID" value="<?php echo $ID_offreAchat; ?>" hidden="true">
+										            <input type="submit" value="Valider mon choix" class="btn btn-outline-default" id="<?php echo $submit_ID; ?>">
 										        </form>
 									      	</td>
 								      	</tr>
+
+							      	<!-- Pour afficher l'input prixOffre + blindage quand refus offre-->
+								      	<script>
+						                $(document).ready(function()
+						                {
+						                    //on cache le boutton submit
+						                    $('#<?php echo $submit_ID; ?>').hide();
+
+						                    //si offre refusé, on affiche l'input prixOffre et on la rend obligatoire
+						                    $('#<?php echo $refuseOffre_ID; ?>').click(function()
+						                    {
+						                    	$('#<?php echo $submit_ID; ?>').show();
+
+						                        $('#<?php echo $accepteOffre_ID; ?>').prop("checked", false);
+                        						$('#<?php echo $accepteOffre_ID; ?>').prop("required", false);            
+						                    });
+						                    
+						                    //Si offre acceptée, on cache input prixOffre et on la rend non-obligatoire
+						                    $('#<?php echo $accepteOffre_ID; ?>').click(function()
+						                    {
+						                    	$('#<?php echo $submit_ID; ?>').show();
+
+						                        $('#<?php echo $refuseOffre_ID; ?>').prop("checked", false);
+                        						$('#<?php echo $refuseOffre_ID; ?>').prop("required", false);              
+						                    });
+						                })
+						                </script>
+
 						      	<?php
-					      	//Si l'offre est acceptée
-						      	if(isset($_POST['choixA_ID']) )
+						      	//Si l'offre est acceptée
+						      	if(isset($_POST['choixA']) )
 						      	{
+						      		//on récupère l'id de l'offre
+						      		$ID_offre = $_POST['offre_achatID'];
+
 						      		//on passe le statut à 2 comme vendu + produit.Vendu = 1
-
-
-
-						      		//+ PASSER COMMANDE ?????
-
-
-
-						      		$sql = "UPDATE offre_achat JOIN produit ON offre_achat.produit = produit.ID SET offre_achat.Statut = 2, produit.Vendu = 1 WHERE offre_achat.ID = '$ID_offreAchat'";
+						      		$sql = "UPDATE offre_achat JOIN produit ON offre_achat.produit = produit.ID SET offre_achat.Statut = 2, produit.Vendu = 1 WHERE offre_achat.ID = '$ID_offre'";
 						      		mysqli_query($db_handle, $sql);
+
+
+
+						      		//+ PASSER COMMANDE
+
+
+
+						      		//on recharge la page pour l'affichage
+						      		?><script>$window.location.reload();</script> <?php
 						      	}
 
-					      	//Sinon, c'est qu'elle est refusée, statut = 3 ???
-						      	else
+					      	//Sinon, c'est qu'elle est refusée, statut = 3 (négociations terminées, pas abouties)
+						      	else if (isset($_POST['choixR']))
 						      	{
+						      		//on récupère l'id de l'offre
+						      		$ID_offre = $_POST['offre_achatID'];
+
 						      		//on passe le statut à 3 comme quoi les offres n'ont pas abouties
-						      		// OU
-						      		//on supprime l'offre, mais l'acheteur ne saura pas ou est passé son offre
-
-
-						      		// + ?????????
-
-
-						      		$sql = "";
+						      		$sql = "UPDATE offre_achat SET offre_achat.Statut = 3 WHERE offre_achat.ID = '$ID_offre'";
 						      		mysqli_query($db_handle, $sql);
+
+						      		//on recharge la page pour l'affichage
+						      		?><script>$window.location.reload();</script> <?php
 						      	}
 							}  
 
-						//Pas la dernière tentative
+						//Si pas la dernière tentative
 							else
 							{
 								//on peut proposer une contre offre
 								?>			
 											<td>
-									      		<form class="form" action="offre.php" method="POST">
+									      		<form class="form" action="offreVendeur.php" method="POST">
 										            <div class="form-group">
-										                <label class="radio-inline btn btn-success"><input type="radio" name="<?php echo $choixA_ID; ?>" id="<?php echo $accepteOffre_ID; ?>">Accepter l'offre</label>
-										                <label class="radio-inline btn btn-danger"><input type="radio" name="<?php echo $choixR_ID; ?>" id="<?php echo $refuseOffre_ID; ?>">Refuser l'offre</label>
-										                <input type="number" id="<?php echo $prixContreOffre_ID; ?>" name="<?php echo $prixContreOffre_ID; ?>" placeholder="Nouvelle contre offre" required="">
+										                <label class="radio-inline btn btn-success"><input type="radio" name="choixA" id="<?php echo $accepteOffre_ID; ?>">Accepter l'offre</label>
+										                <label class="radio-inline btn btn-danger"><input type="radio" name="choixR" id="<?php echo $refuseOffre_ID; ?>">Refuser l'offre</label>
+										                <input type="number" id="<?php echo $prixContreOffre_ID; ?>" name="prixContreOffre" placeholder="Nouvelle contre offre" class="btn" required="">
 										            </div>
-										            <input type="submit" value="Valider mes choix" class="btn btn-default">
+										            <input type="text" name="offre_achatID" value="<?php echo $ID_offreAchat; ?>" hidden="true">
+										            <input type="submit" value="Valider mon choix" class="btn btn-outline-default" id="<?php echo $submit_ID; ?>">
 										        </form>
 									      	</td>
 								      	</tr>
 
-								      	<!-- Pour afficher l'input prixOffre + blindage quand refus offre-->
+							      	<!-- Pour afficher l'input prixOffre + blindage quand refus offre-->
 								      	<script>
 						                $(document).ready(function()
 						                {
@@ -185,9 +237,14 @@ include ("database/db_connect.php");
 						                    $('#<?php echo $prixContreOffre_ID; ?>').hide();
 						                    $('#<?php echo $prixContreOffre_ID; ?>').prop("required", false);
 
+						                    //on cache le boutton submit
+						                    $('#<?php echo $submit_ID; ?>').hide();
+
 						                    //si offre refusé, on affiche l'input prixOffre et on la rend obligatoire
 						                    $('#<?php echo $refuseOffre_ID; ?>').click(function()
 						                    {
+						                    	$('#<?php echo $submit_ID; ?>').show();
+
 						                        $('#<?php echo $prixContreOffre_ID; ?>').show();
 						                        $('#<?php echo $prixContreOffre_ID; ?>').prop("required", true);  
 
@@ -198,6 +255,8 @@ include ("database/db_connect.php");
 						                    //Si offre acceptée, on cache input prixOffre et on la rend non-obligatoire
 						                    $('#<?php echo $accepteOffre_ID; ?>').click(function()
 						                    {
+						                    	$('#<?php echo $submit_ID; ?>').show();
+
 						                        $('#<?php echo $prixContreOffre_ID; ?>').hide();
 						                        $('#<?php echo $prixContreOffre_ID; ?>').prop("required", false);
 
@@ -207,36 +266,39 @@ include ("database/db_connect.php");
 						                })
 						                </script>
 						      	<?php
-					      	//Si l'offre est acceptée
-						      	if(isset($_POST['choixA_ID']) )
+
+				   		   	//Si l'offre est acceptée
+						      	if(isset($_POST['choixA']) )
 						      	{
+						      		//on récupère l'id de l'offre
+						      		$ID_offre = $_POST['offre_achatID'];
 
-
-					      		//Version condensée
 						      		//on update le statut de l'offre = 2 (offre = 'vendue') et le statut du produit = 1 (vendu)
-						      		$sql = "UPDATE produit JOIN offre_achat ON produit.ID = offre_achat.produit SET offre_achat.Statut = 2 , produit.Vendu = 1 WHERE offre_achat.ID = '$ID_offreAchat'";
+						      		$sql = "UPDATE produit JOIN offre_achat ON produit.ID = offre_achat.produit SET offre_achat.Statut = 2 , produit.Vendu = 1 WHERE offre_achat.ID = '$ID_offre'";
 						      		//"UPDATE offre_achat, produit SET offre_achat.Statut = 2 , produit.Vendu = 1 FROM produit INNER JOIN offre_achat ON produit.ID = offre_achat.produit WHERE offre_achat.ID = '$ID_offreAchat'";
 						      		mysqli_query($db_handle, $sql);
 
 
-					      		//Version séparé
-						      		//on update le statut de l'offre = 2 (offre = 'vendue')
-						      		$sql1 = "UPDATE offre_achat SET offre_achat.Statut = 2 WHERE offre_achat.ID = '$ID_offreAchat'";
-						      		mysqli_query($db_handle, $sql1);
-						      		//on update le statut du produit = 1 (vendu)
-						      		$sql2 = "UPDATE produit SET produit.Vendu = 1 FROM produit INNER JOIN offre_achat ON produit.ID = offre_achat.produit WHERE offre_achat.ID = '$ID_offreAchat'";
-						      		mysqli_query($db_handle, $sql2);
+						      		// + PASSER COMMANDE
+
+						      		//on recharge la page pour l'affichage
+						      		?><script>$window.location.reload();</script> <?php
 						      	}
 
-					      	//Sinon, c'est qu'il a proposé une nouvelle contre offre
-						      	else
+		    			  	//Sinon, c'est qu'il a proposé une nouvelle contre offre
+						      	else if ((isset($_POST['choixR'])) && (isset($_POST['prixContreOffre'])))
 						      	{
 						      		//on récupère le prix de la contre offre
-						      		$prixContreOffre = $_POST['prixContreOffre_ID'];
+						      		$prixContreOffre = $_POST['prixContreOffre'];
+						      		//on récupère l'id de l'offre
+						      		$ID_offre = $_POST['offre_achatID'];
 
 						      		//Update tentatives + contre offre + Statut
-						      		$sql = "UPDATE offre_achat SET offre_achat.Tentative = offre_achat.Tentative + 1, offre_achat.Contre_Offre = '$prixContreOffre', offre_achat.Statut = 1";
+						      		$sql = "UPDATE offre_achat SET offre_achat.Tentative = offre_achat.Tentative + 1, offre_achat.Contre_Offre = '$prixContreOffre', offre_achat.Statut = 1 WHERE offre_achat.ID = '$ID_offre'";
 						      		mysqli_query($db_handle, $sql);
+
+						      		//on recharge la page pour l'affichage
+						      		?><script>$window.location.reload();</script> <?php
 						      	}
 							}
 						}	
@@ -247,13 +309,7 @@ include ("database/db_connect.php");
 						{
 							?>
 											<td>
-									      		<form class="form">
-										            <div class="form-group">
-										                <label class="radio-inline btn btn-success disabled"><input type="radio" name="<?php echo $choixA_ID; ?>">Accepter l'offre</label>
-										                <label class="radio-inline btn btn-danger disabled"><input type="radio" name="<?php echo $choixR_ID; ?>">Refuser l'offre</label>
-										            </div>
-										            <button class="btn btn-default disabled">En attente d'une réponse de l'acheteur</button>
-										        </form>
+									            <button class="btn btn-default disabled" style="color: white">En attente d'une réponse de l'acheteur</button>
 									      	</td>
 								      	</tr>
 							<?php
